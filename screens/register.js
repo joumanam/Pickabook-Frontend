@@ -13,7 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-// import { Icon } from 'react-native-elements';
+import { Icon, Input } from 'react-native-elements';
 
 export default function Register() {
   return (
@@ -32,52 +32,63 @@ export default function Register() {
                 <View style={styles.hr}></View>
                 <View style={styles.inputBox}>
                   <Text style={styles.inputLabel}>First Name</Text>
-                  <TextInput
+                  <Input
                     style={styles.input}
                     // autoCapitalize={false}
                     keyboardType="default"
                     textContentType="givenName"
                     placeholder="First Name"
+                    leftIcon={<Icon name='user' type='font-awesome' size={22} color="#710D0D" />}
+
                   />
                 </View>
                 <View style={styles.inputBox}>
                   <Text style={styles.inputLabel}>Last Name</Text>
-                  <TextInput
+                  <Input
                     style={styles.input}
                     // autoCapitalize={false}
                     keyboardType="default"
                     textContentType="familyName"
                     placeholder="Last Name"
+                    leftIcon={<Icon name='user' type='font-awesome' size={22} color="#710D0D" />}
+
                   />
                 </View>
                 <View style={styles.inputBox}>
                   <Text style={styles.inputLabel}>Email Address</Text>
-                  <TextInput
+                  <Input
                     style={styles.input}
                     // autoCapitalize={false}
                     keyboardType="email-address"
                     textContentType="emailAddress"
                     placeholder="Email Address"
+                    leftIcon={<Icon name='envelope' type='font-awesome' size={22} color="#710D0D" />}
+
+                    
                   />
                 </View>
                 <View style={styles.inputBox}>
                   <Text style={styles.inputLabel}>Password</Text>
-                  <TextInput
+                  <Input
                     style={styles.input}
                     // autoCapitalize={false}
                     secureTextEntry={true}
                     textContentType="password"
                     placeholder="Password"
+                    leftIcon={<Icon name='lock' type='font-awesome' size={22} color="#710D0D" />}
+
                   />
                 </View>
                 <View style={styles.inputBox}>
                   <Text style={styles.inputLabel}>Confirm Password</Text>
-                  <TextInput
+                  <Input
                     style={styles.input}
                     // autoCapitalize={false}
                     secureTextEntry={true}
                     textContentType="password"
                     placeholder="Confirm Password"
+                    leftIcon={<Icon name='lock' type='font-awesome' size={22} color="#710D0D" />}
+
                   />
                 </View>
               </View>
@@ -173,7 +184,7 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     height: 40,
-    backgroundColor: "#dfe4ea",
+    // backgroundColor: "#dfe4ea",
     borderRadius: 4,
     paddingHorizontal: 10,
   },

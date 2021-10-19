@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-// import { Icon } from 'react-native-elements';
+import { Icon, Input } from "react-native-elements";
 
 export default function Login() {
   return (
@@ -26,22 +26,25 @@ export default function Login() {
             <View style={styles.hr}></View>
             <View style={styles.inputBox}>
               <Text style={styles.inputLabel}>Email Address</Text>
-              <TextInput
+              <Input
                 style={styles.input}
                 // autoCapitalize={false}
                 keyboardType="email-address"
                 textContentType="emailAddress"
                 placeholder="Email Address"
+                leftIcon={<Icon name='envelope' type='font-awesome' size={22} color="#710D0D" />}
+                // leftIcon={{type:'font-awesome', name:'envelope'}}
               />
             </View>
             <View style={styles.inputBox}>
               <Text style={styles.inputLabel}>Password</Text>
-              <TextInput
+              <Input
                 style={styles.input}
                 // autoCapitalize={false}
                 secureTextEntry={true}
                 textContentType="password"
                 placeholder="Password"
+                leftIcon={<Icon name='lock' type='font-awesome' size={22} color="#710D0D" />}
 
               />
             </View>
@@ -132,6 +135,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 18,
     marginBottom: 6,
+    // textDecorationLine: 'underline'
 
   },
   inputBlock: {
@@ -140,7 +144,7 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     height: 40,
-    backgroundColor: "#dfe4ea",
+    // backgroundColor: "#dfe4ea",
     borderRadius: 4,
     paddingHorizontal: 10,
 

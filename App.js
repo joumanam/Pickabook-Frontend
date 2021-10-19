@@ -21,7 +21,7 @@ import Register from "./screens/register";
 import Wishlist from "./screens/wishlist";
 
 export default function App() {
-  return (
+  return ( 
     <Wishlist />
     // <Login />
     // <Register /> 

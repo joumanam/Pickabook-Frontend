@@ -17,7 +17,6 @@ import Card from "./card";
 import DeleteButton from "./deleteButton";
 
 
-
 export default function BookList({ item, pressHandler }) {
 
 
@@ -26,7 +25,12 @@ export default function BookList({ item, pressHandler }) {
       <View style={styles.item}>
         <Text style={{fontWeight: 'bold'}}>Book Title: </Text><Text>{item.title}{'\n'}</Text>
         <Text style={{fontWeight: 'bold'}}>Book Author: </Text><Text>{item.author}</Text>
-        <DeleteButton onPress={() => pressHandler(item.key)}/>
+        <DeleteButton onPress={() => {
+          Alert.alert("WARNING", "Are you sure you want to delete this?", [
+            {text: 'Yes', onPress: () => pressHandler(item.key)}, 
+            {text: 'Cancel'}
+          ])
+        }}/>
       </View>
     </TouchableOpacity>
   );
