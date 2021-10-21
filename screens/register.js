@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { Icon, Input } from 'react-native-elements';
 
-export default function Register() {
+export default function Register(props) {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ImageBackground
@@ -92,10 +92,10 @@ export default function Register() {
                   />
                 </View>
               </View>
-              <TouchableOpacity style={styles.loginButton}>
+              <TouchableOpacity style={styles.loginButton} onPress={() => props.navigation.navigate("Login")}>
                 <Text style={styles.loginButtonText}>Sign Up</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => props.navigation.navigate("Login")}>
                 <Text style={styles.registerText}>Already have an account?</Text>
                 <Text style={{ fontWeight: "bold", alignSelf: "center" }}>
                   Login

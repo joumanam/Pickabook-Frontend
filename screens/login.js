@@ -14,7 +14,9 @@ import {
 } from "react-native";
 import { Icon, Input } from "react-native-elements";
 
-export default function Login() {
+
+
+export default function Login(props) {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ImageBackground source={require("../assets/myimages/background.png")}   
@@ -49,10 +51,10 @@ export default function Login() {
               />
             </View>
             </View>
-            <TouchableOpacity style={styles.loginButton}>
+            <TouchableOpacity style={styles.loginButton} onPress={() => props.navigation.navigate("My Profile")}>
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => props.navigation.navigate("Register")}>
               <Text style={styles.registerText}>
                 New to Pick-A-Book? 
               </Text>

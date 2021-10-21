@@ -13,15 +13,14 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import Card from "./card";
 import DeleteButton from "./deleteButton";
 
 
-export default function BookList({ item, pressHandler }) {
+export default function MyWishlistItems({ item, pressHandler }) {
 
 
   return (
-    <TouchableOpacity >
+    <View>
       <View style={styles.item}>
         <Text style={{fontWeight: 'bold'}}>Book Title: </Text><Text>{item.title}{'\n'}</Text>
         <Text style={{fontWeight: 'bold'}}>Book Author: </Text><Text>{item.author}</Text>
@@ -32,7 +31,7 @@ export default function BookList({ item, pressHandler }) {
           ])
         }}/>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 

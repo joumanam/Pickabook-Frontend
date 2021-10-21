@@ -19,26 +19,23 @@ import AddButton from "./addButton";
 
 const imgWidth = Dimensions.get("screen").width * 0.33;
 
-export default function BookCard() {
+export default function BookCard(props) {
   return (
-    <TouchableOpacity>
+    <View>
       <View style={styles.item}>
         <Image style={{ width: imgWidth, height: imgWidth }}
           // style={styles.coverImage}
           source={require("../assets/myimages/background.png")}
         />
         <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
-        <Text>
-         Book1
-          {"\n"}
-        </Text>
-        <Text style={{ fontWeight: "bold" }}>Book Author: </Text>
-        <Text>Author1</Text>
-        <AddButton title="Check Post"
+        <Text>{props.title}{"\n"}</Text>
+        <Text style={{ fontWeight:"bold" }}>Book Author: </Text>
+        <Text>{props.author}</Text>
+        <AddButton title="Check Post" onPress={props.onPress}
           
         />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 

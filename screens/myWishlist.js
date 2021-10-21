@@ -1,8 +1,9 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { LogBox } from 'react-native';
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import AddBook from "../components/addBook";
-import BookList from "../components/booklist";
+import MyWishlistItems from "../components/myWishlistItems";
 import {
   StyleSheet,
   View,
@@ -11,7 +12,8 @@ import {
 } from "react-native";
 // import { Icon } from 'react-native-elements';
 
-export default function Wishlist() {
+
+export default function MyWishlist() {
   const [todos, setTodos] = useState([
     { title: "Book1", author: "Author1", key: "1" },
     { title: "Book2", author: "Author2", key: "2" },
@@ -35,6 +37,10 @@ export default function Wishlist() {
    })
   }
 
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
+  }, [])
+
   return (
   
     <ScrollView>
@@ -46,7 +52,7 @@ export default function Wishlist() {
             <FlatList style={styles.flatList}
           data={todos}
           renderItem={({ item }) => (
-            <BookList item={item} pressHandler={pressHandler}/>
+            <MyWishlistItems item={item} pressHandler={pressHandler}/>
           )}
         />
            

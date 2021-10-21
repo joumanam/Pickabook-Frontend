@@ -86,7 +86,7 @@ function ForAuction({ photos }) {
   );
 }
 
-export default function Profile(props) {
+export default function UserProfile(props) {
   const [loaded] = useFonts({
     SSLight,
     SSRegular,
@@ -142,7 +142,7 @@ export default function Profile(props) {
               </View>
               {/* Interact Buttons View */}
               <View style={styles.interactButtonsView}>
-                <TouchableOpacity style={styles.interactButton}>
+                <TouchableOpacity style={styles.interactButton} onPress={() => props.navigation.navigate("User Wishlist")}>
                   <Text style={styles.interactButtonText}>View Wishlist</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -171,7 +171,7 @@ export default function Profile(props) {
                   }}
                   onPress={() => setShowContent("ForSale")}
                 >
-                  <Text style={styles.showContentButtonText}>For Sale</Text>
+                  <Text style={styles.showContentButtonText}>Sale</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
@@ -180,7 +180,7 @@ export default function Profile(props) {
                   }}
                   onPress={() => setShowContent("ForTrade")}
                 >
-                  <Text style={styles.showContentButtonText}>For Trade</Text>
+                  <Text style={styles.showContentButtonText}>Trade</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
@@ -189,7 +189,7 @@ export default function Profile(props) {
                   }}
                   onPress={() => setShowContent("ForAuction")}
                 >
-                  <Text style={styles.showContentButtonText}>For Auction</Text>
+                  <Text style={styles.showContentButtonText}>Auction</Text>
                 </TouchableOpacity>
               </View>
               {showContent === "ForSale" ? (
@@ -265,5 +265,7 @@ const styles = StyleSheet.create({
   showContentButtonText: {
     fontFamily: "SSRegular",
     fontSize: 18,
+    fontWeight: 'bold'
+
   },
 });
