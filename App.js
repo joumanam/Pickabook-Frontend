@@ -19,10 +19,12 @@ import Card from "./components/card";
 import Login from "./screens/login";
 import Register from "./screens/register";
 import Wishlist from "./screens/wishlist";
+import Profile from "./screens/profile";
 
 export default function App() {
   return ( 
-    <Wishlist />
+    <Profile />
+    // <Wishlist />
     // <Login />
     // <Register /> 
   )
