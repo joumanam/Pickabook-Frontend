@@ -18,73 +18,7 @@ import SSLight from "../assets/fonts/SourceSansPro/SourceSansProLight.ttf";
 import SSRegular from "../assets/fonts/SourceSansPro/SourceSansProRegular.ttf";
 import SSBold from "../assets/fonts/SourceSansPro/SourceSansProBold.ttf";
 
-function ForSale({ photos }) {
-  
-  const imgWidth = Dimensions.get("screen").width * 0.5;
-  return (
-    <View style={{}}>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        {photos.map((photo, index) => (
-          <View>
-            <BookCard style={{ width: imgWidth, height: imgWidth }}/>
-            
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
 
-function ForTrade({photos}) {
-
-  const imgWidth = Dimensions.get("screen").width * 0.5;
-  return (
-    <View style={{}}>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        {photos.map((photo, index) => (
-          <View>
-            <BookCard style={{ width: imgWidth, height: imgWidth }}/>
-            
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
-
-function ForAuction({ photos }) {
-  const imgWidth = Dimensions.get("screen").width * 0.5;
-  return (
-    <View style={{}}>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        {photos.map((photo, index) => (
-          <View>
-            <BookCard style={{ width: imgWidth, height: imgWidth }}/>
-            
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
 
 export default function UserProfile(props) {
   const [loaded] = useFonts({
@@ -99,6 +33,81 @@ export default function UserProfile(props) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  function ForSale({ photos }) {
+    const imgWidth = Dimensions.get("screen").width * 0.5;
+    return (
+      <View style={{}}>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          {photos.map((photo, index) => (
+            <View>
+              <BookCard
+                title="Book for sale"
+                author="Author123"
+                onPress={() => props.navigation.navigate("User Sales")}
+                style={{ width: imgWidth, height: imgWidth }}
+              />
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  }
+  
+  function ForTrade({ photos }) {
+    const imgWidth = Dimensions.get("screen").width * 0.5;
+    return (
+      <View style={{}}>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          {photos.map((photo, index) => (
+            <View>
+              <BookCard
+                title="Book for trade"
+                author="Author456"
+                onPress={() => props.navigation.navigate("User Trades")}
+                style={{ width: imgWidth, height: imgWidth }}
+              />
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  }
+  
+  
+  function ForAuction({ photos }) {
+    const imgWidth = Dimensions.get("screen").width * 0.5;
+    return (
+      <View style={{}}>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          {photos.map((photo, index) => (
+            <View>
+              <BookCard style={{ width: imgWidth, height: imgWidth }}/>
+              
+            </View>
+          ))}
+        </View>
       </View>
     );
   }

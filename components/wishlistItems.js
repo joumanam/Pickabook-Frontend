@@ -16,7 +16,7 @@ import {
 import DeleteButton from "./deleteButton";
 
 
-export default function MyWishlistItems({ item, pressHandler }) {
+export default function WishlistItems({ item, pressHandler, isMine }) {
 
 
   return (
@@ -24,12 +24,13 @@ export default function MyWishlistItems({ item, pressHandler }) {
       <View style={styles.item}>
         <Text style={{fontWeight: 'bold'}}>Book Title: </Text><Text>{item.title}{'\n'}</Text>
         <Text style={{fontWeight: 'bold'}}>Book Author: </Text><Text>{item.author}</Text>
+       { isMine &&
         <DeleteButton onPress={() => {
           Alert.alert("WARNING", "Are you sure you want to delete this?", [
             {text: 'Yes', onPress: () => pressHandler(item.key)}, 
             {text: 'Cancel'}
           ])
-        }}/>
+        }}/> }
       </View>
     </View>
   );

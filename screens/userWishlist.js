@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import { LogBox } from 'react-native';
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import AddBook from "../components/addBook";
+import WishlistItems from "../components/wishlistItems";
 import {
   StyleSheet,
   View,
   ScrollView,
   FlatList,
 } from "react-native";
-import UserWishlistItems from "../components/userWishlistItems";
 // import { Icon } from 'react-native-elements';
 
 export default function UserWishlist() {
@@ -50,7 +50,7 @@ export default function UserWishlist() {
             <FlatList style={styles.flatList}
           data={todos}
           renderItem={({ item }) => (
-            <UserWishlistItems item={item}/>
+            <WishlistItems isMine={false} item={item}/>
           )}
         />
            

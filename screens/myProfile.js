@@ -53,7 +53,7 @@ export default function MyProfile(props) {
               <BookCard
                 title="Book for sale"
                 author="Author123"
-                onPress={() => props.navigation.navigate("User Wishlist")}
+                onPress={() => props.navigation.navigate("User Sales")}
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>

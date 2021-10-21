@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import Header from "./components/header";
 import HeaderWithoutLogo from "./components/headerWithoutLogo";
-import BookList from "./components/myWishlistItems";
 import AddBook from "./components/addBook";
 import Login from "./screens/login";
 import Register from "./screens/register";
@@ -22,9 +21,12 @@ import MyWishlist from "./screens/myWishlist";
 import UserProfile from "./screens/userProfile";
 import MyProfile from "./screens/myProfile";
 import UserWishlist from "./screens/userWishlist";
+import UserTrades from "./screens/userTrades";
+import MakeOffer from "./screens/makeOffer";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import UserSales from "./screens/userSales";
 
 
 const Stack = createStackNavigator();
@@ -32,7 +34,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="My Profile">
+      <Stack.Navigator initialRouteName="User Profile">
         <Stack.Screen
           name="Login"
           component={Login}
@@ -59,9 +61,24 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="User Sales"
+          component={UserSales}
+          options={{ title: "Back To Profile" }}
+        />
+        <Stack.Screen
           name="User Wishlist"
           component={UserWishlist}
           options={{ title: "Back To Profile" }}
+        />
+        <Stack.Screen
+          name="User Trades"
+          component={UserTrades}
+          options={{ title: "Back To Profile" }}
+        />
+        <Stack.Screen
+          name="Make Offer"
+          component={MakeOffer}
+          options={{ title: "Back To Trade Post" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

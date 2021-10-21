@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { LogBox } from 'react-native';
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import AddBook from "../components/addBook";
-import MyWishlistItems from "../components/myWishlistItems";
+import WishlistItems from "../components/wishlistItems";
 import {
   StyleSheet,
   View,
@@ -52,7 +52,7 @@ export default function MyWishlist() {
             <FlatList style={styles.flatList}
           data={todos}
           renderItem={({ item }) => (
-            <MyWishlistItems item={item} pressHandler={pressHandler}/>
+            <WishlistItems isMine={true} item={item} pressHandler={pressHandler}/>
           )}
         />
            

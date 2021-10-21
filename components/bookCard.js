@@ -22,7 +22,7 @@ const imgWidth = Dimensions.get("screen").width * 0.33;
 export default function BookCard(props) {
   return (
     <View>
-      <View style={styles.item}>
+      <View style={styles.bookcard}>
         <Image style={{ width: imgWidth, height: imgWidth }}
           // style={styles.coverImage}
           source={require("../assets/myimages/background.png")}
@@ -40,13 +40,15 @@ export default function BookCard(props) {
 }
 
 const styles = StyleSheet.create({
-  item: {
+  bookcard: {
     padding: 16,
     marginTop: 16,
     borderColor: "#710D0D",
     borderWidth: 1,
     borderRadius: 10,
     color: "white",
-    marginLeft: 20
+    marginLeft: 20,
+    // marginRight: 20
+
   },
 });
