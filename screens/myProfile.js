@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import BookCard from "../components/bookCard";
 import { Feather as Icon } from "@expo/vector-icons";
+import axios from "axios";
+import { userContext } from "../userContext";
 
 // Fonts
 import { useFonts } from "expo-font";
@@ -18,14 +20,30 @@ import SSLight from "../assets/fonts/SourceSansPro/SourceSansProLight.ttf";
 import SSRegular from "../assets/fonts/SourceSansPro/SourceSansProRegular.ttf";
 import SSBold from "../assets/fonts/SourceSansPro/SourceSansProBold.ttf";
 
-
-
 export default function MyProfile(props) {
   const [loaded] = useFonts({
     SSLight,
     SSRegular,
     SSBold,
   });
+
+  const { currentUser, setCurrentUser } = useContext(userContext);
+
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    axios
+      .get("http://192.168.43.140:8000/api/show/" + currentUser.user.id, {
+        headers: {
+          Authorization: `Bearer ${currentUser.access_token}`,
+        },
+      })
+      .then((response) => {
+        const temp = response.data;
+        console.log(temp);
+        setUser(temp);
+      });
+  }, []);
 
   const [showContent, setShowContent] = useState("ForSale");
 
@@ -50,10 +68,13 @@ export default function MyProfile(props) {
         >
           {photos.map((photo, index) => (
             <View>
-              <BookCard
-                title="Book for sale"
-                author="Author123"
-                onPress={() => props.navigation.navigate("User Sales")}
+              <BookCard style={{justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}
+                title={photo.title}
+                author={photo.author}
+                status={photo.status}
+                onPress={() =>
+                  props.navigation.navigate("Sale Post", { post: photo })
+                }
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -62,7 +83,7 @@ export default function MyProfile(props) {
       </View>
     );
   }
-  
+
   function ForTrade({ photos }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;
     return (
@@ -77,8 +98,11 @@ export default function MyProfile(props) {
           {photos.map((photo, index) => (
             <View>
               <BookCard
-                title="Book for trade"
-                author="Author456"
+                title={photo.title}
+                author={photo.author}
+                onPress={() =>
+                  props.navigation.navigate("Trade Post", { post: photo })
+                }
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -87,7 +111,7 @@ export default function MyProfile(props) {
       </View>
     );
   }
-  
+
   function ForAuction({ photos }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;
     return (
@@ -102,8 +126,8 @@ export default function MyProfile(props) {
           {photos.map((photo, index) => (
             <View>
               <BookCard
-                title="Book for auction"
-                author="Author789"
+                title={photo.title}
+                author={photo.author}
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -112,7 +136,7 @@ export default function MyProfile(props) {
       </View>
     );
   }
-  
+
   function Idle({ photos }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;
     return (
@@ -127,8 +151,8 @@ export default function MyProfile(props) {
           {photos.map((photo, index) => (
             <View>
               <BookCard
-                title="Idle book"
-                author="Author10"
+                title={photo.title}
+                author={photo.author}
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -137,7 +161,6 @@ export default function MyProfile(props) {
       </View>
     );
   }
-  
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -163,7 +186,9 @@ export default function MyProfile(props) {
               </View>
               {/* Profile Name and Bio */}
               <View style={styles.nameAndBioView}>
-                <Text style={styles.userFullName}>{"Joumana Moussa"}</Text>
+                <Text style={styles.userFullName}>
+                  {user.first_name + " " + user.last_name}
+                </Text>
               </View>
               {/* Posts/Followers/Following View */}
               <View style={styles.countsView}>
@@ -185,6 +210,7 @@ export default function MyProfile(props) {
                   <Text style={styles.interactButtonText}>View Wishlist</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  onPress={() => props.navigation.navigate("User Profile", {userId: '1'})}
                   style={{
                     ...styles.interactButton,
                     backgroundColor: "white",
@@ -240,14 +266,34 @@ export default function MyProfile(props) {
                   <Text style={styles.showContentButtonText}>Idle</Text>
                 </TouchableOpacity>
               </View>
-              {showContent === "ForSale" ? (
-                <ForSale photos={new Array(3).fill(1)} />
-              ) : showContent === "ForTrade" ? (
-                <ForTrade photos={new Array(10).fill(1)} />
-              ) : showContent === "ForAuction" ? (
-                <ForAuction photos={new Array(2).fill()} />
-              ) : (
-                <Idle photos={new Array(5).fill()} />
+              {user.books && (
+                <View>
+                  {showContent === "ForSale" ? (
+                    <ForSale
+                      photos={user.books.filter((book, index) => {
+                        if (book.status === "For Sale") return book;
+                      })}
+                    />
+                  ) : showContent === "ForTrade" ? (
+                    <ForTrade
+                      photos={user.books.filter((book, index) => {
+                        if (book.status === "For Trade") return book;
+                      })}
+                    />
+                  ) : showContent === "ForAuction" ? (
+                    <ForAuction
+                      photos={user.books.filter((book, index) => {
+                        if (book.status === "For Auction") return book;
+                      })}
+                    />
+                  ) : (
+                    <Idle
+                      photos={user.books.filter((book, index) => {
+                        if (book.status === "Idle") return book;
+                      })}
+                    />
+                  )}
+                </View>
               )}
             </View>
           </View>

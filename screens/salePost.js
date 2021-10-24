@@ -15,10 +15,16 @@ import {
 } from "react-native";
 import BookCard from "../components/bookCard";
 import AddButton from "../components/addButton";
+import { useContext } from "react";
+import { userContext } from "../userContext";
 
-export default function UserTrades(props) {
+export default function SalePost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;
   const nav = props.navigation;
+
+  const {currentUser, setCurrentUser} = useContext(userContext);
+  const currentPost = props.route.params.post;
+  console.log(currentPost);
 
   function BookCard(props) {
     return (
@@ -35,57 +41,46 @@ export default function UserTrades(props) {
           />
           <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
           <Text>
-            {props.title}
+            {currentPost.title}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Book Author: </Text>
           <Text>
-            {props.author}
+            {currentPost.author}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Language: </Text>
           <Text>
-            {props.title}
+            {currentPost.language}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Category: </Text>
           <Text>
-            {props.author}
+            {currentPost.category}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Condition: </Text>
           <Text>
-            {props.title}
+            {currentPost.condition}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
           <Text>
-            {props.author}
+            {currentPost.rating}
             {"\n"}
           </Text>
-          
-
-          <AddButton title="Make An Offer" onPress={()=> nav.navigate("Make Offer")}/>
+          <Text style={{ ...styles.pricetag, color: "#710D0D" }}>
+          {currentPost.price} 
+          </Text>
+          { currentPost.user_id !== currentUser.user.id &&
+          <AddButton
+            title="Contact Seller"
+            onPress={() => nav.navigate("Make Offer")}
+          /> }
         </View>
       </View>
     );
   }
-
-  const [todos, setTodos] = useState([
-    { title: "Book1", author: "Author1", key: "1" },
-    { title: "Book2", author: "Author2", key: "2" },
-    { title: "Book3", author: "Author3", key: "3" },
-    { title: "Book3", author: "Author3", key: "4" },
-  ]);
-
-  const submitHandler = (title, author) => {
-    setTodos((prevTodos) => {
-      return [
-        { title: title, author: author, key: Math.random().toString() },
-        ...prevTodos,
-      ];
-    });
-  };
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
@@ -99,6 +94,7 @@ export default function UserTrades(props) {
           <View style={styles.list}>
             <BookCard />
           </View>
+          
         </View>
       </View>
     </ScrollView>
@@ -144,17 +140,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-   
   },
   pricetag: {
-    backgroundColor: "#710D0D",
-    marginTop: 13,
-    paddingVertical: 10,
-    borderRadius: 4,
-    color: "#fff",
+    // backgroundColor: "#710D0D",
+    // marginTop: 13,
+    // paddingVertical: 10,
+    // borderRadius: 4,
+    // color: "#fff",
     textAlign: "center",
-    fontSize: 17,
-    fontWeight: "bold",
+    // fontSize: 17,
+    // fontWeight: "bold",
+    fontFamily: "SSBold",
+    color: "#fff",
+    fontSize: 18,
+    paddingVertical: 3,
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: "#710D0D",
+    borderRadius: 40
   },
   // shadowProp: {
   //   shadowColor: '#171717',

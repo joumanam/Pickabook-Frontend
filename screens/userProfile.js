@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,14 +11,12 @@ import {
 } from "react-native";
 import BookCard from "../components/bookCard";
 import { Feather as Icon } from "@expo/vector-icons";
-
+import axios from "axios";
 // Fonts
 import { useFonts } from "expo-font";
 import SSLight from "../assets/fonts/SourceSansPro/SourceSansProLight.ttf";
 import SSRegular from "../assets/fonts/SourceSansPro/SourceSansProRegular.ttf";
 import SSBold from "../assets/fonts/SourceSansPro/SourceSansProBold.ttf";
-
-
 
 export default function UserProfile(props) {
   const [loaded] = useFonts({
@@ -26,6 +24,18 @@ export default function UserProfile(props) {
     SSRegular,
     SSBold,
   });
+
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/show/" + props.route.params.userId)
+      .then((response) => {
+        const temp = response.data;
+        console.log(temp);
+        setUser(temp);
+      });
+  }, []);
 
   const [showContent, setShowContent] = useState("ForSale");
 
@@ -53,7 +63,9 @@ export default function UserProfile(props) {
               <BookCard
                 title="Book for sale"
                 author="Author123"
-                onPress={() => props.navigation.navigate("User Sales")}
+                onPress={() =>
+                  props.navigation.navigate("Sale Post", { post: photo })
+                }
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -62,7 +74,7 @@ export default function UserProfile(props) {
       </View>
     );
   }
-  
+
   function ForTrade({ photos }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;
     return (
@@ -88,8 +100,7 @@ export default function UserProfile(props) {
       </View>
     );
   }
-  
-  
+
   function ForAuction({ photos }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;
     return (
@@ -103,8 +114,7 @@ export default function UserProfile(props) {
         >
           {photos.map((photo, index) => (
             <View>
-              <BookCard style={{ width: imgWidth, height: imgWidth }}/>
-              
+              <BookCard style={{ width: imgWidth, height: imgWidth }} />
             </View>
           ))}
         </View>
@@ -151,7 +161,10 @@ export default function UserProfile(props) {
               </View>
               {/* Interact Buttons View */}
               <View style={styles.interactButtonsView}>
-                <TouchableOpacity style={styles.interactButton} onPress={() => props.navigation.navigate("User Wishlist")}>
+                <TouchableOpacity
+                  style={styles.interactButton}
+                  onPress={() => props.navigation.navigate("User Wishlist")}
+                >
                   <Text style={styles.interactButtonText}>View Wishlist</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -204,7 +217,7 @@ export default function UserProfile(props) {
               {showContent === "ForSale" ? (
                 <ForSale photos={new Array(3).fill(1)} />
               ) : showContent === "ForTrade" ? (
-                <ForTrade photos={new Array(10).fill(1)}/>
+                <ForTrade photos={new Array(10).fill(1)} />
               ) : (
                 <ForAuction photos={new Array(2).fill()} />
               )}
@@ -235,7 +248,7 @@ const styles = StyleSheet.create({
   },
   nameAndBioView: { alignItems: "center", marginTop: 10 },
   userFullName: { fontFamily: "SSBold", fontSize: 26 },
- 
+
   countsView: { flexDirection: "row", marginTop: 20 },
   countView: { flex: 1, alignItems: "center" },
   countNum: { fontFamily: "SSBold", fontSize: 20 },
@@ -274,7 +287,6 @@ const styles = StyleSheet.create({
   showContentButtonText: {
     fontFamily: "SSRegular",
     fontSize: 18,
-    fontWeight: 'bold'
-
+    fontWeight: "bold",
   },
 });

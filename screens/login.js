@@ -1,7 +1,9 @@
 import React from "react";
 import Header from "../components/header";
+import { useState, useContext } from "react";
 import {
   StyleSheet,
+  
   Text,
   View,
   TextInput,
@@ -13,11 +15,56 @@ import {
   Keyboard,
 } from "react-native";
 import { Icon, Input } from "react-native-elements";
-
-
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
+import { userContext } from "../userContext";
 
 export default function Login(props) {
+
+  const {currentUser, setCurrentUser} = useContext(userContext);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const setPasswordProps = (value) => {
+    setPassword(value);
+  };
+  const setEmailProps = (value) => {
+    setEmail(value);
+  };
+
+
+  const loginHandler = () => {
+    const params = {
+      email,
+      password,
+    };
+
+    axios
+      .post("http://192.168.43.140:8000/api/auth/login", params)
+      // .post("http://25f7-91-232-100-196.ngrok.io/api/auth/login", params)
+      .then((response) => {
+        let code = response.data.code;
+        if (parseInt(code) !== 200) {
+          if (parseInt(code) == 401) {
+            throw new Error("Unauthorized");
+          }
+          if (parseInt(code) == 422) {
+            throw new Error("Incorrect email address or password!");
+          }
+        }
+       
+        setCurrentUser(response.data)
+        props.navigation.navigate("All Books");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+
   return (
+
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ImageBackground source={require("../assets/myimages/background.png")}   
       style={styles.container}>
@@ -34,6 +81,9 @@ export default function Login(props) {
                 keyboardType="email-address"
                 textContentType="emailAddress"
                 placeholder="Email Address"
+                onChangeText={(value)=>setEmail(value)}
+                defaultValue={email}
+                handler={setEmailProps}
                 leftIcon={<Icon name='envelope' type='font-awesome' size={22} color="#710D0D" />}
                 // leftIcon={{type:'font-awesome', name:'envelope'}}
               />
@@ -46,12 +96,15 @@ export default function Login(props) {
                 secureTextEntry={true}
                 textContentType="password"
                 placeholder="Password"
+                onChangeText={(value)=>setPassword(value)}
+                defaultValue={password}
+                handler={setPasswordProps}
                 leftIcon={<Icon name='lock' type='font-awesome' size={22} color="#710D0D" />}
 
               />
             </View>
             </View>
-            <TouchableOpacity style={styles.loginButton} onPress={() => props.navigation.navigate("My Profile")}>
+            <TouchableOpacity style={styles.loginButton} onPress={loginHandler}>
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => props.navigation.navigate("Register")}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { LogBox } from "react-native";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import AddBook from "../components/addBook";
@@ -15,9 +15,15 @@ import {
 } from "react-native";
 import BookCard from "../components/bookCard";
 import AddButton from "../components/addButton";
+import { userContext } from "../userContext";
 
-export default function UserSales() {
+export default function TradePost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;
+  const nav = props.navigation;
+
+  const { currentUser, setCurrentUser } = useContext(userContext);
+  const currentPost = props.route.params.post;
+  console.log(currentPost);
 
   function BookCard(props) {
     return (
@@ -34,37 +40,48 @@ export default function UserSales() {
           />
           <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
           <Text>
-            {props.title}
+            {currentPost.title}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Book Author: </Text>
           <Text>
-            {props.author}
+            {currentPost.author}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Language: </Text>
           <Text>
-            {props.title}
+            {currentPost.language}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Category: </Text>
           <Text>
-            {props.author}
+            {currentPost.category}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Condition: </Text>
           <Text>
-            {props.title}
+            {currentPost.condition}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
           <Text>
-            {props.author}
+            {currentPost.rating}
             {"\n"}
           </Text>
-          
 
-          <Text style={styles.pricetag}>120,000 LL</Text>
+          {currentPost.user_id !== currentUser.user.id && (
+            <AddButton
+              title="Make An Offer"
+              onPress={() => nav.navigate("Make Offer")}
+            />
+          )}
+
+          {currentPost.user_id == currentUser.user.id && (
+            <AddButton
+              title="View Offers"
+              onPress={() => nav.navigate("Make Offer")}
+            />
+          )}
         </View>
       </View>
     );
@@ -143,7 +160,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-   
   },
   pricetag: {
     backgroundColor: "#710D0D",
