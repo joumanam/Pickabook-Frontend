@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
+  TextInput,
   StyleSheet,
   FlatList,
   CheckBox,
   Button,
   Modal,
+  ScrollView
 } from "react-native";
 import Constants from "expo-constants";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
@@ -26,12 +28,22 @@ const data = [
   { id: "4", txt: "Search by Status", isChecked: false },
 ];
 
-
-
 export default function BrowseScreen() {
+
+
+
+
+
+
+
   const [products, setProducts] = useState(data);
+  const [dropDownDisabled, setDropDownDisabled] = useState(true); 
 
   const handleChange = (id) => {
+    if(id  === '4') {
+      setOpen(false)
+      setDropDownDisabled(!dropDownDisabled)
+    }
     let temp = products.map((product) => {
       if (id === product.id) {
         return { ...product, isChecked: !product.isChecked };
@@ -41,7 +53,9 @@ export default function BrowseScreen() {
     setProducts(temp);
   };
   const [search, setSearch] = useState();
+  const [searchLang, setSearchLang] = useState('');
   const [value, setValue] = useState(null);
+
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState([
     { id: "1", label: "For Sale", value: "For Sale" },
@@ -57,6 +71,7 @@ export default function BrowseScreen() {
       <FlatList
         data={renderData}
         renderItem={({ item }) => (
+          <View>
           <Card style={{ margin: 5 }}>
             <View style={styles.card}>
               <View
@@ -76,55 +91,75 @@ export default function BrowseScreen() {
               </View>
             </View>
           </Card>
+          { (item.id === '3' && item.isChecked) &&
+          <TextInput 
+          style={styles.languageInput}
+          value={searchLang}
+          placeholder="Type Language"
+          onChangeText={(text) => {
+            setSearchLang(text);
+          }}  
+         />}
+
+          </View>
         )}
       />
     );
   };
 
   function updateSearch(search) {
-
+    
   }
 
-  return (
+  const handleSubmit = () => {
+    let result = [];
 
+  } 
+  
+
+  return (
+    <ScrollView>
     <View style={styles.container}>
       <HeaderWithoutLogo title="Browse"/>
-      <View style={{ flex: 1 }}>{renderFlatList(products)}</View>
+      <View>{renderFlatList(products)}</View>
+      
       <View style={styles.dropDown}>
-        <DropDownPicker
+        <DropDownPicker style={{backgroundColor: dropDownDisabled ? 'rgba(100,100,100,0.5)' : 'white'}}
+        
           open={open}
           value={value}
           items={status}
           setOpen={setOpen}
           setValue={setValue}
           showTickIcon={false}
-          // searchable={true}
+          disabled={dropDownDisabled}
           setItems={setStatus}
           dropDownDirection="AUTO"
           placeholder="Select Status"
           placeholderStyle={{
-            color: "grey",
+            color: dropDownDisabled ? 'grey' : 'black',
             fontWeight: "bold",
           }}
         />
       </View>
-      <View style={{ backgroundColor: "#710D0D", marginTop: 10, borderRadius: 5 }}>
+      <View style={{ backgroundColor: "#710D0D", marginTop: 170, borderRadius: 5 }}>
         <SearchBar 
         value={search} 
         updateSearch={updateSearch} 
         style={{}} />
       </View>
       <View>
-        <AddButton title="Search" />
+        <AddButton title="Search" onPress={handleSubmit}/>
       </View>
     </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     paddingTop: Constants.statusBarHeight,
     backgroundColor: "#ecf0f1",
     padding: 8,
@@ -153,4 +188,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
+  dropDown: {
+    marginTop: 7
+  },
+  languageInput: {
+    marginLeft: 10,
+    height: 40,
+    // fontStyle: 'italic',
+    margin: 8,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+  }
 });
