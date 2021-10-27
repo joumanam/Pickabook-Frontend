@@ -4,7 +4,7 @@ import { LogBox } from "react-native";
 
 import Header from "./components/header";
 import HeaderWithoutLogo from "./components/headerWithoutLogo";
-import AddBook from "./components/addBook";
+import AddWishlist from "./components/addWishlist";
 import Login from "./screens/login";
 import Register from "./screens/register";
 import MyWishlist from "./screens/myWishlist";
@@ -17,7 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SalePost from "./screens/salePost";
 import { userContext } from "./userContext";
 import TradePost from "./screens/tradePost";
@@ -29,10 +29,11 @@ import EventMap from "./screens/eventMap";
 import AddNewBook from "./screens/addNewBook";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SearchResults from "./screens/searchResults";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 
 const Stack = createStackNavigator();
 export const AuthStack = createStackNavigator();
-const Tabs = createBottomTabNavigator();
+const Tabs = createMaterialBottomTabNavigator();
 const BrowseStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 
@@ -43,7 +44,7 @@ const BrowseStackScreen = () => (
       component={BrowseScreen}
       options={{ headerShown: false }}
     />
-      <BrowseStack.Screen
+    <BrowseStack.Screen
       name="Search Results"
       component={SearchResults}
       options={{ title: "Go Back to Browse Page" }}
@@ -90,9 +91,10 @@ export default function App() {
   // }
 
   useEffect(() => {
-    LogBox.ignoreLogs(['Require cycle']);
-  }, [])
-
+    LogBox.ignoreLogs(["Require cycle"]);
+    LogBox.ignoreLogs(["Each child in a list"]);
+    LogBox.ignoreLogs(["Do you have a screen named"]);
+  }, []);
 
   return (
     <userContext.Provider value={{ currentUser, setCurrentUser }}>
@@ -112,86 +114,84 @@ export default function App() {
               />
             </AuthStack.Navigator>
           ) : (
-            <Tabs.Navigator 
-             tabBarOptions={{
-              activeTintColor: '#710D0D',
-              inactiveTintColor: 'black',
-              showLabel: false,
-              allowFontScaling: false,
-              keyboardHidesTabBar: true,
-              shadowColor: '#FFF',
-              labelStyle: {
-                fontWeight: "bold",
-                fontSize: 10,
-              },
-            }}
-            initialRouteName="My Profile">
-             
-              <Tabs.Screen 
-              name="My Profile" 
-              component={ProfileStackScreen} 
-              options={{
-                headerShown: false,
-                tabBarIcon: ({ focused, color, size }) => (
-                  <MaterialCommunityIcons
-                    name={"account"}
-                    size={28}
-                    color={color}
-                  />
-                ),
-              }}
+            <Tabs.Navigator
+              activeColor="white"
+              inactiveColor="grey"
+              barStyle={{ backgroundColor: "#710D0D", elevation: 9, shadowColor: 'black', shadowOffset: { width: 1, height: 3 },
+              shadowOpacity: 0.7,
+              shadowRadius: 5,  overflow: "hidden", height: 56, borderTopLeftRadius: 15, borderTopRightRadius: 15}}
+              initialRouteName="My Profile"
+            >
+              <Tabs.Screen
+                name="My Profile"
+                component={ProfileStackScreen}
+                options={{
+                  // tabBarLabel: false,
+                  headerShown: false,
+                  tabBarIcon: ({ focused, color, size }) => (
+                    <MaterialCommunityIcons
+                      name={"account"}
+                      size={25}
+                      color={color}
+                    />
+                  ),
+                }}
               />
-               <Tabs.Screen
+              <Tabs.Screen
                 name="Browse Page"
                 component={BrowseStackScreen}
                 options={{
+                  // tabBarLabel: false,
                   headerShown: false,
                   tabBarIcon: ({ focused, color, size }) => (
                     <MaterialCommunityIcons
                       name={"book-search"}
-                      size={28}
+                      size={25}
                       color={color}
                     />
                   ),
                 }}
               />
-               <Tabs.Screen
-                name="Add New Book"
+              <Tabs.Screen
+                name="New Book"
                 component={AddNewBook}
                 options={{
+                  // tabBarLabel: false,
                   headerShown: false,
                   tabBarIcon: ({ focused, color, size }) => (
                     <MaterialCommunityIcons
                       name={"plus-box"}
-                      size={40}
+                      size={25}
                       color={color}
                     />
                   ),
                 }}
               />
-               <Tabs.Screen
+              <Tabs.Screen
                 name="Chat"
                 component={Chats}
                 options={{
+                  // tabBarLabel: false,
                   headerShown: false,
                   tabBarIcon: ({ focused, color, size }) => (
                     <MaterialCommunityIcons
                       name={"chat"}
-                      size={28}
+                      size={25}
                       color={color}
                     />
                   ),
                 }}
               />
-               <Tabs.Screen
+              <Tabs.Screen
                 name="Events"
                 component={EventMap}
                 options={{
                   headerShown: false,
+                  // tabBarLabel: false,
                   tabBarIcon: ({ focused, color, size }) => (
                     <MaterialCommunityIcons
                       name={"map-search"}
-                      size={28}
+                      size={25}
                       color={color}
                     />
                   ),
@@ -200,7 +200,7 @@ export default function App() {
             </Tabs.Navigator>
           )
 
-           /* <Stack.Navigator initialRouteName="Browse Screen">
+          /* <Stack.Navigator initialRouteName="Browse Screen">
          
           <Stack.Screen name="My Profile" component={MyProfile} options={{ headerShown: false }}/>
           <Stack.Screen name="My Wishlist" component={MyWishlist} options={{ title: "Back To My Profile" }}/>
@@ -211,20 +211,18 @@ export default function App() {
           <Stack.Screen name="Make Offer" component={MakeOffer} options={{ title: "Back To Trade Post" }}/>
           <Stack.Screen name="Browse Screen" component={BrowseScreen} options={{ headerShown: false }}/>
       
-          </Stack.Navigator> */ 
-              }
+          </Stack.Navigator> */
+        }
       </NavigationContainer>
-        
     </userContext.Provider>
-);
-    {/* <CheckBooks />
+  );
+  {
+    /* <CheckBooks />
      <BrowseScreen />
      <Profile />
      <Login />
       <Register />
      <MyWishlist />
-      <UserWishlist /> */}
-
-  
-
+      <UserWishlist /> */
+  }
 }

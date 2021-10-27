@@ -136,13 +136,12 @@ export default function Chats() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View >
           <HeaderWithoutLogo title="Messages" />
 
       <View
         style={{
           // marginTop: Number(StatusBar.currentHeight),
-          marginTop: 30,
           // backgroundColor: 'red',
           // paddingVertical: 20,
           paddingHorizontal: 10,

@@ -68,7 +68,7 @@ export default function AllBooks(props) {
               returnKeyType="search"
             />
             <ScrollView>
-              {/* {filteredBooks.map((book, index) => (
+              {filteredBooks.map((book, index) => (
                   <BookCard
                     style={{
                       justifyContent: "center",
@@ -81,7 +81,7 @@ export default function AllBooks(props) {
                     status={book.status}
                     // onPress={ }
                   />
-                ))} */}
+                ))}
             </ScrollView>
             {search.length === 0 ? (
               <TouchableOpacity>

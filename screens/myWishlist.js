@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { LogBox } from 'react-native';
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
-import AddBook from "../components/addBook";
+import AddWishlist from "../components/addWishlist";
 import WishlistItems from "../components/wishlistItems";
 import {
   StyleSheet,
@@ -14,7 +14,7 @@ import {
 
 
 export default function MyWishlist() {
-  const [todos, setTodos] = useState([
+  const [books, setBooks] = useState([
     { title: "Book1", author: "Author1", key: "1" },
     { title: "Book2", author: "Author2", key: "2" },
     { title: "Book3", author: "Author3", key: "3" },
@@ -23,16 +23,16 @@ export default function MyWishlist() {
 
  
   const pressHandler = (key) => {
-    setTodos((prevTodos) => {
-      return prevTodos.filter((todo) => todo.key != key);
+    setBooks((prevBooks) => {
+      return prevBooks.filter((book) => book.key != key);
     });
   };
 
   const submitHandler = (title, author) => {
-    setTodos((prevTodos) => {
+    setBooks((prevBooks) => {
       return [
         {title: title, author: author, key: Math.random().toString() },
-        ...prevTodos
+        ...prevBooks
        ];
    })
   }
@@ -47,10 +47,10 @@ export default function MyWishlist() {
     <View style={styles.container}>
        <HeaderWithoutLogo title="My Wishlist" />
         <View style={styles.content}>
-          <AddBook submitHandler={submitHandler}/>
+          <AddWishlist submitHandler={submitHandler}/>
           <View style={styles.list}>
             <FlatList style={styles.flatList}
-          data={todos}
+          data={books}
           renderItem={({ item }) => (
             <WishlistItems isMine={true} item={item} pressHandler={pressHandler}/>
           )}

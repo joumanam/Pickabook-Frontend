@@ -34,6 +34,8 @@ export default function Login(props) {
   };
 
 
+
+
   const loginHandler = () => {
     const params = {
       email,
@@ -61,6 +63,42 @@ export default function Login(props) {
         console.log(err);
       });
   };
+
+  //// TEMP ////
+  const autoLogin = () => {
+    const params = {
+      email: "joum@se.io",
+      password: "password",
+    };
+
+    axios
+      .post("http://192.168.43.140:8000/api/auth/login", params)
+      // .post("http://25f7-91-232-100-196.ngrok.io/api/auth/login", params)
+      .then((response) => {
+        let code = response.data.code;
+        if (parseInt(code) !== 200) {
+          if (parseInt(code) == 401) {
+            throw new Error("Unauthorized");
+          }
+          if (parseInt(code) == 422) {
+            throw new Error("Incorrect email address or password!");
+          }
+        }
+       
+        setCurrentUser(response.data)
+        props.navigation.navigate("All Books");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  React.useEffect(() => {
+    autoLogin();
+  }, [])
+
+  //// END TEMP ////
+
 
 
   return (
@@ -124,7 +162,6 @@ export default function Login(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
   },
 
   centerizedView: {

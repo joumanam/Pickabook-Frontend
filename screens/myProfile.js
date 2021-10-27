@@ -15,6 +15,8 @@ import { Feather as Icon } from "@expo/vector-icons";
 import axios from "axios";
 import { userContext } from "../userContext";
 import AddButton from "../components/addButton";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 // Fonts
 import { useFonts } from "expo-font";
 import SSLight from "../assets/fonts/SourceSansPro/SourceSansProLight.ttf";
@@ -213,6 +215,13 @@ export default function MyProfile(props) {
                   <Text style={styles.countNum}>13</Text>
                   <Text style={styles.countText}>Books</Text>
                 </View>
+                <TouchableOpacity>
+                <MaterialCommunityIcons
+                    name={"bell-ring"}
+                    size={28}
+                    color={"#710D0D"}
+                  />
+                  </TouchableOpacity>
                 <View style={styles.countView}>
                   <Text style={styles.countNum}>5</Text>
                   <Text style={styles.countText}>Wishlist</Text>

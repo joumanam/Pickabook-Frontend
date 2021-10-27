@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect, useContext } from "react";
 import { LogBox } from "react-native";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
-import AddBook from "../components/addBook";
 import WishlistItems from "../components/wishlistItems";
 import {
   StyleSheet,

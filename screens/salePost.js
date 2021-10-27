@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { LogBox } from "react-native";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
-import AddBook from "../components/addBook";
+import AddBook from "../components/addWishlist";
 import WishlistItems from "../components/wishlistItems";
 import {
   StyleSheet,
@@ -17,12 +17,15 @@ import BookCard from "../components/bookCard";
 import AddButton from "../components/addButton";
 import { useContext } from "react";
 import { userContext } from "../userContext";
+import { Icon } from "react-native-elements/dist/icons/Icon";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function SalePost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;
   const nav = props.navigation;
 
-  const {currentUser, setCurrentUser} = useContext(userContext);
+  const { currentUser, setCurrentUser } = useContext(userContext);
   const currentPost = props.route.params.post;
   console.log(currentPost);
 
@@ -70,13 +73,26 @@ export default function SalePost(props) {
             {"\n"}
           </Text>
           <Text style={{ ...styles.pricetag, color: "#710D0D" }}>
-          {currentPost.price} 
+            {currentPost.price}
           </Text>
-          { currentPost.user_id !== currentUser.user.id &&
-          <AddButton
-            title="Contact Seller"
-            onPress={() => nav.navigate("Make Offer")}
-          /> }
+          {currentPost.user_id !== currentUser.user.id && (
+            <AddButton
+              title="Contact Seller"
+              onPress={() => nav.navigate("Make Offer")}
+            />
+          )}
+           {currentPost.user_id == currentUser.user.id && (
+            <TouchableOpacity style={{ color: "#710D0D", marginTop: 5 }}>
+              <MaterialCommunityIcons
+                name="square-edit-outline"
+                size={25}
+                color={"#710D0D"}
+                style={{ alignSelf: 'center', justifyContent: 'center'}}
+
+              />
+            </TouchableOpacity>
+          )}
+         
         </View>
       </View>
     );
@@ -94,7 +110,6 @@ export default function SalePost(props) {
           <View style={styles.list}>
             <BookCard />
           </View>
-          
         </View>
       </View>
     </ScrollView>
@@ -157,7 +172,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderWidth: 2,
     borderColor: "#710D0D",
-    borderRadius: 40
+    borderRadius: 40,
   },
   // shadowProp: {
   //   shadowColor: '#171717',

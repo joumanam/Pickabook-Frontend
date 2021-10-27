@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import AddButton from "./addButton";
 
-export default function AddBook({submitHandler}) {
+export default function AddWishlist({props}) {
 
     const [bookTitle, setBookTitle] = useState('');
     const [author, setAuthor] = useState('');
@@ -38,7 +38,7 @@ export default function AddBook({submitHandler}) {
                 placeholder="Book Author"
                 onChangeText={changeHandlerAuthor}
             />
-            <AddButton title="Add a new book to your wishlist" onPress={()=>submitHandler(bookTitle, author)} />
+            <AddButton title="Add New Book" onPress={()=>props.submitHandler(bookTitle, author)} />
         </View>
     )
 }

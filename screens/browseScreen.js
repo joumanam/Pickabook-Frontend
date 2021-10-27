@@ -127,7 +127,7 @@ export default function BrowseScreen({navigation}) {
     <ScrollView>
     <View style={styles.container}>
       <HeaderWithoutLogo title="Browse"/>
-      <View>{renderFlatList(products)}</View>
+      <View style={{padding: 8}}>{renderFlatList(products)}</View>
       
       <View style={styles.dropDown}>
         <DropDownPicker style={{backgroundColor: dropDownDisabled ? 'rgba(100,100,100,0.5)' : 'white'}}
@@ -148,7 +148,8 @@ export default function BrowseScreen({navigation}) {
           }}
         />
       </View>
-      <View style={{ backgroundColor: "#710D0D", marginTop: 170, borderRadius: 5 }}>
+      <View style={{padding: 9}}>
+      <View style={{ backgroundColor: "#710D0D", marginTop: 170, borderRadius: 5, }}>
         <SearchBar 
         value={search} 
         updateSearch={updateSearch} 
@@ -157,9 +158,7 @@ export default function BrowseScreen({navigation}) {
       <View>
         <AddButton title="Search" onPress={() => navigation.navigate('Search Results')}/>
       </View>
-
-      <AddButton title="Logout" onPress={() => setCurrentUser(null)}/>
-      
+          </View>
     </View>
     </ScrollView>
   );
@@ -169,15 +168,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: "center",
-    paddingTop: Constants.statusBarHeight,
+    // paddingTop: Constants.statusBarHeight,
     backgroundColor: "#ecf0f1",
-    padding: 8,
-  },
-  headerContainer: {
-    flex: 1,
-    // backgroundColor: "white",
+    // padding: 8,
     marginBottom: 20,
+
   },
+  
   card: {
     padding: 10,
     margin: 5,
@@ -198,7 +195,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   dropDown: {
-    marginTop: 7
+    marginTop: 7,
+    padding:8
   },
   languageInput: {
     marginLeft: 10,
