@@ -5,6 +5,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  LogBox,
   Image,
   ActivityIndicator,
   Dimensions,
@@ -13,7 +14,7 @@ import BookCard from "../components/bookCard";
 import { Feather as Icon } from "@expo/vector-icons";
 import axios from "axios";
 import { userContext } from "../userContext";
-
+import AddButton from "../components/addButton";
 // Fonts
 import { useFonts } from "expo-font";
 import SSLight from "../assets/fonts/SourceSansPro/SourceSansProLight.ttf";
@@ -26,6 +27,13 @@ export default function MyProfile(props) {
     SSRegular,
     SSBold,
   });
+
+  useEffect(() => {
+    LogBox.ignoreLogs(
+      ["VirtualizedLists should never be nested inside"],
+      ["Each child in a list"]
+    );
+  }, []);
 
   const { currentUser, setCurrentUser } = useContext(userContext);
 
@@ -68,7 +76,12 @@ export default function MyProfile(props) {
         >
           {photos.map((photo, index) => (
             <View>
-              <BookCard style={{justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}
+              <BookCard
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignSelf: "center",
+                }}
                 title={photo.title}
                 author={photo.author}
                 status={photo.status}
@@ -100,6 +113,7 @@ export default function MyProfile(props) {
               <BookCard
                 title={photo.title}
                 author={photo.author}
+                status={photo.status}
                 onPress={() =>
                   props.navigation.navigate("Trade Post", { post: photo })
                 }
@@ -126,8 +140,10 @@ export default function MyProfile(props) {
           {photos.map((photo, index) => (
             <View>
               <BookCard
+                key={photo.id}
                 title={photo.title}
                 author={photo.author}
+                status={photo.status}
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -153,6 +169,7 @@ export default function MyProfile(props) {
               <BookCard
                 title={photo.title}
                 author={photo.author}
+                status={photo.status}
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -180,7 +197,7 @@ export default function MyProfile(props) {
                 <Image
                   style={styles.profileImage}
                   source={{
-                    uri: "https://randomuser.me/api/portraits/women/46.jpg",
+                    uri: "https://randomuser.me/api/portraits/women/81.jpg",
                   }}
                 />
               </View>
@@ -204,13 +221,19 @@ export default function MyProfile(props) {
               {/* Interact Buttons View */}
               <View style={styles.interactButtonsView}>
                 <TouchableOpacity
-                  style={styles.interactButton}
+                  style={{
+                    ...styles.interactButton,
+                    backgroundColor: "white",
+                    borderWidth: 2,
+                    borderColor: "#710D0D",}}
                   onPress={() => props.navigation.navigate("My Wishlist")}
                 >
-                  <Text style={styles.interactButtonText}>View Wishlist</Text>
+                  <Text style={{...styles.interactButtonText, color: "#710D0D"}}>View Wishlist</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => props.navigation.navigate("User Profile", {userId: '1'})}
+                  onPress={() =>
+                    props.navigation.navigate("User Profile", { userId: "1" })
+                  }
                   style={{
                     ...styles.interactButton,
                     backgroundColor: "white",
@@ -225,7 +248,11 @@ export default function MyProfile(props) {
                   </Text>
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity style={styles.logoutButton} onPress={() => setCurrentUser(null)}>
+                <Text style={styles.logoutText}>Logout</Text>
+              </TouchableOpacity>
             </View>
+
             {/* Profile Content */}
             <View style={{ marginTop: 20 }}>
               <View style={styles.profileContentButtonsView}>
@@ -344,8 +371,11 @@ const styles = StyleSheet.create({
   interactButtonText: {
     fontFamily: "SSBold",
     color: "#fff",
-    fontSize: 18,
+    fontSize: 15,
+    paddingHorizontal: 2,
     paddingVertical: 6,
+    justifyContent: "center",
+    alignSelf: "center",
   },
   profileContentButtonsView: {
     flexDirection: "row",
@@ -363,4 +393,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  logoutButton: {
+    backgroundColor: "#710D0D",
+    margin: 13,
+    paddingVertical: 10,
+    borderRadius: 4,
+    width: "50%",
+    justifyContent: 'center',
+    alignSelf: 'center'
+  },
+  logoutText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 17,
+    fontWeight: "bold",
+  }
 });

@@ -25,7 +25,7 @@ const data = [
   { id: "4", txt: "Search by Status", isChecked: false },
 ];
 
-export default function CheckBooks() {
+export default function SearchResults() {
   const [products, setProducts] = useState(data);
   const [search, setSearch] = useState("");
 
@@ -80,7 +80,7 @@ export default function CheckBooks() {
 
   return (
     <View style={styles.container}>
-      <HeaderWithoutLogo title="Browse" />
+      <HeaderWithoutLogo title="Search Results" />
 
       <View >
           

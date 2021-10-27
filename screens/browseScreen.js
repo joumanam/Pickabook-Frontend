@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Text,
   View,
   TextInput,
   StyleSheet,
+  LogBox,
   FlatList,
   CheckBox,
   Button,
@@ -15,6 +16,8 @@ import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import DropDownPicker from "react-native-dropdown-picker";
 import AddButton from "../components/addButton";
 import SearchBar from "../components/searchBar";
+import { userContext } from "../userContext";
+import { AuthStack } from "../App";
 
 // You can import from local files
 
@@ -28,16 +31,11 @@ const data = [
   { id: "4", txt: "Search by Status", isChecked: false },
 ];
 
-export default function BrowseScreen() {
-
-
-
-
-
-
+export default function BrowseScreen({navigation}) {
 
   const [products, setProducts] = useState(data);
   const [dropDownDisabled, setDropDownDisabled] = useState(true); 
+  const { currentUser, setCurrentUser } = useContext(userContext);
 
   const handleChange = (id) => {
     if(id  === '4') {
@@ -112,10 +110,18 @@ export default function BrowseScreen() {
   }
 
   const handleSubmit = () => {
-    let result = [];
+    
 
   } 
   
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never']);
+  }, [])
+  useEffect(() => {
+    LogBox.ignoreLogs(["Bottom Tab Navigator: 'tabBarOptions’ is deprecated"]);
+  }, [])
+
+
 
   return (
     <ScrollView>
@@ -149,8 +155,11 @@ export default function BrowseScreen() {
         style={{}} />
       </View>
       <View>
-        <AddButton title="Search" onPress={handleSubmit}/>
+        <AddButton title="Search" onPress={() => navigation.navigate('Search Results')}/>
       </View>
+
+      <AddButton title="Logout" onPress={() => setCurrentUser(null)}/>
+      
     </View>
     </ScrollView>
   );
