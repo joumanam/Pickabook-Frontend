@@ -146,6 +146,9 @@ export default function MyProfile(props) {
                 title={photo.title}
                 author={photo.author}
                 status={photo.status}
+                onPress={() =>
+                  props.navigation.navigate("Auction Post", { post: photo })
+                }
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -215,7 +218,7 @@ export default function MyProfile(props) {
                   <Text style={styles.countNum}>13</Text>
                   <Text style={styles.countText}>Books</Text>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => props.navigation.navigate("Notifications")}>
                 <MaterialCommunityIcons
                     name={"bell-ring"}
                     size={28}

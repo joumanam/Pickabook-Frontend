@@ -18,7 +18,7 @@ export default function MyWishlist() {
     { title: "Book1", author: "Author1", key: "1" },
     { title: "Book2", author: "Author2", key: "2" },
     { title: "Book3", author: "Author3", key: "3" },
-    { title: "Book3", author: "Author3", key: "4" },
+    { title: "Book4", author: "Author4", key: "4" },
   ]);
 
  

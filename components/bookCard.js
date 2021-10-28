@@ -43,8 +43,6 @@ export default function BookCard(props) {
       </View>
     </View>
   );
-
-
 }
 
 const styles = StyleSheet.create({
@@ -53,6 +51,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderColor: "#710D0D",
     borderWidth: 1,
+    marginBottom: 10,
     borderRadius: 10,
     color: "white",
     marginLeft: 20,

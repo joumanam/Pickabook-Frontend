@@ -12,8 +12,9 @@ import {
   Image,
 } from "react-native";
 import AddButton from "./addButton";
+import MyWishlist from "../screens/myWishlist";
 
-export default function AddWishlist({props}) {
+export default function AddWishlist({submitHandler}) {
 
     const [bookTitle, setBookTitle] = useState('');
     const [author, setAuthor] = useState('');
@@ -38,7 +39,7 @@ export default function AddWishlist({props}) {
                 placeholder="Book Author"
                 onChangeText={changeHandlerAuthor}
             />
-            <AddButton title="Add New Book" onPress={()=>props.submitHandler(bookTitle, author)} />
+            <AddButton title="Add New Book" onPress={()=>submitHandler(bookTitle, author)} />
         </View>
     )
 }

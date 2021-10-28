@@ -20,14 +20,26 @@ import { userContext } from "../userContext";
 import { Icon } from "react-native-elements/dist/icons/Icon";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
+import { color } from "react-native-elements/dist/helpers";
 
-export default function SalePost(props) {
-  const imgWidth = Dimensions.get("screen").width * 0.55;
+export default function AuctionPost(props) {
+  const imgWidth = Dimensions.get("screen").width * 0.45;
   const nav = props.navigation;
 
   const { currentUser, setCurrentUser } = useContext(userContext);
   const currentPost = props.route.params.post;
   console.log(currentPost);
+
+  const CONTENT = {
+    tableHead: ['Bidder', 'Bid Amount', 'Bid Made'],
+    // tableTitle: ['Row', 'Row 2', 'Row 3', 'Row 4'],
+    tableData: [
+      ['Charbel Daoud', '28,000 LL', '3 hours ago'],
+      ['Yvona Nehme', '20,000 LL', '3 hours ago'],
+      ['Kiwi Cat', '15,000 LL', '1 hour ago'],
+    ],
+  };
 
   function BookCard(props) {
     return (
@@ -70,29 +82,16 @@ export default function SalePost(props) {
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
           <Text>
             {currentPost.rating}
-            {"\n"}
+            {"\n"}{"\n"}
           </Text>
-          <Text style={{ ...styles.pricetag, color: "#710D0D" }}>
-            {currentPost.price}
-          </Text>
-          {currentPost.user_id !== currentUser.user.id && (
-            <AddButton
-              title="Contact Seller"
-              onPress={() => nav.navigate("Make Offer")}
-            />
-          )}
-           {currentPost.user_id == currentUser.user.id && (
-            <TouchableOpacity style={{ color: "#710D0D", marginTop: 5 }}>
-              <MaterialCommunityIcons
-                name="square-edit-outline"
-                size={25}
-                color={"#710D0D"}
-                style={{ alignSelf: 'center', justifyContent: 'center'}}
-
-              />
-            </TouchableOpacity>
-          )}
-         
+         <Text>
+           <Text style={{ fontStyle: 'italic', fontWeight: "bold"}}>Highest Bidder: </Text>
+           <Text style={{color: "green", fontWeight: "bold"}}>Charbel Daoud</Text>
+           </Text>
+           <Text>
+           <Text style={{ fontStyle: 'italic', fontWeight: "bold"}}>Currently At: </Text>
+           <Text style={{color: "red", fontWeight: "bold"}}>28,000 LL</Text>
+           </Text>         
         </View>
       </View>
     );
@@ -105,11 +104,39 @@ export default function SalePost(props) {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <HeaderWithoutLogo title="For Sale" />
+        <HeaderWithoutLogo title="For Auction" />
         <View style={styles.content}>
           <View style={styles.list}>
             <BookCard />
           </View>
+        </View>
+        <View>
+          <Text style={styles.biddingTitle}> BIDDING ACTIVITY </Text>
+        </View>
+        <View style={{marginTop: 20}}>
+        <Table  style={{ borderBottom: 'solid', width: '95%', alignSelf: 'center'}}>
+        <Row
+          data={CONTENT.tableHead}
+          flexArr={[1, 1, 1]}
+          style={styles.head}
+          textStyle={styles.rowText}
+        />
+        <TableWrapper style={styles.wrapper}>
+          <Col
+            data={CONTENT.tableTitle}
+            style={styles.title}
+            heightArr={[28, 28]}
+            textStyle={styles.columnText}
+           
+          />
+          <Rows
+            data={CONTENT.tableData}
+            flexArr={[1, 1, 1]}
+            style={styles.row}
+            textStyle={styles.inTableText}
+          />
+        </TableWrapper>
+      </Table>
         </View>
       </View>
     </ScrollView>
@@ -119,8 +146,8 @@ export default function SalePost(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "white",
     marginBottom: 20,
+    // flexDirection: 'column'
   },
   content: {
     padding: 40,
@@ -133,12 +160,15 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   bookcard: {
-    padding: 16,
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
     marginTop: -40,
+    marginBottom: -50,
+    padding: 16,
     width: "110%",
     backgroundColor: "#fff",
     borderRadius: 20,
-    alignSelf: "center",
     paddingHorizontal: 14,
     paddingBottom: 30,
     shadowColor: "#000",
@@ -151,14 +181,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   pricetag: {
-    // backgroundColor: "#710D0D",
-    // marginTop: 13,
-    // paddingVertical: 10,
-    // borderRadius: 4,
-    // color: "#fff",
     textAlign: "center",
-    // fontSize: 17,
-    // fontWeight: "bold",
+    marginTop: -15,
     fontFamily: "SSBold",
     color: "#fff",
     fontSize: 18,
@@ -168,10 +192,24 @@ const styles = StyleSheet.create({
     borderColor: "#710D0D",
     borderRadius: 40,
   },
-  // shadowProp: {
-  //   shadowColor: '#171717',
-  //   shadowOffset: {width: -2, height: 4},
-  //   shadowOpacity: 0.2,
-  //   shadowRadius: 3,
-  // },
+  biddingTitle: {
+    marginTop: 30,
+    backgroundColor: '#710D0D',
+    alignSelf: 'center',
+    borderTopLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 20,
+    width: '90%'
+  },
+  head: { height: 40, backgroundColor: '#710D0D', color: 'white', borderTopRightRadius: 15, borderTopLeftRadius: 15 },
+  wrapper: { flexDirection: 'row' },
+  title: { flex: 1, backgroundColor: '#710D0D', color: 'white' },
+  row: { height: 28 },
+
+  inTableText: { textAlign: 'center', color: 'green', borderBottomWidth: 1, fontWeight: 'bold'},
+  rowText: { textAlign: 'center', color: 'white', fontStyle: 'italic', fontWeight: 'bold' },
 });

@@ -14,6 +14,7 @@ import UserWishlist from "./screens/userWishlist";
 import UserTrades from "./screens/tradePost";
 import MakeOffer from "./screens/makeOffer";
 import { Ionicons } from "@expo/vector-icons";
+import Notifications from "./screens/notifications";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -30,6 +31,8 @@ import AddNewBook from "./screens/addNewBook";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SearchResults from "./screens/searchResults";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import LoadingScreen from "./screens/loadingScreen";
+import AuctionPost from "./screens/auctionPost";
 
 const Stack = createStackNavigator();
 export const AuthStack = createStackNavigator();
@@ -62,17 +65,27 @@ const ProfileStackScreen = () => (
     <ProfileStack.Screen
       name="Sale Post"
       component={SalePost}
-      options={{ title: "Go Back" }}
+      options={{ title: "Go Back To Profile" }}
     />
     <ProfileStack.Screen
       name="Trade Post"
       component={TradePost}
-      options={{ title: "Go Back" }}
+      options={{ title: "Go Back To Profile" }}
+    />
+    <ProfileStack.Screen
+      name="Auction Post"
+      component={AuctionPost}
+      options={{ title: "Go Back To Profile" }}
     />
     <ProfileStack.Screen
       name="My Wishlist"
       component={MyWishlist}
-      options={{ title: "Go Back" }}
+      options={{ title: "Go Back To Profile" }}
+    />
+     <ProfileStack.Screen
+      name="Notifications"
+      component={Notifications}
+      options={{ title: "Go Back To Profile" }}
     />
   </ProfileStack.Navigator>
 );
@@ -99,7 +112,7 @@ export default function App() {
   return (
     <userContext.Provider value={{ currentUser, setCurrentUser }}>
       <NavigationContainer>
-        {
+        { 
           !currentUser ? (
             <AuthStack.Navigator>
               <AuthStack.Screen

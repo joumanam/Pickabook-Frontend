@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, StyleSheet, Text, View, Dimensions} from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, Button, Dimensions } from "react-native";
 import { Icon } from "react-native-elements";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import MapView from "react-native-maps";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function EventMap({ navigation }) {
   const [newMarker, setNewMarker] = useState(null);
   // newMarker goes in the coordinates column of the new post
 
   const onAddPin = (e) => {
-      console.log(e.nativeEvent.coordinate);
-      setNewMarker(e.nativeEvent.coordinate);
-    }
-  
+    console.log(e.nativeEvent.coordinate);
+    setNewMarker(e.nativeEvent.coordinate);
+  };
 
   return (
     <SafeAreaView forceInset={{ top: "always" }}>
@@ -31,13 +31,9 @@ export default function EventMap({ navigation }) {
             longitudeDelta: 0.6,
           }}
         >
-          { newMarker &&
-          <MapView.Marker
-              key='New Pin'
-              coordinate={newMarker} />
-            }
-    </MapView>
-      </View>
+          {newMarker && <MapView.Marker key="New Pin" coordinate={newMarker} />}
+        </MapView>
+    </View>
     </SafeAreaView>
   );
 }
@@ -49,8 +45,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   map: {
-    alignSelf: 'flex-start',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height - 79,
+    alignSelf: "flex-start",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height - 79,
   },
+  
 });
