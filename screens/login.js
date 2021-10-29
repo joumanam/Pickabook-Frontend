@@ -95,7 +95,7 @@ export default function Login(props) {
 
   React.useEffect(() => {
     autoLogin();
-  }, [])
+  }, [])  
 
   //// END TEMP ////
 

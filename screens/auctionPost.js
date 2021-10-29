@@ -8,6 +8,7 @@ import {
   StyleSheet,
   View,
   Image,
+  Button,
   ScrollView,
   FlatList,
   Dimensions,
@@ -18,9 +19,15 @@ import AddButton from "../components/addButton";
 import { useContext } from "react";
 import { userContext } from "../userContext";
 import { Icon } from "react-native-elements/dist/icons/Icon";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
+import {
+  Table,
+  TableWrapper,
+  Row,
+  Rows,
+  Col,
+} from "react-native-table-component";
 import { color } from "react-native-elements/dist/helpers";
 
 export default function AuctionPost(props) {
@@ -32,14 +39,33 @@ export default function AuctionPost(props) {
   console.log(currentPost);
 
   const CONTENT = {
-    tableHead: ['Bidder', 'Bid Amount', 'Bid Made'],
+    tableHead: ["Bidder", "Bid Amount", "Bid Made"],
     // tableTitle: ['Row', 'Row 2', 'Row 3', 'Row 4'],
     tableData: [
-      ['Charbel Daoud', '28,000 LL', '3 hours ago'],
-      ['Yvona Nehme', '20,000 LL', '3 hours ago'],
-      ['Kiwi Cat', '15,000 LL', '1 hour ago'],
-    ],
+      ["Charbel Daoud", "28,000 LL", "3 hours ago"],      
+      ["Yvona Nehme", "20,000 LL", "3 hours ago"],
+      ["Alex Kodjabashi", "15,000 LL", "1 hours ago"],
+    ]
   };
+
+  const [tableDatas, setTableDatas] = useState([
+    {user: "Charbel Daoud", bid: "28,000 LL", time: "3 hours ago", key: '1'},
+    {user: "Yvona Nehme", bid: "20,000 LL", time: "3 hours ago",key: '2'},
+    {user: "Alex Kodjabashi", bid: "15,000 LL", time: "1 hour ago",key: '3'},
+  ]);
+  
+  const submitHandler = (user, bid, time) => {
+    setTableDatas((prevTableDatas) => {
+      return [
+        {user: user, bid: bid, time:time, key: Math.random().toString() },
+        ...prevTableDatas
+       ];
+   })
+  }
+
+  const changeHandlerData = (val) => {
+    setTableDatas.bid(val);
+}
 
   function BookCard(props) {
     return (
@@ -82,16 +108,32 @@ export default function AuctionPost(props) {
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
           <Text>
             {currentPost.rating}
-            {"\n"}{"\n"}
+            {"\n"}
+            {"\n"}
           </Text>
-         <Text>
-           <Text style={{ fontStyle: 'italic', fontWeight: "bold"}}>Highest Bidder: </Text>
-           <Text style={{color: "green", fontWeight: "bold"}}>Charbel Daoud</Text>
-           </Text>
-           <Text>
-           <Text style={{ fontStyle: 'italic', fontWeight: "bold"}}>Currently At: </Text>
-           <Text style={{color: "red", fontWeight: "bold"}}>28,000 LL</Text>
-           </Text>         
+          <Text>
+            <Text style={{ fontStyle: "italic", fontWeight: "bold" }}>
+              Highest Bidder:{" "}
+            </Text>
+            <Text style={{ color: "green", fontWeight: "bold" }}>
+              Charbel Daoud
+            </Text>
+          </Text>
+          <Text>
+            <Text style={{ fontStyle: "italic", fontWeight: "bold" }}>
+              Currently At:{" "}
+            </Text>
+            <Text style={{ color: "red", fontWeight: "bold" }}>28,000 LL{"\n"}</Text>
+          </Text>
+          <Text style={{ fontWeight: "bold" }}>
+            Place Bid:
+          </Text>
+          <TextInput style={styles.input} placeholder="29,000 LL" keyboardType={"numeric"}/>
+            {/* <Button title="place bid" onPress={()=>submitHandler(bookTitle, author)} /> */}
+            <TouchableOpacity>
+              <Text 
+              style={styles.submit}> Submit</Text>
+            </TouchableOpacity>
         </View>
       </View>
     );
@@ -113,30 +155,46 @@ export default function AuctionPost(props) {
         <View>
           <Text style={styles.biddingTitle}> BIDDING ACTIVITY </Text>
         </View>
-        <View style={{marginTop: 20}}>
-        <Table  style={{ borderBottom: 'solid', width: '95%', alignSelf: 'center'}}>
-        <Row
-          data={CONTENT.tableHead}
-          flexArr={[1, 1, 1]}
-          style={styles.head}
-          textStyle={styles.rowText}
-        />
-        <TableWrapper style={styles.wrapper}>
-          <Col
-            data={CONTENT.tableTitle}
-            style={styles.title}
-            heightArr={[28, 28]}
-            textStyle={styles.columnText}
-           
-          />
-          <Rows
-            data={CONTENT.tableData}
-            flexArr={[1, 1, 1]}
-            style={styles.row}
-            textStyle={styles.inTableText}
-          />
-        </TableWrapper>
-      </Table>
+        <View>
+          <Text
+            style={{
+              justifyContent: "center",
+              textAlign: "center",
+              fontStyle: "italic",
+              marginTop: 5,
+              fontWeight: "bold",
+            }}
+          >
+            Auction ends in{" "}
+            <Text style={{ color: "red" }}>5 hours 4 minutes</Text>
+          </Text>
+        </View>
+        <View style={{ marginTop: 20 }}>
+          <Table
+            style={{ width: "95%", alignSelf: "center" }}
+          >
+            <Row
+              data={CONTENT.tableHead}
+              flexArr={[1, 1, 1]}
+              style={styles.head}
+              textStyle={styles.rowText}
+            />
+            <TableWrapper style={styles.wrapper}>
+              <Col
+                data={CONTENT.tableTitle}
+                style={styles.title}
+                heightArr={[28, 28]}
+                textStyle={styles.columnText}
+              />
+              
+              <Rows
+                data={CONTENT.tableData}
+                flexArr={[1, 1, 1]}
+                style={styles.row}
+                textStyle={styles.inTableText}
+              />
+            </TableWrapper>
+          </Table>
         </View>
       </View>
     </ScrollView>
@@ -160,9 +218,9 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   bookcard: {
-    alignItems: 'center',
-    alignSelf: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    alignSelf: "center",
+    justifyContent: "center",
     marginTop: -40,
     marginBottom: -50,
     padding: 16,
@@ -194,22 +252,56 @@ const styles = StyleSheet.create({
   },
   biddingTitle: {
     marginTop: 30,
-    backgroundColor: '#710D0D',
-    alignSelf: 'center',
+    backgroundColor: "#710D0D",
+    alignSelf: "center",
     borderTopLeftRadius: 15,
     borderBottomRightRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    color: 'white',
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    color: "white",
     fontSize: 20,
-    width: '90%'
+    width: "90%",
   },
-  head: { height: 40, backgroundColor: '#710D0D', color: 'white', borderTopRightRadius: 15, borderTopLeftRadius: 15 },
-  wrapper: { flexDirection: 'row' },
-  title: { flex: 1, backgroundColor: '#710D0D', color: 'white' },
+  head: {
+    height: 40,
+    backgroundColor: "#710D0D",
+    color: "white",
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 15,
+  },
+  wrapper: { flexDirection: "row" },
+  title: { flex: 1, backgroundColor: "#710D0D", color: "white" },
   row: { height: 28 },
 
-  inTableText: { textAlign: 'center', color: 'green', borderBottomWidth: 1, fontWeight: 'bold'},
-  rowText: { textAlign: 'center', color: 'white', fontStyle: 'italic', fontWeight: 'bold' },
+  inTableText: {
+    textAlign: "center",
+    color: "green",
+    borderBottomWidth: 1,
+    fontWeight: "bold",
+  },
+  rowText: {
+    textAlign: "center",
+    color: "white",
+    fontStyle: "italic",
+    fontWeight: "bold",
+  },
+  input: {
+    marginBottom: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  submit: {
+    backgroundColor:"#710D0D", 
+    color:'white', 
+    fontWeight: 'bold',
+    margin:5, 
+    padding:7, 
+    textAlign:'center', 
+    borderRadius: 10,
+    alignSelf: 'center',
+    alignItems: 'center'
+  }
 });

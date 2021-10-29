@@ -15,6 +15,7 @@ import UserTrades from "./screens/tradePost";
 import MakeOffer from "./screens/makeOffer";
 import { Ionicons } from "@expo/vector-icons";
 import Notifications from "./screens/notifications";
+import ChatWindow from "./screens/chatWindow";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -39,7 +40,9 @@ export const AuthStack = createStackNavigator();
 const Tabs = createMaterialBottomTabNavigator();
 const BrowseStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
+const ChatStack = createStackNavigator();
 
+// Browse nav and every navigation related to it
 const BrowseStackScreen = () => (
   <BrowseStack.Navigator>
     <BrowseStack.Screen
@@ -54,6 +57,22 @@ const BrowseStackScreen = () => (
     />
   </BrowseStack.Navigator>
 );
+// Chat nav and every navigation related to it
+const ChatStackScreen = () => (
+  <ChatStack.Navigator>
+    <ChatStack.Screen
+      name="Chats"
+      component={Chats}
+      options={{ headerShown: false }}
+    />
+    <ChatStack.Screen
+      name="Chat Window"
+      component={ChatWindow}
+      options={{ title: "Go Back to Chats" }}
+    />
+  </ChatStack.Navigator>
+);
+
 // Profile nav button and every navigation related to it
 const ProfileStackScreen = () => (
   <ProfileStack.Navigator>
@@ -105,6 +124,7 @@ export default function App() {
 
   useEffect(() => {
     LogBox.ignoreLogs(["Require cycle"]);
+    LogBox.ignoreLogs(["VirtualizedList: missing keys"]);
     LogBox.ignoreLogs(["Each child in a list"]);
     LogBox.ignoreLogs(["Do you have a screen named"]);
   }, []);
@@ -139,7 +159,6 @@ export default function App() {
                 name="My Profile"
                 component={ProfileStackScreen}
                 options={{
-                  // tabBarLabel: false,
                   headerShown: false,
                   tabBarIcon: ({ focused, color, size }) => (
                     <MaterialCommunityIcons
@@ -154,7 +173,6 @@ export default function App() {
                 name="Browse Page"
                 component={BrowseStackScreen}
                 options={{
-                  // tabBarLabel: false,
                   headerShown: false,
                   tabBarIcon: ({ focused, color, size }) => (
                     <MaterialCommunityIcons
@@ -169,7 +187,6 @@ export default function App() {
                 name="New Book"
                 component={AddNewBook}
                 options={{
-                  // tabBarLabel: false,
                   headerShown: false,
                   tabBarIcon: ({ focused, color, size }) => (
                     <MaterialCommunityIcons
@@ -182,9 +199,8 @@ export default function App() {
               />
               <Tabs.Screen
                 name="Chat"
-                component={Chats}
+                component={ChatStackScreen}
                 options={{
-                  // tabBarLabel: false,
                   headerShown: false,
                   tabBarIcon: ({ focused, color, size }) => (
                     <MaterialCommunityIcons
@@ -200,7 +216,6 @@ export default function App() {
                 component={EventMap}
                 options={{
                   headerShown: false,
-                  // tabBarLabel: false,
                   tabBarIcon: ({ focused, color, size }) => (
                     <MaterialCommunityIcons
                       name={"map-search"}

@@ -202,7 +202,7 @@ export default function MyProfile(props) {
                 <Image
                   style={styles.profileImage}
                   source={{
-                    uri: "https://randomuser.me/api/portraits/women/81.jpg",
+                    uri: "https://randomuser.me/api/portraits/women/90.jpg",
                   }}
                 />
               </View>

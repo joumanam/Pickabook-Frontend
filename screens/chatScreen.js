@@ -22,7 +22,7 @@ import NSBold from "../assets/fonts/NunitoSans/NunitoSansBold.ttf";
 import NSExtraBold from "../assets/fonts/NunitoSans/NunitoSansExtraBold.ttf";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 
-export default function Chats() {
+export default function Chats(props) {
   const [loaded] = useFonts({
     NSLight,
     NSRegular,
@@ -34,10 +34,10 @@ export default function Chats() {
 
   const [messages, setMessages] = useState([
     {
-      userImage: "https://randomuser.me/api/portraits/women/79.jpg",
-      userName: "Alma Carpenter",
+      userImage: "https://randomuser.me/api/portraits/men/72.jpg",
+      userName: "Robert Henry",
       message: {
-        sender: "Alma Carpenter",
+        sender: "Robert Henry",
         text: "Hello",
         seenByYou: true,
         seenByUser: true,
@@ -50,7 +50,7 @@ export default function Chats() {
       userName: "Sophie Price",
       message: {
         sender: "You",
-        text: "Are you learning React Native too?",
+        text: "Is it still available?",
         seenByYou: true,
         seenByUser: false,
       },
@@ -61,7 +61,7 @@ export default function Chats() {
       userName: "Jessie Collins",
       message: {
         sender: "You",
-        text: "Bye!",
+        text: "It's used but in good condition. You still want it?",
         seenByYou: true,
         seenByUser: true,
       },
@@ -94,7 +94,7 @@ export default function Chats() {
       userName: "Dennis Brown",
       message: {
         sender: "Dennis Brown",
-        text: "Sure, talk to you later.",
+        text: "Yes I received the book! Thank you so much!",
         seenByYou: true,
         seenByUser: true,
       },
@@ -167,6 +167,9 @@ export default function Chats() {
                 backgroundColor: "#fafafa",
                 borderBottomWidth: 1,
                 borderBottomColor: "#dfe4ea",
+              }}
+              onPress={()=>{
+                props.navigation.navigate("Chat Window")
               }}
               onLongPress={() => {
                 Alert.alert(

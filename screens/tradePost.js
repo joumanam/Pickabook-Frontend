@@ -109,7 +109,7 @@ export default function TradePost(props) {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <HeaderWithoutLogo title="For Sale" />
+        <HeaderWithoutLogo title="For Trade" />
         <View style={styles.content}>
           <View style={styles.list}>
             <BookCard />
