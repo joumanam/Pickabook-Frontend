@@ -6,22 +6,17 @@ import AddButton from "./addButton";
 import DropDownPicker from "react-native-dropdown-picker";
 import UploadImage from "./uploadImage";
 import { Rating } from "react-native-ratings";
+import axios from "axios";
 
-export default function AddEventComponent({ props }) {
+export default function AddEventComponent(props) {
+
+
   const [eventName, setEventName] = useState("");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [comments, setComments] = useState("");
  
-
-  const [dropDown, setDropDown] = useState([
-    { id: "1", label: "For Sale", value: "For Sale" },
-    { id: "2", label: "For Trade", value: "For Trade" },
-    { id: "3", label: "For Auction", value: "For Auction" },
-    { id: "4", label: "Idle", value: "Idle" },
-  ]);
-
   const changeHandlerName = (val) => {
     setEventName(val);
   };
@@ -37,6 +32,31 @@ export default function AddEventComponent({ props }) {
   const changeHandlerComments = (val) => {
     setComments(val);
   };
+
+  const onSubmit = () => {
+    const data = {
+      name: eventName,
+      location,
+      date: '2021-11-07',
+      time: '23:21:00',
+      image_url: 'http://www.sljeunesse.fr/wp-content/uploads/2019/04/20e-salon-livre-jeunesse-FLPEJR-2019.jpg',
+      comments,
+      coordinates: JSON.stringify(props.coordinates),
+      user_id: props.user.user.id
+    }
+
+    axios
+    .post("http://192.168.43.140:8000/api/addevent", data, {
+      headers: {
+        Authorization: `Bearer ${props.user.access_token}`,
+      },
+    })
+    .then((response) => {
+      console.log("From component axios", response.data);
+    }).catch((err) => {
+      console.log("From component axios, error", err);
+    });
+  }
 
   return (
     <View style={styles.container}>
@@ -84,7 +104,8 @@ export default function AddEventComponent({ props }) {
         />
        
         <AddButton
-          title="Add New Event"          
+          title="Add New Event"         
+          onPress={() => onSubmit()} 
         />
       </View>
     </View>

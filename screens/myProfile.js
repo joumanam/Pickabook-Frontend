@@ -50,7 +50,6 @@ export default function MyProfile(props) {
       })
       .then((response) => {
         const temp = response.data;
-        console.log(temp);
         setUser(temp);
       });
   }, []);

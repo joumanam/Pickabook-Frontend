@@ -24,7 +24,6 @@ const txtWidth = Dimensions.get("screen").width * 0.33;
 
 export default function BookCard(props) {
   return (
-    console.log(props),
 
     <View>
       <View style={styles.bookcard}>

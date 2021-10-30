@@ -11,7 +11,9 @@ import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import AddEventComponent from "../components/addEventComponent";
 import * as ImagePicker from 'expo-image-picker'
 
-export default function AddNewEvent() {
+export default function AddNewEvent(props) {
+
+
     return (
       <View style={styles.container}>
         <ImageBackground source={require("../assets/myimages/background.png")} style={{width: '100%', height:'100%', position: 'absolute'}}  resizeMode="cover">
@@ -19,7 +21,7 @@ export default function AddNewEvent() {
         <ScrollView>
         <View style={styles.authBox}>
         <View style={{padding: 10}}>
-        <AddEventComponent />
+        <AddEventComponent user={props.route.params.user} coordinates={props.route.params.coordinates}/>
         </View>
         </View>
         </ScrollView>
