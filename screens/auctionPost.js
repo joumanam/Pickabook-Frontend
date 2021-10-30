@@ -29,6 +29,8 @@ import {
   Col,
 } from "react-native-table-component";
 import { color } from "react-native-elements/dist/helpers";
+import { Rating } from "react-native-ratings";
+
 
 export default function AuctionPost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.45;
@@ -40,28 +42,27 @@ export default function AuctionPost(props) {
 
   const CONTENT = {
     tableHead: ["Bidder", "Bid Amount", "Bid Made"],
-    // tableTitle: ['Row', 'Row 2', 'Row 3', 'Row 4'],
     tableData: [
       ["Charbel Daoud", "28,000 LL", "3 hours ago"],      
       ["Yvona Nehme", "20,000 LL", "3 hours ago"],
-      ["Alex Kodjabashi", "15,000 LL", "1 hours ago"],
+      ["Julien Hosri", "15,000 LL", "1 hours ago"],
     ]
   };
 
-  const [tableDatas, setTableDatas] = useState([
-    {user: "Charbel Daoud", bid: "28,000 LL", time: "3 hours ago", key: '1'},
-    {user: "Yvona Nehme", bid: "20,000 LL", time: "3 hours ago",key: '2'},
-    {user: "Alex Kodjabashi", bid: "15,000 LL", time: "1 hour ago",key: '3'},
-  ]);
+  // const [tableDatas, setTableDatas] = useState([
+  //   {user: "Charbel Daoud", bid: "28,000 LL", time: "3 hours ago", key: '1'},
+  //   {user: "Yvona Nehme", bid: "20,000 LL", time: "3 hours ago",key: '2'},
+  //   {user: "Julien Hosri", bid: "15,000 LL", time: "1 hour ago",key: '3'},
+  // ]);
   
-  const submitHandler = (user, bid, time) => {
-    setTableDatas((prevTableDatas) => {
-      return [
-        {user: user, bid: bid, time:time, key: Math.random().toString() },
-        ...prevTableDatas
-       ];
-   })
-  }
+  // const submitHandler = (user, bid, time) => {
+  //   setTableDatas((prevTableDatas) => {
+  //     return [
+  //       {user: user, bid: bid, time:time, key: Math.random().toString() },
+  //       ...prevTableDatas
+  //      ];
+  //  })
+  // }
 
   const changeHandlerData = (val) => {
     setTableDatas.bid(val);
@@ -107,7 +108,12 @@ export default function AuctionPost(props) {
           </Text>
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
           <Text>
-            {currentPost.rating}
+          <Rating
+              imageSize={20}
+              readonly
+              startingValue= {currentPost.rating}
+              style={styles.rating}
+            />
             {"\n"}
             {"\n"}
           </Text>
@@ -132,7 +138,7 @@ export default function AuctionPost(props) {
             {/* <Button title="place bid" onPress={()=>submitHandler(bookTitle, author)} /> */}
             <TouchableOpacity>
               <Text 
-              style={styles.submit}> Submit</Text>
+              style={styles.submit}> Submit </Text>
             </TouchableOpacity>
         </View>
       </View>
@@ -141,6 +147,8 @@ export default function AuctionPost(props) {
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+    LogBox.ignoreLogs(["Failed prop type"]);
+
   }, []);
 
   return (

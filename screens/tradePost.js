@@ -15,6 +15,7 @@ import {
 import BookCard from "../components/bookCard";
 import AddButton from "../components/addButton";
 import { userContext } from "../userContext";
+import { Rating } from "react-native-ratings";
 
 export default function TradePost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;
@@ -64,7 +65,12 @@ export default function TradePost(props) {
           </Text>
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
           <Text>
-            {currentPost.rating}
+          <Rating
+              imageSize={20}
+              readonly
+              startingValue= {currentPost.rating}
+              style={styles.rating}
+            />
             {"\n"}
           </Text>
 

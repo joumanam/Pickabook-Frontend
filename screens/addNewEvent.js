@@ -7,19 +7,19 @@ import {
 } from "react-native";
 import { Icon } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
-import AddBookComponent from "../components/addBookComponent";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
+import AddEventComponent from "../components/addEventComponent";
 import * as ImagePicker from 'expo-image-picker'
 
-export default function AddNewBook() {
+export default function AddNewEvent() {
     return (
       <View style={styles.container}>
         <ImageBackground source={require("../assets/myimages/background.png")} style={{width: '100%', height:'100%', position: 'absolute'}}  resizeMode="cover">
-        <HeaderWithoutLogo title="Add New Book" />
+        <HeaderWithoutLogo title="Add New Event" />
         <ScrollView>
         <View style={styles.authBox}>
         <View style={{padding: 10}}>
-        <AddBookComponent title='add new book' />
+        <AddEventComponent />
         </View>
         </View>
         </ScrollView>

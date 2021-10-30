@@ -34,6 +34,14 @@ import SearchResults from "./screens/searchResults";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import LoadingScreen from "./screens/loadingScreen";
 import AuctionPost from "./screens/auctionPost";
+import EventPost from "./screens/eventPost";
+import AddNewEvent from "./screens/addNewEvent";
+
+// const [loading, setLoading] = useState(false);
+
+// useEffect(() => {
+//   setLoading(true)
+// },[])
 
 const Stack = createStackNavigator();
 export const AuthStack = createStackNavigator();
@@ -41,6 +49,8 @@ const Tabs = createMaterialBottomTabNavigator();
 const BrowseStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const ChatStack = createStackNavigator();
+const EventStack = createStackNavigator();
+
 
 // Browse nav and every navigation related to it
 const BrowseStackScreen = () => (
@@ -71,6 +81,27 @@ const ChatStackScreen = () => (
       options={{ title: "Go Back to Chats" }}
     />
   </ChatStack.Navigator>
+);
+
+// Event nav and every navigation related to it
+const EventStackScreen = () => (
+  <EventStack.Navigator>
+    <EventStack.Screen
+      name="Event Map"
+      component={EventMap}
+      options={{ headerShown: false }}
+    />
+    <EventStack.Screen
+      name="Event Post"
+      component={EventPost}
+      options={{ title: "Go Back to Map" }}
+    />
+      <EventStack.Screen
+      name="Add Event"
+      component={AddNewEvent}
+      options={{ title: "Go Back to Map" }}
+    />
+  </EventStack.Navigator>
 );
 
 // Profile nav button and every navigation related to it
@@ -150,9 +181,9 @@ export default function App() {
             <Tabs.Navigator
               activeColor="white"
               inactiveColor="grey"
-              barStyle={{ backgroundColor: "#710D0D", elevation: 9, shadowColor: 'black', shadowOffset: { width: 1, height: 3 },
+              barStyle={{ backgroundColor: "#710D0D",  shadowColor: 'black', shadowOffset: { width: 1, height: 3 },
               shadowOpacity: 0.7,
-              shadowRadius: 5,  overflow: "hidden", height: 56, borderTopLeftRadius: 15, borderTopRightRadius: 15}}
+              shadowRadius: 5,  overflow: "hidden", height: 56, borderTopLeftRadius: 15, borderTopRightRadius: 15,}}
               initialRouteName="My Profile"
             >
               <Tabs.Screen
@@ -213,7 +244,7 @@ export default function App() {
               />
               <Tabs.Screen
                 name="Events"
-                component={EventMap}
+                component={EventStackScreen}
                 options={{
                   headerShown: false,
                   tabBarIcon: ({ focused, color, size }) => (

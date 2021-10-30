@@ -1,17 +1,11 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { LogBox } from 'react-native';
+import { LogBox, ImageBackground } from "react-native";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import AddWishlist from "../components/addWishlist";
 import WishlistItems from "../components/wishlistItems";
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  FlatList,
-} from "react-native";
+import { StyleSheet, View, ScrollView, FlatList } from "react-native";
 // import { Icon } from 'react-native-elements';
-
 
 export default function MyWishlist() {
   const [books, setBooks] = useState([
@@ -21,7 +15,6 @@ export default function MyWishlist() {
     { title: "Book4", author: "Author4", key: "4" },
   ]);
 
- 
   const pressHandler = (key) => {
     setBooks((prevBooks) => {
       return prevBooks.filter((book) => book.key != key);
@@ -31,42 +24,54 @@ export default function MyWishlist() {
   const submitHandler = (title, author) => {
     setBooks((prevBooks) => {
       return [
-        {title: title, author: author, key: Math.random().toString() },
-        ...prevBooks
-       ];
-   })
-  }
+        { title: title, author: author, key: Math.random().toString() },
+        ...prevBooks,
+      ];
+    });
+  };
 
   useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
-  }, [])
+    LogBox.ignoreLogs([
+      "VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.",
+    ]);
+  }, []);
 
   return (
-  
-    <ScrollView>
     <View style={styles.container}>
-       <HeaderWithoutLogo title="My Wishlist" />
-        <View style={styles.content}>
-          <AddWishlist submitHandler={submitHandler}/>
-          <View style={styles.list}>
-            <FlatList style={styles.flatList}
-          data={books}
-          renderItem={({ item }) => (
-            <WishlistItems isMine={true} item={item} pressHandler={pressHandler}/>
-          )}
-        />
-           
+      <ImageBackground
+        source={require("../assets/myimages/download.jpg")}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
+        resizeMode="cover"
+      >
+        <ScrollView>
+          <HeaderWithoutLogo title="My Wishlist" />
+          <View style={styles.content}>
+            <AddWishlist submitHandler={submitHandler} />
+            <View style={styles.list}>
+              <FlatList
+                style={styles.flatList}
+                data={books}
+                renderItem={({ item }) => (
+                  <WishlistItems
+                    isMine={true}
+                    item={item}
+                    pressHandler={pressHandler}
+                  />
+                )}
+              />
+            </View>
           </View>
-        </View>
+        </ScrollView>
+      </ImageBackground>
     </View>
-</ScrollView>  );
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     // backgroundColor: "white",
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   content: {
     padding: 40,
@@ -76,6 +81,6 @@ const styles = StyleSheet.create({
   },
   background: {
     width: "100%",
-    position: 'relative'
+    position: "relative",
   },
 });

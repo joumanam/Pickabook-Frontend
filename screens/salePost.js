@@ -20,6 +20,7 @@ import { userContext } from "../userContext";
 import { Icon } from "react-native-elements/dist/icons/Icon";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Rating } from "react-native-ratings";
 
 export default function SalePost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;
@@ -69,7 +70,12 @@ export default function SalePost(props) {
           </Text>
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
           <Text>
-            {currentPost.rating}
+            <Rating
+              imageSize={20}
+              readonly
+              startingValue= {currentPost.rating}
+              style={styles.rating}
+            />
             {"\n"}
           </Text>
           <Text style={{ ...styles.pricetag, color: "#710D0D" }}>
@@ -81,18 +87,16 @@ export default function SalePost(props) {
               onPress={() => nav.navigate("Make Offer")}
             />
           )}
-           {currentPost.user_id == currentUser.user.id && (
+          {currentPost.user_id == currentUser.user.id && (
             <TouchableOpacity style={{ color: "#710D0D", marginTop: 5 }}>
               <MaterialCommunityIcons
                 name="square-edit-outline"
                 size={25}
                 color={"#710D0D"}
-                style={{ alignSelf: 'center', justifyContent: 'center'}}
-
+                style={{ alignSelf: "center", justifyContent: "center" }}
               />
             </TouchableOpacity>
           )}
-         
         </View>
       </View>
     );

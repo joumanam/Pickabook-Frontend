@@ -8,8 +8,9 @@ import {
   FlatList,
   CheckBox,
   Button,
+  ImageBackground,
   Modal,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import Constants from "expo-constants";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
@@ -31,16 +32,15 @@ const data = [
   { id: "4", txt: "Search by Status", isChecked: false },
 ];
 
-export default function BrowseScreen({navigation}) {
-
+export default function BrowseScreen({ navigation }) {
   const [products, setProducts] = useState(data);
-  const [dropDownDisabled, setDropDownDisabled] = useState(true); 
+  const [dropDownDisabled, setDropDownDisabled] = useState(true);
   const { currentUser, setCurrentUser } = useContext(userContext);
 
   const handleChange = (id) => {
-    if(id  === '4') {
-      setOpen(false)
-      setDropDownDisabled(!dropDownDisabled)
+    if (id === "4") {
+      setOpen(false);
+      setDropDownDisabled(!dropDownDisabled);
     }
     let temp = products.map((product) => {
       if (id === product.id) {
@@ -51,7 +51,7 @@ export default function BrowseScreen({navigation}) {
     setProducts(temp);
   };
   const [search, setSearch] = useState();
-  const [searchLang, setSearchLang] = useState('');
+  const [searchLang, setSearchLang] = useState("");
   const [value, setValue] = useState(null);
 
   const [open, setOpen] = useState(false);
@@ -70,97 +70,110 @@ export default function BrowseScreen({navigation}) {
         data={renderData}
         renderItem={({ item }) => (
           <View>
-          <Card style={{ margin: 5 }}>
-            <View style={styles.card}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flex: 1,
-                  justifyContent: "space-between",
-                }}
-              >
-                <CheckBox
-                  value={item.isChecked}
-                  onChange={() => {
-                    handleChange(item.id);
+            <Card style={{ margin: 5 }}>
+              <View style={styles.card}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flex: 1,
+                    justifyContent: "space-between",
                   }}
-                />
-                <Text>{item.txt}</Text>
+                >
+                  <CheckBox
+                    value={item.isChecked}
+                    onChange={() => {
+                      handleChange(item.id);
+                    }}
+                  />
+                  <Text style={styles.text}>{item.txt}</Text>
+                </View>
               </View>
-            </View>
-          </Card>
-          { (item.id === '3' && item.isChecked) &&
-          <TextInput 
-          style={styles.languageInput}
-          value={searchLang}
-          placeholder="Type Language"
-          onChangeText={(text) => {
-            setSearchLang(text);
-          }}  
-         />}
-
+            </Card>
+            {item.id === "3" && item.isChecked && (
+              <TextInput
+                style={styles.languageInput}
+                value={searchLang}
+                placeholder="Type Language"
+                onChangeText={(text) => {
+                  setSearchLang(text);
+                }}
+              />
+            )}
           </View>
         )}
       />
     );
   };
 
-  function updateSearch(search) {
-    
-  }
+  function updateSearch(search) {}
 
-  const handleSubmit = () => {
-    
+  const handleSubmit = () => {};
 
-  } 
-  
   useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never']);
-  }, [])
+    LogBox.ignoreLogs(["VirtualizedLists should never"]);
+  }, []);
   useEffect(() => {
     LogBox.ignoreLogs(["Bottom Tab Navigator: 'tabBarOptions’ is deprecated"]);
-  }, [])
-
-
+  }, []);
 
   return (
-    <ScrollView>
     <View style={styles.container}>
-      <HeaderWithoutLogo title="Browse"/>
-      <View style={{padding: 8}}>{renderFlatList(products)}</View>
-      
-      <View style={styles.dropDown}>
-        <DropDownPicker style={{backgroundColor: dropDownDisabled ? 'rgba(100,100,100,0.5)' : 'white'}}
-        
-          open={open}
-          value={value}
-          items={status}
-          setOpen={setOpen}
-          setValue={setValue}
-          showTickIcon={false}
-          disabled={dropDownDisabled}
-          setItems={setStatus}
-          dropDownDirection="AUTO"
-          placeholder="Select Status"
-          placeholderStyle={{
-            color: dropDownDisabled ? 'grey' : 'black',
-            fontWeight: "bold",
-          }}
-        />
-      </View>
-      <View style={{padding: 9}}>
-      <View style={{ backgroundColor: "#710D0D", marginTop: 170, borderRadius: 5, }}>
-        <SearchBar 
-        value={search} 
-        updateSearch={updateSearch} 
-        style={{}} />
-      </View>
-      <View>
-        <AddButton title="Search" onPress={() => navigation.navigate('Search Results')}/>
-      </View>
+      <ImageBackground
+        source={require("../assets/myimages/download.jpg")}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
+        resizeMode="cover"
+      >
+        <ScrollView>
+          <HeaderWithoutLogo title="Browse" />
+          <View style={{ padding: 8 }}>{renderFlatList(products)}</View>
+
+          <View style={styles.dropDown}>
+            <DropDownPicker
+              style={{
+                backgroundColor: dropDownDisabled
+                  ? "rgba(100,100,100,0.5)"
+                  : "white",
+              }}
+              open={open}
+              value={value}
+              items={status}
+              setOpen={setOpen}
+              setValue={setValue}
+              showTickIcon={false}
+              disabled={dropDownDisabled}
+              setItems={setStatus}
+              dropDownDirection="AUTO"
+              placeholder="Select Status"
+              placeholderStyle={{
+                color: dropDownDisabled ? "grey" : "black",
+                fontWeight: "bold",
+              }}
+            />
           </View>
+          <View style={{ padding: 9 }}>
+            <View
+              style={{
+                backgroundColor: "#710D0D",
+                marginTop: 170,
+                borderRadius: 5,
+              }}
+            >
+              <SearchBar
+                value={search}
+                updateSearch={updateSearch}
+                style={{}}
+              />
+            </View>
+            <View style={{marginBottom: 5}}>
+              <AddButton
+                title="Search"
+                onPress={() => navigation.navigate("Search Results")}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      </ImageBackground>
     </View>
-    </ScrollView>
   );
 }
 
@@ -171,32 +184,24 @@ const styles = StyleSheet.create({
     // paddingTop: Constants.statusBarHeight,
     backgroundColor: "#ecf0f1",
     // padding: 8,
-    marginBottom: 20,
-
+    // marginBottom: 20,
   },
-  
+
   card: {
     padding: 10,
-    margin: 5,
+    // margin: 5,
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 5,
-    justifyContent: "space-between",
-    alignItems: "center",
-    elevation: 5,
-  },
   text: {
-    textAlign: "center",
+    textAlign: 'left' ,
+    alignSelf: 'center',
+
     fontWeight: "bold",
   },
   dropDown: {
     marginTop: 7,
-    padding:8
+    padding: 8,
   },
   languageInput: {
     marginLeft: 10,
@@ -206,5 +211,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
-  }
+  },
 });

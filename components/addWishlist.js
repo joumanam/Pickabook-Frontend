@@ -12,7 +12,6 @@ import {
   Image,
 } from "react-native";
 import AddButton from "./addButton";
-import MyWishlist from "../screens/myWishlist";
 
 export default function AddWishlist({submitHandler}) {
 

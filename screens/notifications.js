@@ -61,7 +61,7 @@ export default function Notifications() {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require("../assets/myimages/backgroundOpaque.png")}
+        source={require("../assets/myimages/download.jpg")}
         style={{ width: "100%", height: "100%", position: "absolute" }}
         resizeMode="cover"
       >
