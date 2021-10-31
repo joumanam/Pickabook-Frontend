@@ -36,6 +36,7 @@ import LoadingScreen from "./screens/loadingScreen";
 import AuctionPost from "./screens/auctionPost";
 import EventPost from "./screens/eventPost";
 import AddNewEvent from "./screens/addNewEvent";
+import ViewOffers from "./screens/viewOffers";
 
 // const [loading, setLoading] = useState(false);
 
@@ -121,6 +122,11 @@ const ProfileStackScreen = () => (
       name="Trade Post"
       component={TradePost}
       options={{ title: "Go Back To Profile" }}
+    />
+     <ProfileStack.Screen
+      name="View Offers"
+      component={ViewOffers}
+      options={{ title: "Go Back To Post" }}
     />
     <ProfileStack.Screen
       name="Auction Post"

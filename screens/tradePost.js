@@ -84,7 +84,7 @@ export default function TradePost(props) {
           {currentPost.user_id == currentUser.user.id && (
             <AddButton
               title="View Offers"
-              onPress={() => nav.navigate("Make Offer")}
+              onPress={() => nav.navigate("View Offers")}
             />
           )}
         </View>

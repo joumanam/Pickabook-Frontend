@@ -21,6 +21,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import SSLight from "../assets/fonts/SourceSansPro/SourceSansProLight.ttf";
 import SSRegular from "../assets/fonts/SourceSansPro/SourceSansProRegular.ttf";
+import SSLightItalic from "../assets/fonts/SourceSansPro/SourceSansProLightItalic.ttf";
+import SSItalic from "../assets/fonts/SourceSansPro/SourceSansProItalic.ttf";
 import SSBold from "../assets/fonts/SourceSansPro/SourceSansProBold.ttf";
 
 export default function MyProfile(props) {
@@ -28,6 +30,8 @@ export default function MyProfile(props) {
     SSLight,
     SSRegular,
     SSBold,
+    SSLightItalic,
+    SSItalic
   });
 
   useEffect(() => {
@@ -63,6 +67,8 @@ export default function MyProfile(props) {
       </View>
     );
   }
+
+  console.log(user)
 
   function ForSale({ photos }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;
@@ -210,6 +216,9 @@ export default function MyProfile(props) {
                 <Text style={styles.userFullName}>
                   {user.first_name + " " + user.last_name}
                 </Text>
+                {/* <Text style={styles.userLocation}>
+                  {user.location.country +", "+ user.location.city}
+                </Text> */}
               </View>
               {/* Posts/Followers/Following View */}
               <View style={styles.countsView}>
@@ -360,6 +369,7 @@ const styles = StyleSheet.create({
   },
   nameAndBioView: { alignItems: "center", marginTop: 10 },
   userFullName: { fontFamily: "SSBold", fontSize: 26 },
+  userLocation: { fontFamily: "SSItalic", fontSize: 20, color: '#8c8382' },
 
   countsView: { flexDirection: "row", marginTop: 20 },
   countView: { flex: 1, alignItems: "center" },

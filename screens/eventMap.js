@@ -84,11 +84,7 @@ export default function EventMap({ navigation }) {
           <MapView.Marker
             key={marker["id"]}
             coordinate={JSON.parse(marker["coordinates"])}
-            // image={
-            //   selectedPost && marker["id"] === selectedPost["id"]
-            //     ? marker["icons"][1]
-            //     : marker["icons"][0]
-            // }
+           
             onPress={() => console.log(marker)}   // to use later to show pinned posts 
           />
         ))}
