@@ -13,6 +13,9 @@ import * as ImagePicker from 'expo-image-picker'
 
 export default function AddNewEvent(props) {
 
+  const nav = () => {
+    props.navigation.navigate("Event Map");
+  }
 
     return (
       <View style={styles.container}>
@@ -21,7 +24,7 @@ export default function AddNewEvent(props) {
         <ScrollView>
         <View style={styles.authBox}>
         <View style={{padding: 10}}>
-        <AddEventComponent user={props.route.params.user} coordinates={props.route.params.coordinates}/>
+        <AddEventComponent user={props.route.params.user} coordinates={props.route.params.coordinates} nav={nav}/>
         </View>
         </View>
         </ScrollView>

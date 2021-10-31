@@ -1,62 +1,102 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import React from "react";
-import { StyleSheet, Text, View, Alert, TextInput } from "react-native";
+import { StyleSheet, Text, View, Alert, TextInput, Button } from "react-native";
 import AddButton from "./addButton";
 import DropDownPicker from "react-native-dropdown-picker";
 import UploadImage from "./uploadImage";
+import DateTimePicker from "react-native-modal-datetime-picker";
 import { Rating } from "react-native-ratings";
 import axios from "axios";
 
 export default function AddEventComponent(props) {
-
+  const [hasDateBeenSet, setHasDateBeenSet] = useState(false);
+  const [hasTimeBeenSet, setHasTimeBeenSet] = useState(false);
 
   const [eventName, setEventName] = useState("");
   const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState('');
   const [comments, setComments] = useState("");
- 
+  const nav = props.navigation;
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+
   const changeHandlerName = (val) => {
     setEventName(val);
   };
+
   const changeHandlerLocation = (val) => {
     setLocation(val);
   };
-  const changeHandlerDate = (val) => {
-    setDate(val);
-  };
+
   const changeHandlerTime = (val) => {
     setTime(val);
   };
+
   const changeHandlerComments = (val) => {
     setComments(val);
   };
+  // For the Date
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setDate(date);
+    hideDatePicker();
+    setHasDateBeenSet(true);
+  };
+
+  // For the Time
+  const showTimePicker = () => {
+    setTimePickerVisibility(true);
+  };
+
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
+
+  const handleTimeConfirm = (time) => {
+    setTime(time);
+    hideTimePicker();
+    setHasTimeBeenSet(true);
+  };
+  // console.warn(time);
 
   const onSubmit = () => {
     const data = {
       name: eventName,
       location,
-      date: '2021-11-07',
-      time: '23:21:00',
-      image_url: 'http://www.sljeunesse.fr/wp-content/uploads/2019/04/20e-salon-livre-jeunesse-FLPEJR-2019.jpg',
+      date,
+      time,
+      image_url:
+        "http://www.sljeunesse.fr/wp-content/uploads/2019/04/20e-salon-livre-jeunesse-FLPEJR-2019.jpg",
       comments,
       coordinates: JSON.stringify(props.coordinates),
-      user_id: props.user.user.id
-    }
+      user_id: props.user.user.id,
+    };
 
     axios
-    .post("http://192.168.43.140:8000/api/addevent", data, {
-      headers: {
-        Authorization: `Bearer ${props.user.access_token}`,
-      },
-    })
-    .then((response) => {
-      console.log("From component axios", response.data);
-    }).catch((err) => {
-      console.log("From component axios, error", err);
-    });
-  }
+      .post("http://192.168.43.140:8000/api/addevent", data, {
+        headers: {
+          Authorization: `Bearer ${props.user.access_token}`,
+        },
+      })
+      .then((response) => {
+        console.log("From component axios", response.data);
+      })
+      .catch((err) => {
+        console.log("From component axios, error", err);
+      });
+
+    if (data) props.nav();
+  };
 
   return (
     <View style={styles.container}>
@@ -82,19 +122,47 @@ export default function AddEventComponent(props) {
 
         <Text style={styles.titles}> Date: </Text>
 
-        <TextInput
+        {/* <TextInput
           style={styles.input}
-          placeholder="Category"
+          placeholder="YYYY-MM-DD"
           onChangeText={changeHandlerDate}
+        /> */}
+        {hasDateBeenSet && (
+          <Text style={styles.dateTime}>{date.toISOString().slice(0, 10)}</Text>
+        )}
+        {!hasDateBeenSet ? (
+          <AddButton title="Pick A Date" onPress={showDatePicker} />
+        ) : (
+          <AddButton title="Edit" onPress={showDatePicker} />
+        )}
+        <DateTimePicker
+          isVisible={isDatePickerVisible}
+          mode="date"
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
         />
-        <Text style={styles.titles}> Time: </Text>
+              <Text style={styles.titles}> {"\n"} Time: </Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Condition"
-          onChangeText={changeHandlerTime}
+        {hasTimeBeenSet && (
+          <Text style={styles.dateTime}>{time.getHours()}:{time.getMinutes()}</Text>
+        )}
+        {!hasTimeBeenSet ? (
+          <AddButton title="Pick A Time" onPress={showTimePicker} />
+        ) : (
+          <AddButton title="Edit" onPress={showTimePicker} />
+        )}
+
+        <DateTimePicker
+          isVisible={isTimePickerVisible}
+          mode="time"
+          onConfirm={handleTimeConfirm}
+          onCancel={hideTimePicker}
+          is24Hour={true}
+          
+          
         />
-        <Text style={styles.titles}> Additional Information: </Text>
+
+        <Text style={styles.titles}> {"\n"} Additional Information: </Text>
 
         <TextInput
           style={styles.input}
@@ -102,11 +170,8 @@ export default function AddEventComponent(props) {
           placeholder="Additional Information"
           onChangeText={changeHandlerComments}
         />
-       
-        <AddButton
-          title="Add New Event"         
-          onPress={() => onSubmit()} 
-        />
+
+        <AddButton title="Add New Event" onPress={() => onSubmit()} />
       </View>
     </View>
   );
@@ -132,5 +197,11 @@ const styles = StyleSheet.create({
   },
   titles: {
     fontWeight: "bold",
+  },
+  dateTime: {
+    fontSize: 15,
+    justifyContent: "center",
+    marginLeft: 3,
+    fontStyle: "italic",
   },
 });

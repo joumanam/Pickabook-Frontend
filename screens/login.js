@@ -33,9 +33,6 @@ export default function Login(props) {
     setEmail(value);
   };
 
-
-
-
   const loginHandler = () => {
     const params = {
       email,
