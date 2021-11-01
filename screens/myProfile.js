@@ -16,6 +16,8 @@ import axios from "axios";
 import { userContext } from "../userContext";
 import AddButton from "../components/addButton";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import API from '../assets/API';
+
 
 // Fonts
 import { useFonts } from "expo-font";
@@ -47,7 +49,7 @@ export default function MyProfile(props) {
 
   useEffect(() => {
     axios
-      .get("http://192.168.43.140:8000/api/show/" + currentUser.user.id, {
+      .get(`${API}/api/show/${currentUser.user.id}`, {
         headers: {
           Authorization: `Bearer ${currentUser.access_token}`,
         },
@@ -68,7 +70,6 @@ export default function MyProfile(props) {
     );
   }
 
-  console.log(user)
 
   function ForSale({ photos }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;

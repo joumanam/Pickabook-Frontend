@@ -8,6 +8,7 @@ import UploadImage from "./uploadImage";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { Rating } from "react-native-ratings";
 import axios from "axios";
+import API from '../assets/API';
 
 export default function AddEventComponent(props) {
   const [hasDateBeenSet, setHasDateBeenSet] = useState(false);
@@ -83,7 +84,7 @@ export default function AddEventComponent(props) {
     };
 
     axios
-      .post("http://192.168.43.140:8000/api/addevent", data, {
+      .post(`${API}/api/addevent`, data, {
         headers: {
           Authorization: `Bearer ${props.user.access_token}`,
         },
@@ -144,7 +145,7 @@ export default function AddEventComponent(props) {
               <Text style={styles.titles}> {"\n"} Time: </Text>
 
         {hasTimeBeenSet && (
-          <Text style={styles.dateTime}>{time.getHours()}:{time.getMinutes()}</Text>
+          <Text style={styles.dateTime}>Event starts at {time.getHours()}:{time.getMinutes()}</Text>
         )}
         {!hasTimeBeenSet ? (
           <AddButton title="Pick A Time" onPress={showTimePicker} />

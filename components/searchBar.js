@@ -4,8 +4,12 @@ import React from "react";
 import { StyleSheet, Text, View, TextInput, ScrollView } from "react-native";
 import { Icon } from "react-native-elements";
 
-export default function SearchBar({ value, updateSearch, style }) {
-  const [query, setQuery] = useState();
+export default function SearchBar({ updateSearch, style, value }) {
+
+  const handleTextChange = (text) => {
+    updateSearch(text);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -14,10 +18,11 @@ export default function SearchBar({ value, updateSearch, style }) {
         </View>
         <TextInput
           style={styles.textInput}
+          value={value}
           inlineImageLeft="search"
           placeholder="Search"
           onChangeText={(text) => {
-            setQuery(text);
+            handleTextChange(text);
           }}
         />
       </View>

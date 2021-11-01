@@ -25,44 +25,45 @@ import { AuthStack } from "../App";
 // or any pure javascript modules available in npm
 import { Card } from "react-native-paper";
 
-const data = [
-  { id: "1", txt: "Search by Title", isChecked: false },
-  { id: "2", txt: "Search by Author", isChecked: false },
-  { id: "3", txt: "Search by Language", isChecked: false },
-  { id: "4", txt: "Search by Status", isChecked: false },
-];
+
 
 export default function BrowseScreen({ navigation }) {
-  const [products, setProducts] = useState(data);
   const [dropDownDisabled, setDropDownDisabled] = useState(true);
   const { currentUser, setCurrentUser } = useContext(userContext);
+
+  const statusOptions = [
+    { id: "1", label: "For Sale", value: "For Sale" },
+    { id: "2", label: "For Trade", value: "For Trade" },
+    { id: "3", label: "For Auction", value: "For Auction" },
+  ];
+  
+  const filterOptions = [
+    { id: "1", txt: "Search by Title", path: "searcht", isChecked: true },
+    { id: "2", txt: "Search by Author", path: "searcha", isChecked: false },
+    { id: "3", txt: "Search by Language", path: "searchl", isChecked: false },
+    { id: "4", txt: "Search by Status", path: "searchs", isChecked: false },
+  ];
+
+  const [filters, setFilters] = useState(filterOptions);
 
   const handleChange = (id) => {
     if (id === "4") {
       setOpen(false);
       setDropDownDisabled(!dropDownDisabled);
     }
-    let temp = products.map((product) => {
-      if (id === product.id) {
-        return { ...product, isChecked: !product.isChecked };
+    let temp = filters.map((filter) => {
+      if (id === filter.id) {
+        return { ...filter, isChecked: !filter.isChecked };
       }
-      return product;
+      return filter;
     });
-    setProducts(temp);
+    setFilters(temp);
   };
+
   const [search, setSearch] = useState();
   const [searchLang, setSearchLang] = useState("");
-  const [value, setValue] = useState(null);
-
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState([
-    { id: "1", label: "For Sale", value: "For Sale" },
-    { id: "2", label: "For Trade", value: "For Trade" },
-    { id: "3", label: "For Auction", value: "For Auction" },
-    { id: "4", label: "All the above", value: "All the above" },
-  ]);
-
-  // let selected = products.filter((product) => product.isChecked);
+  const [status, setStatus] = useState(null);
 
   const renderFlatList = (renderData) => {
     return (
@@ -105,7 +106,9 @@ export default function BrowseScreen({ navigation }) {
     );
   };
 
-  function updateSearch(search) {}
+  function updateSearch(search) {
+    setSearch(search);
+  }
 
   const handleSubmit = () => {};
 
@@ -125,7 +128,7 @@ export default function BrowseScreen({ navigation }) {
       >
         <ScrollView>
           <HeaderWithoutLogo title="Browse" />
-          <View style={{ padding: 8 }}>{renderFlatList(products)}</View>
+          <View style={{ padding: 8 }}>{renderFlatList(filters)}</View>
 
           <View style={styles.dropDown}>
             <DropDownPicker
@@ -135,10 +138,10 @@ export default function BrowseScreen({ navigation }) {
                   : "white",
               }}
               open={open}
-              value={value}
-              items={status}
+              value={status}
+              items={statusOptions}
               setOpen={setOpen}
-              setValue={setValue}
+              setValue={setStatus}
               showTickIcon={false}
               disabled={dropDownDisabled}
               setItems={setStatus}
@@ -167,7 +170,7 @@ export default function BrowseScreen({ navigation }) {
             <View style={{marginBottom: 5}}>
               <AddButton
                 title="Search"
-                onPress={() => navigation.navigate("Search Results")}
+                onPress={() => navigation.navigate("Search Results", {data: {filters, status, search, searchLang}})}
               />
             </View>
           </View>

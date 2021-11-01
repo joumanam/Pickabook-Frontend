@@ -57,7 +57,6 @@ export default function MakeOffer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "white",
     marginBottom: 20,
   },
   content: {
@@ -72,13 +71,7 @@ const styles = StyleSheet.create({
   },
   bookcard: {
     padding: 16,
-    // marginTop: 16,
-    // borderColor: "#710D0D",
-    // borderWidth: 1,
-    // borderRadius: 10,
-    // color: "white",
-    // marginLeft: 20,
-    // marginRight: 20,
+
     width: "80%",
     backgroundColor: "#fff",
     borderRadius: 20,
@@ -105,10 +98,5 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
   },
-  // shadowProp: {
-  //   shadowColor: '#171717',
-  //   shadowOffset: {width: -2, height: 4},
-  //   shadowOpacity: 0.2,
-  //   shadowRadius: 3,
-  // },
+
 });

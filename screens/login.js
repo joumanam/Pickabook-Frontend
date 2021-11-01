@@ -18,6 +18,8 @@ import { Icon, Input } from "react-native-elements";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { userContext } from "../userContext";
+import API from '../assets/API';
+
 
 export default function Login(props) {
 
@@ -40,7 +42,7 @@ export default function Login(props) {
     };
 
     axios
-      .post("http://192.168.43.140:8000/api/auth/login", params)
+      .post(`${API}/api/auth/login`, params)
       // .post("http://25f7-91-232-100-196.ngrok.io/api/auth/login", params)
       .then((response) => {
         let code = response.data.code;
@@ -69,7 +71,7 @@ export default function Login(props) {
     };
 
     axios
-      .post("http://192.168.43.140:8000/api/auth/login", params)
+      .post(`${API}/api/auth/login`, params)
       // .post("http://25f7-91-232-100-196.ngrok.io/api/auth/login", params)
       .then((response) => {
         let code = response.data.code;

@@ -17,6 +17,8 @@ import axios from "axios";
 import BookCard from "../components/bookCard";
 import { set } from "react-native-reanimated";
 import { userContext } from "../userContext";
+import API from '../assets/API';
+
 
 export default function AllBooks(props) {
   const [search, setSearch] = useState("");
@@ -31,7 +33,7 @@ export default function AllBooks(props) {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://192.168.43.140:8000/api/showallbooks", {
+      .get(`${API}/api/showallbooks`, {
         headers: {
           Authorization: `Bearer ${currentUser.access_token}`,
         },

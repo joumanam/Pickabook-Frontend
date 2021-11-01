@@ -16,8 +16,10 @@ import axios from "axios";
 import { useContext } from "react";
 import { userContext } from "../userContext";
 import BookCard from "../components/bookCard";
+import API from '../assets/API';
 
-export default function SearchResults() {
+
+export default function SearchResults(props) {
   const imgWidth = Dimensions.get("screen").width * 0.5;
   const [loading, setLoading] = useState(false);
   const { currentUser, setCurrentUser } = useContext(userContext);
@@ -26,28 +28,135 @@ export default function SearchResults() {
 
 
   useEffect(() => {
+    axios.get(`${API}/api/showallbooks`, {
+      headers: {
+        Authorization: `Bearer ${currentUser.access_token}`,
+      },
+    })
+    .then((response) => {
+      setBooks(response.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, [])
+
+
+
+/*
+  function getSearchResults() {
+    let byFilters = [];
+    
+    props.route.params.data.filters.map(filter => {
+      switch(filter.id){
+        case '1':
+        case '2':
+          if(filter.isChecked) {
+            axios.get(`${API}/api/${filter.path}/${props.route.params.data.search}`, {
+            headers: {
+              Authorization: `Bearer ${currentUser.access_token}`,
+            },
+          })
+          .then((response) => {
+            byFilters = [...byFilters, response.data];
+            console.log(`RESPONSE for ${props.route.params.data.search} from ${filter.path}`, byFilters)
+
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+          }
+          break;
+
+        // case '3':
+        //   if(filter.isChecked) {
+        //     axios.get(`${API}/api/${filter.path}/${props.route.params.data.searchLang}`, {
+        //     headers: {
+        //       Authorization: `Bearer ${currentUser.access_token}`,
+        //     },
+        //   })
+        //   .then((response) => {
+        //     let byLang = [];
+        //     response.data.map(book => {
+        //       byLang.push(book.id);
+        //     })
+
+        //     byFilters = byFilters.filter(book => {
+        //       if (byLang.indexOf(book.id) !== -1) return book;
+        //     })
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
+        //   }
+        //   break;
+
+        // case '4':
+        //   if(filter.isChecked) {
+        //     axios.get(`${API}/api/${filter.path}/${props.route.params.data.status}`, {
+        //     headers: {
+        //       Authorization: `Bearer ${currentUser.access_token}`,
+        //     },
+        //   })
+        //   .then((response) => {
+        //     let byStatus = [];
+        //     response.data.map(book => {
+        //       byStatus.push(book.id);
+        //     })
+
+        //     byFilters = byFilters.filter(book => {
+        //       if (byStatus.indexOf(book.id) !== -1) return book;
+        //     })
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
+        // }
+        // break;
+        }
+    })
+    console.log('RESULTS', byFilters);
+    setBooks(byFilters);
+  }
+*/
+
+  useEffect(() => {
     setLoading(true);
-    axios
-      .get("http://192.168.43.140:8000/api/showallbooks", {
-        headers: {
-          Authorization: `Bearer ${currentUser.access_token}`,
-        },
-      })
-      .then((response) => {
-        setBooks(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // getSearchResults();
+    // getSearchResultsTEST();
   }, []);
 
+  // useEffect(() => {
+  //   console.log('BOOKS:', books.length);
+  //   setLoading(true);
+
+  //   let users = {};
+  //   for (let i=0; i<books.length; i++) {
+  //     axios
+  //     .get(`${API}/api/getUser/${books[i].user_id}` , {
+  //       headers: {
+  //         Authorization: `Bearer ${currentUser.access_token}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       users[books[i].user_id] = response.data;
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  //   }
+  //   console.log('USERS:', users.length);
+  // }, [books]);
+
+
+  
   return (
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.posts}>
-          {books.map((book, index) => (
+          {books.map((book, user, index) => (
             <View>
-              <Text style={styles.postedBy}>Posted By {book.user_id}</Text>
+              <Text style={styles.postedBy}>Posted By {user.first_name}</Text>
               <BookCard
                 style={{
                   justifyContent: "center",
@@ -57,7 +166,7 @@ export default function SearchResults() {
                 title={book.title}
                 author={book.author}
                 status={book.status}
-                // onPress={ }
+                // onPress={navigation.navigate("Sale Post", { post: book }) }
               />
             </View>
           ))}

@@ -3,6 +3,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  Image,
   View,
   Button,
   Dimensions,
@@ -10,11 +11,13 @@ import {
 } from "react-native";
 import { Icon } from "react-native-elements";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
-import MapView from "react-native-maps";
+import MapView, { Callout } from "react-native-maps";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FAB } from "react-native-paper";
 import { userContext } from "../userContext";
 import axios from "axios";
+import API from '../assets/API';
+
 
 export default function EventMap({ navigation }) {
   const { currentUser, setCurrentUser } = useContext(userContext);
@@ -25,7 +28,7 @@ export default function EventMap({ navigation }) {
 
   useEffect(() => {
     axios
-      .get("http://192.168.43.140:8000/api/showallevents", {
+      .get(`${API}/api/showallevents`, {
         headers: {
           Authorization: `Bearer ${currentUser.access_token}`,
         },
@@ -58,7 +61,10 @@ export default function EventMap({ navigation }) {
   };
 
   const onConfirmPin = () => {
-    navigation.navigate("Add Event", { coordinates: newMarker, user: currentUser });
+    navigation.navigate("Add Event", {
+      coordinates: newMarker,
+      user: currentUser,
+    });
     setAddReady(false);
     setNewMarker(null);
   };
@@ -79,15 +85,26 @@ export default function EventMap({ navigation }) {
           longitudeDelta: 0.6,
         }}
       >
-
-        {allPosts && allPosts.map((marker, index) => (
-          <MapView.Marker
-            key={marker["id"]}
-            coordinate={JSON.parse(marker["coordinates"])}
-           
-            onPress={() => console.log(marker)}   // to use later to show pinned posts 
-          />
-        ))}
+        {allPosts &&
+          allPosts.map((marker, index) => (
+            <MapView.Marker
+              key={marker["id"]}
+              coordinate={JSON.parse(marker["coordinates"])}
+              title={marker.name}
+              onPress={() => console.log(marker)} // to use later to show pinned posts
+            >
+                <Callout tooltip onPress={()=> {navigation.navigate("Event Post", {event: marker})}}>
+                  <View>
+                    <View style={styles.bubble}>
+                      <Text style={styles.eventName}>{marker.name}</Text>
+                        <Text style={{ fontStyle: "italic" }}>Check Event</Text>
+                    </View>
+                    <View style={styles.arrowBorder} />
+                    <View style={styles.arrow} />
+                  </View>
+                </Callout>
+            </MapView.Marker>
+          ))}
 
         {newMarker && <MapView.Marker key="New Pin" coordinate={newMarker} />}
       </MapView>
@@ -148,5 +165,42 @@ const styles = StyleSheet.create({
   },
   cancel: {
     backgroundColor: "#db0f0f",
+  },
+  bubble: {
+    flexDirection: "column",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 6,
+    borderColor: "#ccc",
+    borderWidth: 0.5,
+    padding: 15,
+    width: 150,
+    height: 80,
+  },
+  eventName: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  arrow: {
+    backgroundColor: "transparent",
+    borderColor: "transparent",
+    borderTopColor: "#fff",
+    borderWidth: 16,
+    alignSelf: "center",
+    marginTop: -32,
+  },
+  arrowBorder: {
+    backgroundColor: "transparent",
+    borderColor: "transparent",
+    borderTopColor: "transparent",
+    borderWidth: 16,
+    alignSelf: "center",
+    marginTop: -0.5,
+  },
+  image: {
+    width: 150,
+    height: 80,
   },
 });

@@ -28,10 +28,13 @@ import NSRegular from "../assets/fonts/NunitoSans/NunitoSansRegular.ttf";
 import NSBold from "../assets/fonts/NunitoSans/NunitoSansBold.ttf";
 import NSExtraBold from "../assets/fonts/NunitoSans/NunitoSansExtraBold.ttf";
 import NSSemiBoldItalic from "../assets/fonts/NunitoSans/NunitoSansSemiBoldItalic.ttf"
+import { Marker } from "react-native-maps";
 
 export default function EventPost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;
   const nav = props.navigation;
+  const currentEvent = props.route.params.event;
+
   const [loaded] = useFonts({
     NSLight,
     NSRegular,
@@ -44,7 +47,7 @@ export default function EventPost(props) {
     return (
       <View>
         <View style={styles.bookcard}>
-        <Text style={styles.eventTitle}>Salon Du Livre {"\n"}</Text>
+        <Text style={styles.eventTitle}>{currentEvent.name} {"\n"}</Text>
 
           <Image
             style={{
@@ -57,13 +60,13 @@ export default function EventPost(props) {
           />
          
           <Text style={styles.titles}>Location: </Text>
-          <Text style={styles.input}>Forum De Beirut{"\n"}</Text>
+          <Text style={styles.input}>{currentEvent.location} {"\n"}</Text>
           <Text style={styles.titles}>Date: </Text>
-          <Text style={styles.input}>2021-11-07 {"\n"}</Text>
+          <Text style={styles.input}>{currentEvent.date.slice(0,10)} {"\n"}</Text>
           <Text style={styles.titles}>Time: </Text>
-          <Text style={styles.input}>23:21:00 {"\n"}</Text>
+          <Text style={styles.input}>{currentEvent.time} {"\n"}</Text>
           <Text style={styles.titles}>Additional Information: </Text>
-          <Text style={styles.input}>For more info, call +961 70 123456 {"\n"}</Text>
+          <Text style={styles.input}>{currentEvent.comments} {"\n"}</Text>
          
         </View>
       </View>
