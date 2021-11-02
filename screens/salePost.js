@@ -21,6 +21,7 @@ import { Icon } from "react-native-elements/dist/icons/Icon";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Rating } from "react-native-ratings";
+import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 export default function SalePost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;
@@ -34,15 +35,19 @@ export default function SalePost(props) {
     return (
       <View>
         <View style={styles.bookcard}>
-          <Image
-            style={{
-              width: imgWidth,
-              height: imgWidth,
-              alignSelf: "center",
-              marginBottom: 5,
-            }}
-            source={require("../assets/myimages/background.png")}
-          />
+      
+            <Image
+              style={{
+                width: imgWidth,
+                height: imgWidth,
+                alignSelf: "center",
+                marginBottom: 5,
+              }}
+              resizeMode="contain"
+              source={{
+                uri: currentPost.image_url,
+              }}
+            />
           <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
           <Text>
             {currentPost.title}
@@ -73,7 +78,7 @@ export default function SalePost(props) {
             <Rating
               imageSize={20}
               readonly
-              startingValue= {currentPost.rating}
+              startingValue={currentPost.rating}
               style={styles.rating}
             />
             {"\n"}

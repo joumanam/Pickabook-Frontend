@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
   searchContainer: {
     backgroundColor: "white",
     borderRadius: 5,
-    width: "97%",
+    borderWidth: 1,
+    width: "98%",
     height: 35,
   },
   icon: {

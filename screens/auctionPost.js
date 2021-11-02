@@ -49,21 +49,6 @@ export default function AuctionPost(props) {
     ]
   };
 
-  // const [tableDatas, setTableDatas] = useState([
-  //   {user: "Charbel Daoud", bid: "28,000 LL", time: "3 hours ago", key: '1'},
-  //   {user: "Yvona Nehme", bid: "20,000 LL", time: "3 hours ago",key: '2'},
-  //   {user: "Julien Hosri", bid: "15,000 LL", time: "1 hour ago",key: '3'},
-  // ]);
-  
-  // const submitHandler = (user, bid, time) => {
-  //   setTableDatas((prevTableDatas) => {
-  //     return [
-  //       {user: user, bid: bid, time:time, key: Math.random().toString() },
-  //       ...prevTableDatas
-  //      ];
-  //  })
-  // }
-
   const changeHandlerData = (val) => {
     setTableDatas.bid(val);
 }
@@ -79,7 +64,10 @@ export default function AuctionPost(props) {
               alignSelf: "center",
               marginBottom: 5,
             }}
-            source={require("../assets/myimages/background.png")}
+            resizeMode="contain"
+            source={{
+              uri: currentPost.image_url,
+            }}
           />
           <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
           <Text>

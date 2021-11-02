@@ -93,6 +93,7 @@ export default function MyProfile(props) {
                 title={photo.title}
                 author={photo.author}
                 status={photo.status}
+                image_url={photo.image_url}
                 onPress={() =>
                   props.navigation.navigate("Sale Post", { post: photo })
                 }
@@ -122,6 +123,7 @@ export default function MyProfile(props) {
                 title={photo.title}
                 author={photo.author}
                 status={photo.status}
+                image_url={photo.image_url}
                 onPress={() =>
                   props.navigation.navigate("Trade Post", { post: photo })
                 }
@@ -152,6 +154,7 @@ export default function MyProfile(props) {
                 title={photo.title}
                 author={photo.author}
                 status={photo.status}
+                image_url={photo.image_url}
                 onPress={() =>
                   props.navigation.navigate("Auction Post", { post: photo })
                 }
@@ -181,6 +184,7 @@ export default function MyProfile(props) {
                 title={photo.title}
                 author={photo.author}
                 status={photo.status}
+                image_url={photo.image_url}
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -229,8 +233,8 @@ export default function MyProfile(props) {
                 </View>
                 <TouchableOpacity onPress={() => props.navigation.navigate("Notifications")}>
                 <MaterialCommunityIcons
-                    name={"bell-ring"}
-                    size={28}
+                    name={"bell-outline"}
+                    size={30}
                     color={"#710D0D"}
                   />
                   </TouchableOpacity>

@@ -166,6 +166,7 @@ export default function SearchResults(props) {
                 title={book.title}
                 author={book.author}
                 status={book.status}
+                image_url={book.image_url}
                 // onPress={navigation.navigate("Sale Post", { post: book }) }
               />
             </View>

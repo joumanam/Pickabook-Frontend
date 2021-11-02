@@ -17,28 +17,57 @@ import {
 import DeleteButton from "./deleteButton";
 import AddButton from "./addButton";
 import { userContext } from "../userContext";
+import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 const imgWidth = Dimensions.get("screen").width * 0.33;
 const txtWidth = Dimensions.get("screen").width * 0.33;
 
-
 export default function BookCard(props) {
   return (
-
     <View>
       <View style={styles.bookcard}>
-        <Image style={{ width: imgWidth, height: imgWidth, justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}
-          source={require("../assets/myimages/background.png")}
+      {/* <ReactNativeZoomableView
+        maxZoom={5.0}
+        minZoom={0.5}
+        zoomStep={1}
+        initialZoom={1}
+        bindToBorders={true}
+        style={{
+          width: '100%',
+          padding: 50,
+        }}
+      > */}
+      <TouchableOpacity onPress={}
+        <Image
+          style={{
+            width: imgWidth,
+            height: imgWidth,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+          }}
+          resizeMode="contain"
+          source={{
+            uri:props.image_url,
+          }}
         />
-        <Text style={{ fontWeight: "bold"}}>Book Title: </Text>
-        <Text style={{width: txtWidth}}>{props.title}{"\n"}</Text>
-        <Text style={{ fontWeight:"bold" }}>Book Author: </Text>
-        <Text style={{width: txtWidth}}>{props.author}{"\n"}</Text>
-        <Text style={{ fontWeight:"bold" }}>Status: </Text>
-        <Text style={{width: txtWidth}}>{props.status}{"\n"}</Text>
-        <AddButton title="Check Post" onPress={props.onPress}
-          
-        />
+        {/* </ReactNativeZoomableView> */}
+        <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
+        <Text style={{ width: txtWidth }}>
+          {props.title}
+          {"\n"}
+        </Text>
+        <Text style={{ fontWeight: "bold" }}>Book Author: </Text>
+        <Text style={{ width: txtWidth }}>
+          {props.author}
+          {"\n"}
+        </Text>
+        <Text style={{ fontWeight: "bold" }}>Status: </Text>
+        <Text style={{ width: txtWidth }}>
+          {props.status}
+          {"\n"}
+        </Text>
+        <AddButton title="Check Post" onPress={props.onPress} />
       </View>
     </View>
   );
@@ -54,6 +83,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     color: "white",
     marginLeft: 20,
-
   },
 });

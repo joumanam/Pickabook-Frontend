@@ -36,7 +36,10 @@ export default function TradePost(props) {
               alignSelf: "center",
               marginBottom: 5,
             }}
-            source={require("../assets/myimages/background.png")}
+            resizeMode="contain"
+            source={{
+              uri: currentPost.image_url,
+            }}
           />
           <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
           <Text>

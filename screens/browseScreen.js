@@ -25,32 +25,31 @@ import { AuthStack } from "../App";
 // or any pure javascript modules available in npm
 import { Card } from "react-native-paper";
 
-
-
 export default function BrowseScreen({ navigation }) {
   const [dropDownDisabled, setDropDownDisabled] = useState(true);
   const { currentUser, setCurrentUser } = useContext(userContext);
 
   const statusOptions = [
-    { id: "1", label: "For Sale", value: "For Sale" },
-    { id: "2", label: "For Trade", value: "For Trade" },
-    { id: "3", label: "For Auction", value: "For Auction" },
+    { id: "1", label: "No Filtering", value: null },
+    { id: "2", label: "For Sale", value: "For Sale" },
+    { id: "3", label: "For Trade", value: "For Trade" },
+    { id: "4", label: "For Auction", value: "For Auction" },
   ];
-  
+
   const filterOptions = [
-    { id: "1", txt: "Search by Title", path: "searcht", isChecked: true },
-    { id: "2", txt: "Search by Author", path: "searcha", isChecked: false },
-    { id: "3", txt: "Search by Language", path: "searchl", isChecked: false },
-    { id: "4", txt: "Search by Status", path: "searchs", isChecked: false },
+    // { id: "1", txt: "Search by Title", path: "searcht", isChecked: true },
+    // { id: "2", txt: "Search by Author", path: "searcha", isChecked: false },
+    // { id: "3", txt: "Search by Language", path: "searchl", isChecked: false },
+    // { id: "4", txt: "Search by Status", path: "searchs", isChecked: false },
   ];
 
   const [filters, setFilters] = useState(filterOptions);
 
-  const handleChange = (id) => {
-    if (id === "4") {
+  const handleChange = () => {
+    // if (id === "4") {
       setOpen(false);
       setDropDownDisabled(!dropDownDisabled);
-    }
+    
     let temp = filters.map((filter) => {
       if (id === filter.id) {
         return { ...filter, isChecked: !filter.isChecked };
@@ -65,52 +64,52 @@ export default function BrowseScreen({ navigation }) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState(null);
 
-  const renderFlatList = (renderData) => {
-    return (
-      <FlatList
-        data={renderData}
-        renderItem={({ item }) => (
-          <View>
-            <Card style={{ margin: 5 }}>
-              <View style={styles.card}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flex: 1,
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <CheckBox
-                    value={item.isChecked}
-                    onChange={() => {
-                      handleChange(item.id);
-                    }}
-                  />
-                  <Text style={styles.text}>{item.txt}</Text>
-                </View>
-              </View>
-            </Card>
-            {item.id === "3" && item.isChecked && (
-              <TextInput
-                style={styles.languageInput}
-                value={searchLang}
-                placeholder="Type Language"
-                onChangeText={(text) => {
-                  setSearchLang(text);
-                }}
-              />
-            )}
-          </View>
-        )}
-      />
-    );
-  };
+  // const renderFlatList = (renderData) => {
+  //   return (
+  //     <FlatList
+  //       data={renderData}
+  //       renderItem={({ item }) => (
+  //         <View>
+  //           <Card style={{ margin: 5 }}>
+  //             <View style={styles.card}>
+  //               <View
+  //                 style={{
+  //                   flexDirection: "row",
+  //                   flex: 1,
+  //                   justifyContent: "space-between",
+  //                 }}
+  //               >
+  //                 <Text style={styles.text}>{item.txt}</Text>
+
+  //                 <CheckBox
+  //                   value={item.isChecked}
+  //                   tintColors={{ true: '#710D0D', false: 'black' }}
+  //                   onChange={() => {
+  //                     handleChange(item.id);
+  //                   }}
+  //                 />
+  //               </View>
+  //             </View>
+  //           </Card>
+  //           {item.id === "3" && item.isChecked && (
+  //             <TextInput
+  //               style={styles.languageInput}
+  //               value={searchLang}
+  //               placeholder="Type Language"
+  //               onChangeText={(text) => {
+  //                 setSearchLang(text);
+  //               }}
+  //             />
+  //           )}
+  //         </View>
+  //       )}
+  //     />
+  //   );
+  // };
 
   function updateSearch(search) {
     setSearch(search);
   }
-
-  const handleSubmit = () => {};
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never"]);
@@ -126,16 +125,42 @@ export default function BrowseScreen({ navigation }) {
         style={{ width: "100%", height: "100%", position: "absolute" }}
         resizeMode="cover"
       >
-        <ScrollView>
           <HeaderWithoutLogo title="Browse" />
-          <View style={{ padding: 8 }}>{renderFlatList(filters)}</View>
+          <Text style={{marginLeft: 10, marginTop: 15, marginBottom: -15, fontWeight: 'bold'}}>Search for your favorite books:</Text>
 
+          <View
+            style={{
+              // backgroundColor: "#710D0D",
+              marginTop: 10,
+              borderRadius: 5,
+              width: "99%",
+              justifyContent: "center",
+              alignSelf: "center",
+            }}
+          >
+            <SearchBar value={search} updateSearch={updateSearch} style={{}} />
+          </View>
+          {/* <View style={{ padding: 8 }}>{renderFlatList(filters)}</View> */}
+          <Text style={{marginLeft: 10, marginTop: 15, }}>Filter by Language:</Text>
+
+          <TextInput
+                style={styles.languageInput}
+                value={searchLang}
+                placeholder="Type Language"
+                onChangeText={(text) => {
+                  setSearchLang(text);
+                }}
+              />
+
+            <Text style={{marginLeft: 10, marginTop: 10, }}>Filter by Status:</Text>
           <View style={styles.dropDown}>
             <DropDownPicker
               style={{
-                backgroundColor: dropDownDisabled
-                  ? "rgba(100,100,100,0.5)"
-                  : "white",
+                backgroundColor: "white",
+                marginTop: -15,
+                marginLeft: -2,
+                marginRight: -8,
+                width: '101.5%'
               }}
               open={open}
               value={status}
@@ -143,7 +168,6 @@ export default function BrowseScreen({ navigation }) {
               setOpen={setOpen}
               setValue={setStatus}
               showTickIcon={false}
-              disabled={dropDownDisabled}
               setItems={setStatus}
               dropDownDirection="AUTO"
               placeholder="Select Status"
@@ -154,27 +178,17 @@ export default function BrowseScreen({ navigation }) {
             />
           </View>
           <View style={{ padding: 9 }}>
-            <View
-              style={{
-                backgroundColor: "#710D0D",
-                marginTop: 170,
-                borderRadius: 5,
-              }}
-            >
-              <SearchBar
-                value={search}
-                updateSearch={updateSearch}
-                style={{}}
-              />
-            </View>
-            <View style={{marginBottom: 5}}>
+            <View style={{ marginBottom: 5 }}>
               <AddButton
                 title="Search"
-                onPress={() => navigation.navigate("Search Results", {data: {filters, status, search, searchLang}})}
+                onPress={() =>
+                  navigation.navigate("Search Results", {
+                    data: { filters, status, search, searchLang },
+                  })
+                }
               />
             </View>
           </View>
-        </ScrollView>
       </ImageBackground>
     </View>
   );
@@ -197,22 +211,29 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   text: {
-    textAlign: 'left' ,
-    alignSelf: 'center',
+    textAlign: "left",
+    alignSelf: "center",
 
     fontWeight: "bold",
   },
   dropDown: {
     marginTop: 7,
     padding: 8,
+    // width: '97%'
   },
   languageInput: {
-    marginLeft: 10,
-    height: 40,
-    // fontStyle: 'italic',
-    margin: 8,
-    borderWidth: 1,
-    padding: 10,
+    // height: 40,
+    // margin: 8,
+    // borderWidth: 1,
+    // padding: 10,
+    // borderRadius: 5,
+    backgroundColor: "white",
     borderRadius: 5,
+    borderWidth: 1,
+    width: "97%",
+    justifyContent: 'center',
+    padding: 5,
+    alignSelf: 'center',
+    height: 35,
   },
 });
