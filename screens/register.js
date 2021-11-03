@@ -31,29 +31,18 @@ export default function Register(props) {
               <View style={styles.inputBlock}>
                 <View style={styles.hr}></View>
                 <View style={styles.inputBox}>
-                  <Text style={styles.inputLabel}>First Name</Text>
+                  <Text style={styles.inputLabel}>Full Name</Text>
                   <Input
                     style={styles.input}
                     // autoCapitalize={false}
                     keyboardType="default"
                     textContentType="givenName"
-                    placeholder="First Name"
+                    placeholder="Full Name"
                     leftIcon={<Icon name='user' type='font-awesome' size={22} color="#710D0D" />}
 
                   />
                 </View>
-                <View style={styles.inputBox}>
-                  <Text style={styles.inputLabel}>Last Name</Text>
-                  <Input
-                    style={styles.input}
-                    // autoCapitalize={false}
-                    keyboardType="default"
-                    textContentType="familyName"
-                    placeholder="Last Name"
-                    leftIcon={<Icon name='user' type='font-awesome' size={22} color="#710D0D" />}
-
-                  />
-                </View>
+              
                 <View style={styles.inputBox}>
                   <Text style={styles.inputLabel}>Email Address</Text>
                   <Input

@@ -21,7 +21,6 @@ import { Icon } from "react-native-elements/dist/icons/Icon";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Rating } from "react-native-ratings";
-import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 export default function SalePost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;

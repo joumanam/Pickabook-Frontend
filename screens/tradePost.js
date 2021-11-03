@@ -16,6 +16,8 @@ import BookCard from "../components/bookCard";
 import AddButton from "../components/addButton";
 import { userContext } from "../userContext";
 import { Rating } from "react-native-ratings";
+import axios from "axios";
+import API from '../assets/API';
 
 export default function TradePost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;
@@ -23,7 +25,26 @@ export default function TradePost(props) {
 
   const { currentUser, setCurrentUser } = useContext(userContext);
   const currentPost = props.route.params.post;
-  console.log(currentPost);
+  const [trade, setTrade] = useState([]);
+
+  // console.log(currentPost);
+
+  useEffect(() => {
+    axios
+      .get(`${API}/api/showtrades/${currentPost.id}`, {
+        headers: {
+          Authorization: `Bearer ${currentUser.access_token}`,
+        },
+      })
+      .then((response) => {
+        const temp = response.data;
+        setTrade(temp);
+      });
+  }, []);
+
+  if(trade) console.log(trade[0].id);
+
+
 
   function BookCard(props) {
     return (
@@ -51,7 +72,7 @@ export default function TradePost(props) {
             {currentPost.author}
             {"\n"}
           </Text>
-          <Text style={{ fontWeight: "bold" }}>Language: </Text>
+          <Text style={{ fontWeight: "bold" }}>Language: {trade.id} </Text>
           <Text>
             {currentPost.language}
             {"\n"}
@@ -94,6 +115,7 @@ export default function TradePost(props) {
       </View>
     );
   }
+
 
   const [todos, setTodos] = useState([
     { title: "Book1", author: "Author1", key: "1" },

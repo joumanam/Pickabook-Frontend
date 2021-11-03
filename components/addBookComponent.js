@@ -18,6 +18,7 @@ export default function AddBookComponent({ props }) {
   const [price, setPrice] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+  const [image, setImage] = useState('');
 
   const [dropDown, setDropDown] = useState([
     { id: "1", label: "For Sale", value: "For Sale" },
@@ -58,7 +59,7 @@ export default function AddBookComponent({ props }) {
           {" "}
           Please fill the fields below {"\n"}
         </Text>
-        <UploadImage />
+        <UploadImage image={image} setImage={setImage}/>
         <Text style={styles.titles}> Title: </Text>
         <TextInput
           style={styles.input}
@@ -138,7 +139,7 @@ export default function AddBookComponent({ props }) {
         <AddButton
           title="Add New Book"
           onPress={() =>
-            props.submitHandler(
+            props.submitHandler({
               bookTitle,
               author,
               status,
@@ -146,8 +147,9 @@ export default function AddBookComponent({ props }) {
               condition,
               price,
               language,
-              rating
-            )
+              rating,
+              image
+            })
           }
         />
       </View>

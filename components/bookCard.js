@@ -17,7 +17,6 @@ import {
 import DeleteButton from "./deleteButton";
 import AddButton from "./addButton";
 import { userContext } from "../userContext";
-import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 const imgWidth = Dimensions.get("screen").width * 0.33;
 const txtWidth = Dimensions.get("screen").width * 0.33;
@@ -26,18 +25,7 @@ export default function BookCard(props) {
   return (
     <View>
       <View style={styles.bookcard}>
-      {/* <ReactNativeZoomableView
-        maxZoom={5.0}
-        minZoom={0.5}
-        zoomStep={1}
-        initialZoom={1}
-        bindToBorders={true}
-        style={{
-          width: '100%',
-          padding: 50,
-        }}
-      > */}
-      <TouchableOpacity onPress={}
+    
         <Image
           style={{
             width: imgWidth,
@@ -51,7 +39,7 @@ export default function BookCard(props) {
             uri:props.image_url,
           }}
         />
-        {/* </ReactNativeZoomableView> */}
+        
         <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
         <Text style={{ width: txtWidth }}>
           {props.title}

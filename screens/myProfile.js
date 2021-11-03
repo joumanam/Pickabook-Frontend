@@ -219,7 +219,7 @@ export default function MyProfile(props) {
               {/* Profile Name and Bio */}
               <View style={styles.nameAndBioView}>
                 <Text style={styles.userFullName}>
-                  {user.first_name + " " + user.last_name}
+                  {user.full_name}
                 </Text>
                 {/* <Text style={styles.userLocation}>
                   {user.location.country +", "+ user.location.city}

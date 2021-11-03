@@ -10,8 +10,20 @@ import { ScrollView } from "react-native-gesture-handler";
 import AddBookComponent from "../components/addBookComponent";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import * as ImagePicker from 'expo-image-picker'
+import axios from "axios";
 
 export default function AddNewBook() {
+
+  const submitHandler = data => {
+    const { bookTitle, author, status, category, condition, price, language, rating, image } = data;
+
+    
+    // firebase upload 'image', will return a url
+    // image = 'firebase url'
+    // take this url with the rest of the data and axios.post
+  }
+
+
     return (
       <View style={styles.container}>
         <ImageBackground source={require("../assets/myimages/background.png")} style={{width: '100%', height:'100%', position: 'absolute'}}  resizeMode="cover">
@@ -19,7 +31,7 @@ export default function AddNewBook() {
         <ScrollView>
         <View style={styles.authBox}>
         <View style={{padding: 10}}>
-        <AddBookComponent title='add new book' />
+        <AddBookComponent title='add new book' submitHandler={submitHandler}/>
         </View>
         </View>
         </ScrollView>

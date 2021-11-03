@@ -1,57 +1,53 @@
-import { StatusBar } from "expo-status-bar";
+// @refresh reset
 import React, { useState, useEffect } from "react";
 import { LogBox } from "react-native";
-
-import Header from "./components/header";
-import HeaderWithoutLogo from "./components/headerWithoutLogo";
-import AddWishlist from "./components/addWishlist";
 import Login from "./screens/login";
 import Register from "./screens/register";
 import MyWishlist from "./screens/myWishlist";
-import UserProfile from "./screens/userProfile";
 import MyProfile from "./screens/myProfile";
-import UserWishlist from "./screens/userWishlist";
-import UserTrades from "./screens/tradePost";
-import MakeOffer from "./screens/makeOffer";
-import { Ionicons } from "@expo/vector-icons";
 import Notifications from "./screens/notifications";
 import ChatWindow from "./screens/chatWindow";
-
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SalePost from "./screens/salePost";
 import { userContext } from "./userContext";
 import TradePost from "./screens/tradePost";
 import BrowseScreen from "./screens/browseScreen";
-import AllBooks from "./screens/AllBooks";
-import CheckBooks from "./screens/searchResults";
 import Chats from "./screens/chatScreen";
 import EventMap from "./screens/eventMap";
 import AddNewBook from "./screens/addNewBook";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SearchResults from "./screens/searchResults";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import LoadingScreen from "./screens/loadingScreen";
 import AuctionPost from "./screens/auctionPost";
 import EventPost from "./screens/eventPost";
 import AddNewEvent from "./screens/addNewEvent";
 import ViewOffers from "./screens/viewOffers";
 
-// const [loading, setLoading] = useState(false);
+// const firebaseConfig = {
+//   apiKey: "AIzaSyBDNLC7FOaZWsAnSyPHkohgj7cEh5s7wEw",
+//   authDomain: "pickabook-a52cd.firebaseapp.com",
+//   databaseURL:
+//     "https://pickabook-a52cd-default-rtdb.europe-west1.firebasedatabase.app",
+//   projectId: "pickabook-a52cd",
+//   storageBucket: "pickabook-a52cd.appspot.com",
+//   messagingSenderId: "889853719680",
+//   appId: "1:889853719680:web:278c53098b84e969166265",
+//   measurementId: "G-PNM5Q4GLRT",
+// };
 
-// useEffect(() => {
-//   setLoading(true)
-// },[])
+// Initialize Firebase
+// if (firebase.apps.length === 0) {
+//   firebase.initializeApp(firebaseConfig);
+// }
 
-const Stack = createStackNavigator();
 export const AuthStack = createStackNavigator();
+
 const Tabs = createMaterialBottomTabNavigator();
 const BrowseStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const ChatStack = createStackNavigator();
 const EventStack = createStackNavigator();
-
 
 // Browse nav and every navigation related to it
 const BrowseStackScreen = () => (
@@ -97,7 +93,7 @@ const EventStackScreen = () => (
       component={EventPost}
       options={{ title: "Go Back to Map" }}
     />
-      <EventStack.Screen
+    <EventStack.Screen
       name="Add Event"
       component={AddNewEvent}
       options={{ title: "Go Back to Map" }}
@@ -123,7 +119,7 @@ const ProfileStackScreen = () => (
       component={TradePost}
       options={{ title: "Go Back To Profile" }}
     />
-     <ProfileStack.Screen
+    <ProfileStack.Screen
       name="View Offers"
       component={ViewOffers}
       options={{ title: "Go Back To Post" }}
@@ -138,7 +134,7 @@ const ProfileStackScreen = () => (
       component={MyWishlist}
       options={{ title: "Go Back To Profile" }}
     />
-     <ProfileStack.Screen
+    <ProfileStack.Screen
       name="Notifications"
       component={Notifications}
       options={{ title: "Go Back To Profile" }}
@@ -147,6 +143,7 @@ const ProfileStackScreen = () => (
 );
 
 export default function App() {
+  
   const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
@@ -155,9 +152,6 @@ export default function App() {
     }, 1000);
   }, []);
 
-  // if (isLoading) {
-  //   return <LoadingScreen />
-  // }
 
   useEffect(() => {
     LogBox.ignoreLogs(["Require cycle"]);
@@ -166,10 +160,11 @@ export default function App() {
     LogBox.ignoreLogs(["Do you have a screen named"]);
   }, []);
 
+
   return (
     <userContext.Provider value={{ currentUser, setCurrentUser }}>
       <NavigationContainer>
-        { 
+        {
           !currentUser ? (
             <AuthStack.Navigator>
               <AuthStack.Screen
@@ -187,9 +182,17 @@ export default function App() {
             <Tabs.Navigator
               activeColor="white"
               inactiveColor="grey"
-              barStyle={{ backgroundColor: "#710D0D",  shadowColor: 'black', shadowOffset: { width: 1, height: 3 },
-              shadowOpacity: 0.7,
-              shadowRadius: 5,  overflow: "hidden", height: 56, borderTopLeftRadius: 15, borderTopRightRadius: 15,}}
+              barStyle={{
+                backgroundColor: "#710D0D",
+                shadowColor: "black",
+                shadowOffset: { width: 1, height: 3 },
+                shadowOpacity: 0.7,
+                shadowRadius: 5,
+                overflow: "hidden",
+                height: 56,
+                borderTopLeftRadius: 15,
+                borderTopRightRadius: 15,
+              }}
               initialRouteName="My Profile"
             >
               <Tabs.Screen
@@ -264,30 +267,8 @@ export default function App() {
               />
             </Tabs.Navigator>
           )
-
-          /* <Stack.Navigator initialRouteName="Browse Screen">
-         
-          <Stack.Screen name="My Profile" component={MyProfile} options={{ headerShown: false }}/>
-          <Stack.Screen name="My Wishlist" component={MyWishlist} options={{ title: "Back To My Profile" }}/>
-          <Stack.Screen name="User Profile" component={UserProfile} options={{ headerShown: false }}/>
-          <Stack.Screen name="Sale Post" component={SalePost} options={{ title: "Back To Profile" }}/>
-          <Stack.Screen name="User Wishlist" component={UserWishlist} options={{ title: "Back To Profile" }}/>
-          <Stack.Screen name="Trade Post" component={TradePost} options={{ title: "Back To Profile" }}/>
-          <Stack.Screen name="Make Offer" component={MakeOffer} options={{ title: "Back To Trade Post" }}/>
-          <Stack.Screen name="Browse Screen" component={BrowseScreen} options={{ headerShown: false }}/>
-      
-          </Stack.Navigator> */
         }
       </NavigationContainer>
     </userContext.Provider>
   );
-  {
-    /* <CheckBooks />
-     <BrowseScreen />
-     <Profile />
-     <Login />
-      <Register />
-     <MyWishlist />
-      <UserWishlist /> */
-  }
 }
