@@ -10,6 +10,7 @@ import {
   Image,
 } from "react-native";
 import { Feather as Icon, MaterialIcons as MIcon } from "@expo/vector-icons";
+import LoadingScreen from "./loadingScreen";
 
 // npm i @react-navigation/bottom-tabs
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -130,7 +131,7 @@ export default function Chats(props) {
   if (!loaded) {
     return (
       <View>
-        <Text>Loading...</Text>
+        <LoadingScreen />
       </View>
     );
   }

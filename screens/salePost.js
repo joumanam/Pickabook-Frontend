@@ -41,6 +41,8 @@ export default function SalePost(props) {
                 height: imgWidth,
                 alignSelf: "center",
                 marginBottom: 5,
+                borderWidth: 1,
+                borderColor: 'black'
               }}
               resizeMode="contain"
               source={{

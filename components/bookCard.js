@@ -30,9 +30,10 @@ export default function BookCard(props) {
           style={{
             width: imgWidth,
             height: imgWidth,
-            justifyContent: "center",
-            alignItems: "center",
             alignSelf: "center",
+            marginBottom: 5,
+            borderWidth: 1,
+            borderColor: 'black'
           }}
           resizeMode="contain"
           source={{

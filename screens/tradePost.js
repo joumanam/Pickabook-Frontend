@@ -17,7 +17,8 @@ import AddButton from "../components/addButton";
 import { userContext } from "../userContext";
 import { Rating } from "react-native-ratings";
 import axios from "axios";
-import API from '../assets/API';
+import API from "../assets/API";
+import ThemedListItem from "react-native-elements/dist/list/ListItem";
 
 export default function TradePost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.55;
@@ -25,11 +26,9 @@ export default function TradePost(props) {
 
   const { currentUser, setCurrentUser } = useContext(userContext);
   const currentPost = props.route.params.post;
-  const [trade, setTrade] = useState([]);
+  const [trade, setTrade] = useState({});
 
-  // console.log(currentPost);
-
-  useEffect(() => {
+  const getTrade = () => {
     axios
       .get(`${API}/api/showtrades/${currentPost.id}`, {
         headers: {
@@ -40,11 +39,7 @@ export default function TradePost(props) {
         const temp = response.data;
         setTrade(temp);
       });
-  }, []);
-
-  if(trade) console.log(trade[0].id);
-
-
+  }
 
   function BookCard(props) {
     return (
@@ -53,9 +48,11 @@ export default function TradePost(props) {
           <Image
             style={{
               width: imgWidth,
-              height: imgWidth,
-              alignSelf: "center",
-              marginBottom: 5,
+            height: imgWidth,
+            alignSelf: "center",
+            marginBottom: 5,
+            borderWidth: 1,
+            borderColor: 'black'
             }}
             resizeMode="contain"
             source={{
@@ -72,7 +69,7 @@ export default function TradePost(props) {
             {currentPost.author}
             {"\n"}
           </Text>
-          <Text style={{ fontWeight: "bold" }}>Language: {trade.id} </Text>
+          <Text style={{ fontWeight: "bold" }}>Language: </Text>
           <Text>
             {currentPost.language}
             {"\n"}
@@ -89,10 +86,10 @@ export default function TradePost(props) {
           </Text>
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
           <Text>
-          <Rating
+            <Rating
               imageSize={20}
               readonly
-              startingValue= {currentPost.rating}
+              startingValue={currentPost.rating}
               style={styles.rating}
             />
             {"\n"}
@@ -108,7 +105,7 @@ export default function TradePost(props) {
           {currentPost.user_id == currentUser.user.id && (
             <AddButton
               title="View Offers"
-              onPress={() => nav.navigate("View Offers")}
+              onPress={() => nav.navigate("View Offers", { trade: trade })}
             />
           )}
         </View>
@@ -116,26 +113,14 @@ export default function TradePost(props) {
     );
   }
 
-
-  const [todos, setTodos] = useState([
-    { title: "Book1", author: "Author1", key: "1" },
-    { title: "Book2", author: "Author2", key: "2" },
-    { title: "Book3", author: "Author3", key: "3" },
-    { title: "Book3", author: "Author3", key: "4" },
-  ]);
-
-  const submitHandler = (title, author) => {
-    setTodos((prevTodos) => {
-      return [
-        { title: title, author: author, key: Math.random().toString() },
-        ...prevTodos,
-      ];
-    });
-  };
-
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
+
+  useEffect(() => {
+    getTrade();
+  }, []);
+
 
   return (
     <ScrollView>

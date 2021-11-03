@@ -52,8 +52,6 @@ export default function Register(props) {
                     textContentType="emailAddress"
                     placeholder="Email Address"
                     leftIcon={<Icon name='envelope' type='font-awesome' size={22} color="#710D0D" />}
-
-                    
                   />
                 </View>
                 <View style={styles.inputBox}>

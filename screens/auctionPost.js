@@ -11,6 +11,7 @@ import {
   Button,
   ScrollView,
   FlatList,
+  ToastAndroid,
   Dimensions,
   Text,
 } from "react-native";
@@ -31,29 +32,59 @@ import {
 import { color } from "react-native-elements/dist/helpers";
 import { Rating } from "react-native-ratings";
 
-
 export default function AuctionPost(props) {
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   const imgWidth = Dimensions.get("screen").width * 0.45;
   const nav = props.navigation;
 
   const { currentUser, setCurrentUser } = useContext(userContext);
   const currentPost = props.route.params.post;
-  console.log(currentPost);
+
 
   const CONTENT = {
     tableHead: ["Bidder", "Bid Amount", "Bid Made"],
     tableData: [
-      ["Charbel Daoud", "28,000 LL", "3 hours ago"],      
+      ["Charbel Daoud", "28,000 LL", "3 hours ago"],
       ["Yvona Nehme", "20,000 LL", "3 hours ago"],
       ["Julien Hosri", "15,000 LL", "1 hours ago"],
-    ]
+    ],
   };
 
-  const changeHandlerData = (val) => {
-    setTableDatas.bid(val);
-}
+
+
+
+  // const changeHandlerData = (val) => {
+  //   setTableDatas.bid(val);
+  // };
 
   function BookCard(props) {
+    const [currentBid, setCurrentBid] = useState(28000);
+    const [bidInput, setBidInput] = useState('');
+
+    const onInputChange = (value) => {
+      setBidInput(value);
+    };
+  
+    const onSubmitBid = () => {
+      console.warn(bidInput)
+      let strToNumb = parseInt(bidInput, 10)
+      if (strToNumb > currentBid) {
+        setCurrentBid(strToNumb);
+        setBidInput('');
+      } else {
+        ToastAndroid.showWithGravityAndOffset(
+          "Placed bid is too low",
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+          -50,
+          270
+        );
+      }
+    };
+
     return (
       <View>
         <View style={styles.bookcard}>
@@ -63,6 +94,8 @@ export default function AuctionPost(props) {
               height: imgWidth,
               alignSelf: "center",
               marginBottom: 5,
+              borderWidth: 1,
+              borderColor: "black",
             }}
             resizeMode="contain"
             source={{
@@ -96,10 +129,10 @@ export default function AuctionPost(props) {
           </Text>
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
           <Text>
-          <Rating
+            <Rating
               imageSize={20}
               readonly
-              startingValue= {currentPost.rating}
+              startingValue={currentPost.rating}
               style={styles.rating}
             />
             {"\n"}
@@ -117,17 +150,22 @@ export default function AuctionPost(props) {
             <Text style={{ fontStyle: "italic", fontWeight: "bold" }}>
               Currently At:{" "}
             </Text>
-            <Text style={{ color: "red", fontWeight: "bold" }}>28,000 LL{"\n"}</Text>
+            <Text style={{ color: "red", fontWeight: "bold" }}>
+              {numberWithCommas(currentBid)} LL{"\n"}
+            </Text>
           </Text>
-          <Text style={{ fontWeight: "bold" }}>
-            Place Bid:
-          </Text>
-          <TextInput style={styles.input} placeholder="29,000 LL" keyboardType={"numeric"}/>
-            {/* <Button title="place bid" onPress={()=>submitHandler(bookTitle, author)} /> */}
-            <TouchableOpacity>
-              <Text 
-              style={styles.submit}> Submit </Text>
-            </TouchableOpacity>
+          <Text style={{ fontWeight: "bold" }}>Place Bid:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Place Bid"
+            keyboardType={"numeric"}
+            defaultValue={bidInput}
+            handler={onInputChange}
+            onChangeText={(newValue) => onInputChange(newValue)}
+          />
+          <TouchableOpacity onPress={()=>onSubmitBid()}>
+            <Text style={styles.submit}> Submit </Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -136,8 +174,8 @@ export default function AuctionPost(props) {
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
     LogBox.ignoreLogs(["Failed prop type"]);
-
   }, []);
+
 
   return (
     <ScrollView>
@@ -166,9 +204,7 @@ export default function AuctionPost(props) {
           </Text>
         </View>
         <View style={{ marginTop: 20 }}>
-          <Table
-            style={{ width: "95%", alignSelf: "center" }}
-          >
+          <Table style={{ width: "95%", alignSelf: "center" }}>
             <Row
               data={CONTENT.tableHead}
               flexArr={[1, 1, 1]}
@@ -182,7 +218,7 @@ export default function AuctionPost(props) {
                 heightArr={[28, 28]}
                 textStyle={styles.columnText}
               />
-              
+
               <Rows
                 data={CONTENT.tableData}
                 flexArr={[1, 1, 1]}
@@ -290,14 +326,14 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ddd",
   },
   submit: {
-    backgroundColor:"#710D0D", 
-    color:'white', 
-    fontWeight: 'bold',
-    margin:5, 
-    padding:7, 
-    textAlign:'center', 
+    backgroundColor: "#710D0D",
+    color: "white",
+    fontWeight: "bold",
+    margin: 5,
+    padding: 7,
+    textAlign: "center",
     borderRadius: 10,
-    alignSelf: 'center',
-    alignItems: 'center'
-  }
+    alignSelf: "center",
+    alignItems: "center",
+  },
 });
