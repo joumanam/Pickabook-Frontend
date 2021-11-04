@@ -147,14 +147,6 @@ export default function ChatWindow({ navigation }) {
           </View>
         </View>
       ),
-      // headerRight: () => (
-      //   <TouchableOpacity
-      //     style={{ paddingRight: 10 }}
-      //     onPress={() => {
-      //       Alert.alert("Audio Call", "Audio Call Button Pressed");
-      //     }}
-      //   ></TouchableOpacity>
-      // ),
     });
   }, []);
 

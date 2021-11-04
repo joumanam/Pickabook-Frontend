@@ -17,6 +17,7 @@ import { useContext } from "react";
 import { userContext } from "../userContext";
 import BookCard from "../components/bookCard";
 import API from '../assets/API';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 
 export default function SearchResults(props) {
@@ -42,6 +43,27 @@ export default function SearchResults(props) {
   }, [])
 
 
+  useEffect(() => {
+    // console.log('BOOKS:', books.length);
+    // setLoading(true);
+
+    // let users = {};
+    // for (let i=0; i<books.length; i++) {
+      axios
+      .get(`${API}/api/getUser/${books.user_id}` , {
+        headers: {
+          Authorization: `Bearer ${currentUser.access_token}`,
+        },
+      })
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // }
+  }, []);
+  console.log('USERS:', user);
 
 /*
   function getSearchResults() {
@@ -120,35 +142,18 @@ export default function SearchResults(props) {
   }
 */
 
+const onPress = () => {
+ if (books.status === "For Trade") props.navigation.navigate('Trade Post', {post: books})
+ if (books.status === "For Sale") props.navigation.navigate('Sale Post', {post: books})
+ if (books.status === "For Auction") props.navigation.navigate('Auction Post', {post: books})
+};
+
   useEffect(() => {
     setLoading(true);
     // getSearchResults();
     // getSearchResultsTEST();
   }, []);
-
-  // useEffect(() => {
-  //   console.log('BOOKS:', books.length);
-  //   setLoading(true);
-
-  //   let users = {};
-  //   for (let i=0; i<books.length; i++) {
-  //     axios
-  //     .get(`${API}/api/getUser/${books[i].user_id}` , {
-  //       headers: {
-  //         Authorization: `Bearer ${currentUser.access_token}`,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       users[books[i].user_id] = response.data;
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  //   }
-  //   console.log('USERS:', users.length);
-  // }, [books]);
-
-
+  
   
   return (
     <ScrollView>
@@ -156,7 +161,9 @@ export default function SearchResults(props) {
         <View style={styles.posts}>
           {books.map((book, user, index) => (
             <View>
-              <Text style={styles.postedBy}>Posted By {user.first_name}</Text>
+              <TouchableOpacity>
+              <Text style={styles.postedBy}>Posted By <Text style={{color: 'blue'}}>{book.user_id}</Text></Text>
+              </TouchableOpacity>
               <BookCard
                 style={{
                   justifyContent: "center",
@@ -166,8 +173,8 @@ export default function SearchResults(props) {
                 title={book.title}
                 author={book.author}
                 status={book.status}
-                image_url={book.image_url}
-                // onPress={navigation.navigate("Sale Post", { post: book }) }
+                image_url={book.image_url}          
+                onPress = {onPress}    
               />
             </View>
           ))}

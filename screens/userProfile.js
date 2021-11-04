@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  LogBox,
   Dimensions,
 } from "react-native";
 import BookCard from "../components/bookCard";
@@ -17,6 +18,8 @@ import { useFonts } from "expo-font";
 import SSLight from "../assets/fonts/SourceSansPro/SourceSansProLight.ttf";
 import SSRegular from "../assets/fonts/SourceSansPro/SourceSansProRegular.ttf";
 import SSBold from "../assets/fonts/SourceSansPro/SourceSansProBold.ttf";
+import API from "../assets/API";
+import { userContext } from "../userContext";
 
 export default function UserProfile(props) {
   const [loaded] = useFonts({
@@ -25,17 +28,33 @@ export default function UserProfile(props) {
     SSBold,
   });
 
+  useEffect(() => {
+    LogBox.ignoreLogs(
+      ["VirtualizedLists should never be nested inside"],
+      ["Each child in a list"]
+    );
+  }, []);
+
   const [user, setUser] = useState({});
+  const currentUserId = props.route.params.userId;
+  const { currentUser, setCurrentUser } = useContext(userContext);
+
+  console.log("current user is:", currentUserId);
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/show/" + props.route.params.userId)
+      .get(`${API}/api/show/${currentUserId}`, {
+        headers: {
+          Authorization: `Bearer ${currentUser.access_token}`,
+        },
+      })
       .then((response) => {
         const temp = response.data;
-        console.log(temp);
         setUser(temp);
       });
   }, []);
+
+  console.log(user);
 
   const [showContent, setShowContent] = useState("ForSale");
 
@@ -61,8 +80,15 @@ export default function UserProfile(props) {
           {photos.map((photo, index) => (
             <View>
               <BookCard
-                title="Book for sale"
-                author="Author123"
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignSelf: "center",
+                }}
+                title={photo.title}
+                author={photo.author}
+                status={photo.status}
+                image_url={photo.image_url}
                 onPress={() =>
                   props.navigation.navigate("Sale Post", { post: photo })
                 }
@@ -89,9 +115,13 @@ export default function UserProfile(props) {
           {photos.map((photo, index) => (
             <View>
               <BookCard
-                title="Book for trade"
-                author="Author456"
-                onPress={() => props.navigation.navigate("User Trades")}
+                title={photo.title}
+                author={photo.author}
+                status={photo.status}
+                image_url={photo.image_url}
+                onPress={() =>
+                  props.navigation.navigate("Trade Post", { post: photo })
+                }
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -114,14 +144,23 @@ export default function UserProfile(props) {
         >
           {photos.map((photo, index) => (
             <View>
-              <BookCard style={{ width: imgWidth, height: imgWidth }} />
+              <BookCard
+                key={photo.id}
+                title={photo.title}
+                author={photo.author}
+                status={photo.status}
+                image_url={photo.image_url}
+                onPress={() =>
+                  props.navigation.navigate("Auction Post", { post: photo })
+                }
+                style={{ width: imgWidth, height: imgWidth }}
+              />
             </View>
           ))}
         </View>
       </View>
     );
   }
-
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -140,13 +179,13 @@ export default function UserProfile(props) {
                 <Image
                   style={styles.profileImage}
                   source={{
-                    uri: "https://randomuser.me/api/portraits/women/46.jpg",
+                    uri: user.image_url,
                   }}
                 />
               </View>
               {/* Profile Name and Bio */}
               <View style={styles.nameAndBioView}>
-                <Text style={styles.userFullName}>{"Sophie Welch"}</Text>
+                <Text style={styles.userFullName}>{user.full_name}</Text>
               </View>
               {/* Posts/Followers/Following View */}
               <View style={styles.countsView}>
@@ -184,6 +223,7 @@ export default function UserProfile(props) {
               </View>
             </View>
             {/* Profile Content */}
+
             <View style={{ marginTop: 20 }}>
               <View style={styles.profileContentButtonsView}>
                 <TouchableOpacity
@@ -213,13 +253,31 @@ export default function UserProfile(props) {
                 >
                   <Text style={styles.showContentButtonText}>Auction</Text>
                 </TouchableOpacity>
+               
               </View>
-              {showContent === "ForSale" ? (
-                <ForSale photos={new Array(3).fill(1)} />
-              ) : showContent === "ForTrade" ? (
-                <ForTrade photos={new Array(10).fill(1)} />
-              ) : (
-                <ForAuction photos={new Array(2).fill()} />
+
+              {user.books && (
+                <View>
+                  {showContent === "ForSale" ? (
+                    <ForSale
+                      photos={user.books.filter((book, index) => {
+                        if (book.status === "For Sale") return book;
+                      })}
+                    />
+                  ) : showContent === "ForTrade" ? (
+                    <ForTrade
+                      photos={user.books.filter((book, index) => {
+                        if (book.status === "For Trade") return book;
+                      })}
+                    />
+                  ) : (
+                    <ForAuction
+                      photos={user.books.filter((book, index) => {
+                        if (book.status === "For Auction") return book;
+                      })}
+                    />
+                  )}
+                </View>
               )}
             </View>
           </View>

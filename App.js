@@ -23,6 +23,8 @@ import AuctionPost from "./screens/auctionPost";
 import EventPost from "./screens/eventPost";
 import AddNewEvent from "./screens/addNewEvent";
 import ViewOffers from "./screens/viewOffers";
+import UserProfile from "./screens/userProfile";
+import UserWishlist from "./screens/userWishlist";
 
 // const firebaseConfig = {
 //   apiKey: "AIzaSyBDNLC7FOaZWsAnSyPHkohgj7cEh5s7wEw",
@@ -108,6 +110,16 @@ const ProfileStackScreen = () => (
       name="MyProfile"
       component={MyProfile}
       options={{ headerShown: false }}
+    />
+    <ProfileStack.Screen
+      name="User Profile"
+      component={UserProfile}
+      options={{ title: "Go Back To Profile" }}
+    />
+     <ProfileStack.Screen
+      name="User Wishlist"
+      component={UserWishlist}
+      options={{ title: "Go Back To Profile" }}
     />
     <ProfileStack.Screen
       name="Sale Post"

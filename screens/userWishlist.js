@@ -6,6 +6,7 @@ import AddBook from "../components/addWishlist";
 import WishlistItems from "../components/wishlistItems";
 import {
   StyleSheet,
+  ImageBackground,
   View,
   ScrollView,
   FlatList,
@@ -42,8 +43,14 @@ export default function UserWishlist() {
 
   return (
   
-    <ScrollView>
     <View style={styles.container}>
+    <ImageBackground
+        source={require("../assets/myimages/download.jpg")}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
+        resizeMode="cover"
+      >
+            <ScrollView>
+
        <HeaderWithoutLogo title="Wishlist" />
         <View style={styles.content}>
           <View style={styles.list}>
@@ -56,15 +63,16 @@ export default function UserWishlist() {
            
           </View>
         </View>
+
+          </ScrollView> 
+        </ImageBackground>
     </View>
-</ScrollView>  );
+ );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "white",
-    marginBottom: 20,
   },
   content: {
     padding: 40,

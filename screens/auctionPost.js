@@ -2,8 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { LogBox } from "react-native";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
-import AddBook from "../components/addWishlist";
-import WishlistItems from "../components/wishlistItems";
+
 import {
   StyleSheet,
   View,
@@ -15,13 +14,10 @@ import {
   Dimensions,
   Text,
 } from "react-native";
-import BookCard from "../components/bookCard";
-import AddButton from "../components/addButton";
 import { useContext } from "react";
 import { userContext } from "../userContext";
 import { Icon } from "react-native-elements/dist/icons/Icon";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   Table,
   TableWrapper,
@@ -29,7 +25,6 @@ import {
   Rows,
   Col,
 } from "react-native-table-component";
-import { color } from "react-native-elements/dist/helpers";
 import { Rating } from "react-native-ratings";
 
 export default function AuctionPost(props) {
@@ -41,20 +36,18 @@ export default function AuctionPost(props) {
   const nav = props.navigation;
 
   const { currentUser, setCurrentUser } = useContext(userContext);
+  const [currentBidder, setCurrentBidder] = useState('Charbel Daoud')
   const currentPost = props.route.params.post;
 
-
+console.log(currentUser);
   const CONTENT = {
     tableHead: ["Bidder", "Bid Amount", "Bid Made"],
     tableData: [
       ["Charbel Daoud", "28,000 LL", "3 hours ago"],
       ["Yvona Nehme", "20,000 LL", "3 hours ago"],
-      ["Julien Hosri", "15,000 LL", "1 hours ago"],
+      ["Roxy Cat", "15,000 LL", "1 hours ago"],
     ],
   };
-
-
-
 
   // const changeHandlerData = (val) => {
   //   setTableDatas.bid(val);
@@ -69,10 +62,10 @@ export default function AuctionPost(props) {
     };
   
     const onSubmitBid = () => {
-      console.warn(bidInput)
       let strToNumb = parseInt(bidInput, 10)
       if (strToNumb > currentBid) {
-        setCurrentBid(strToNumb);
+        setCurrentBid(strToNumb)
+        setCurrentBidder(currentUser.user.full_name)
         setBidInput('');
       } else {
         ToastAndroid.showWithGravityAndOffset(
@@ -143,7 +136,7 @@ export default function AuctionPost(props) {
               Highest Bidder:{" "}
             </Text>
             <Text style={{ color: "green", fontWeight: "bold" }}>
-              Charbel Daoud
+              {currentBidder}
             </Text>
           </Text>
           <Text>

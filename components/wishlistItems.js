@@ -1,31 +1,46 @@
-import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
 import React from "react";
 import {
   StyleSheet,
   Text,
   View,
   Alert,
-  Button,
-  TextInput,
-  ScrollView,
-  FlatList,
-  TouchableOpacity,
-  Image,
 } from "react-native";
 import DeleteButton from "./deleteButton";
+import { useFonts } from "expo-font";
+import NSLight from "../assets/fonts/NunitoSans/NunitoSansLight.ttf";
+import NSRegular from "../assets/fonts/NunitoSans/NunitoSansRegular.ttf";
+import NSBold from "../assets/fonts/NunitoSans/NunitoSansBold.ttf";
+import NSExtraBold from "../assets/fonts/NunitoSans/NunitoSansExtraBold.ttf";
+import LoadingScreen from "../screens/loadingScreen";
+
 
 export default function WishlistItems({ item, pressHandler, isMine }) {
+
+  const [loaded] = useFonts({
+    NSLight,
+    NSRegular,
+    NSBold,
+    NSExtraBold,
+  });
+  
+  if (!loaded) {
+    return (
+      <View>
+        <LoadingScreen />
+      </View>
+    );
+  }
+
   return (
     <View>
       <View style={styles.item}>
-        <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
-        <Text>
+        <Text style={{ fontFamily: 'NSBold' }}>Book Title: </Text>
+        <Text style={{ fontFamily: 'NSLight' }}>
           {item.title}
           {"\n"}
         </Text>
-        <Text style={{ fontWeight: "bold" }}>Book Author: </Text>
-        <Text>{item.author}</Text>
+        <Text style={{  fontFamily: 'NSBold' }}>Book Author: </Text>
+        <Text style={{ fontFamily: 'NSLight' }}>{item.author}</Text>
         {isMine && (
           <DeleteButton
             onPress={() => {
@@ -45,7 +60,7 @@ const styles = StyleSheet.create({
   item: {
     padding: 16,
     marginTop: 16,
-    // borderRadius: 10,
+    borderRadius: 10,
     backgroundColor: "#f2f0f0",
     shadowColor: "#000",
     shadowOffset: {
@@ -53,7 +68,8 @@ const styles = StyleSheet.create({
       height: 12,
     },
     shadowOpacity: 0.58,
-    shadowRadius: 16.00,
+    shadowRadius: 20.00,
     
-    elevation: 24,}
+    elevation: 2,
+  }
 });

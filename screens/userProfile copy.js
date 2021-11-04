@@ -5,7 +5,6 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  LogBox,
   Image,
   ActivityIndicator,
   Dimensions,
@@ -13,52 +12,43 @@ import {
 import BookCard from "../components/bookCard";
 import { Feather as Icon } from "@expo/vector-icons";
 import axios from "axios";
-import { userContext } from "../userContext";
-import AddButton from "../components/addButton";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import API from '../assets/API';
-
-
 // Fonts
 import { useFonts } from "expo-font";
 import SSLight from "../assets/fonts/SourceSansPro/SourceSansProLight.ttf";
 import SSRegular from "../assets/fonts/SourceSansPro/SourceSansProRegular.ttf";
-import SSLightItalic from "../assets/fonts/SourceSansPro/SourceSansProLightItalic.ttf";
-import SSItalic from "../assets/fonts/SourceSansPro/SourceSansProItalic.ttf";
 import SSBold from "../assets/fonts/SourceSansPro/SourceSansProBold.ttf";
+import API from '../assets/API';
+import { userContext } from "../userContext";
 
-export default function MyProfile(props) {
+
+export default function UserProfile(props) {
   const [loaded] = useFonts({
     SSLight,
     SSRegular,
     SSBold,
-    SSLightItalic,
-    SSItalic
   });
 
-  useEffect(() => {
-    LogBox.ignoreLogs(
-      ["VirtualizedLists should never be nested inside"],
-      ["Each child in a list"]
-    );
-  }, []);
-
+  const [user, setUser] = useState({});
+  const currentUserId = props.route.params.userId;
   const { currentUser, setCurrentUser } = useContext(userContext);
 
-  const [user, setUser] = useState({});
 
-  useEffect(() => {
-    axios
-      .get(`${API}/api/show/${currentUser.user.id}`, {
-        headers: {
-          Authorization: `Bearer ${currentUser.access_token}`,
-        },
-      })
-      .then((response) => {
-        const temp = response.data;
-        setUser(temp);
-      });
-  }, []);
+console.log('current user is:',currentUserId);
+
+useEffect(() => {
+  axios
+    .get(`${API}/api/show/${currentUserId}`, {
+      headers: {
+        Authorization: `Bearer ${currentUser.access_token}`,
+      },
+    })
+    .then((response) => {
+      const temp = response.data;
+      setUser(temp);
+    });
+}, []);
+
+  console.log(user);
 
   const [showContent, setShowContent] = useState("ForSale");
 
@@ -69,7 +59,6 @@ export default function MyProfile(props) {
       </View>
     );
   }
-
 
   function ForSale({ photos }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;
@@ -85,15 +74,8 @@ export default function MyProfile(props) {
           {photos.map((photo, index) => (
             <View>
               <BookCard
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignSelf: "center",
-                }}
-                title={photo.title}
-                author={photo.author}
-                status={photo.status}
-                image_url={photo.image_url}
+                title="Book for sale"
+                author="Author123"
                 onPress={() =>
                   props.navigation.navigate("Sale Post", { post: photo })
                 }
@@ -120,18 +102,9 @@ export default function MyProfile(props) {
           {photos.map((photo, index) => (
             <View>
               <BookCard
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                alignSelf: "center",
-              }}
-                title={photo.title}
-                author={photo.author}
-                status={photo.status}
-                image_url={photo.image_url}
-                onPress={() =>
-                  props.navigation.navigate("Trade Post", { post: photo })
-                }
+                title="Book for trade"
+                author="Author456"
+                onPress={() => props.navigation.navigate("User Trades")}
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -154,54 +127,7 @@ export default function MyProfile(props) {
         >
           {photos.map((photo, index) => (
             <View>
-              <BookCard
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                alignSelf: "center",
-              }}
-                key={photo.id}
-                title={photo.title}
-                author={photo.author}
-                status={photo.status}
-                image_url={photo.image_url}
-                onPress={() =>
-                  props.navigation.navigate("Auction Post", { post: photo })
-                }
-                style={{ width: imgWidth, height: imgWidth }}
-              />
-            </View>
-          ))}
-        </View>
-      </View>
-    );
-  }
-
-  function Idle({ photos }) {
-    const imgWidth = Dimensions.get("screen").width * 0.5;
-    return (
-      <View style={{}}>
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            alignItems: "center",
-          }}
-        >
-          {photos.map((photo, index) => (
-            <View>
-              <BookCard
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                alignSelf: "center",
-              }}
-                title={photo.title}
-                author={photo.author}
-                status={photo.status}
-                image_url={photo.image_url}
-                style={{ width: imgWidth, height: imgWidth }}
-              />
+              <BookCard style={{ width: imgWidth, height: imgWidth }} />
             </View>
           ))}
         </View>
@@ -233,26 +159,14 @@ export default function MyProfile(props) {
               </View>
               {/* Profile Name and Bio */}
               <View style={styles.nameAndBioView}>
-                <Text style={styles.userFullName}>
-                  {user.full_name}
-                </Text>
-                {/* <Text style={styles.userLocation}>
-                  {user.location.country +", "+ user.location.city}
-                </Text> */}
+                <Text style={styles.userFullName}>{user.full_name}</Text>
               </View>
               {/* Posts/Followers/Following View */}
               <View style={styles.countsView}>
                 <View style={styles.countView}>
-                  <Text style={styles.countNum}>{[user.books].length}</Text>
+                  <Text style={styles.countNum}>13</Text>
                   <Text style={styles.countText}>Books</Text>
                 </View>
-                <TouchableOpacity onPress={() => props.navigation.navigate("Notifications")}>
-                <MaterialCommunityIcons
-                    name={"bell-outline"}
-                    size={30}
-                    color={"#710D0D"}
-                  />
-                  </TouchableOpacity>
                 <View style={styles.countView}>
                   <Text style={styles.countNum}>5</Text>
                   <Text style={styles.countText}>Wishlist</Text>
@@ -261,19 +175,12 @@ export default function MyProfile(props) {
               {/* Interact Buttons View */}
               <View style={styles.interactButtonsView}>
                 <TouchableOpacity
-                  style={{
-                    ...styles.interactButton,
-                    backgroundColor: "white",
-                    borderWidth: 2,
-                    borderColor: "#710D0D",}}
-                  onPress={() => props.navigation.navigate("My Wishlist")}
+                  style={styles.interactButton}
+                  onPress={() => props.navigation.navigate("User Wishlist")}
                 >
-                  <Text style={{...styles.interactButtonText, color: "#710D0D"}}>View Wishlist</Text>
+                  <Text style={styles.interactButtonText}>View Wishlist</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() =>
-                    props.navigation.navigate("User Profile", { userId: "2" })
-                  }
                   style={{
                     ...styles.interactButton,
                     backgroundColor: "white",
@@ -284,15 +191,11 @@ export default function MyProfile(props) {
                   <Text
                     style={{ ...styles.interactButtonText, color: "#710D0D" }}
                   >
-                    Edit Profile
+                    Message
                   </Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.logoutButton} onPress={() => setCurrentUser(null)}>
-                <Text style={styles.logoutText}>Logout</Text>
-              </TouchableOpacity>
             </View>
-
             {/* Profile Content */}
             <View style={{ marginTop: 20 }}>
               <View style={styles.profileContentButtonsView}>
@@ -323,45 +226,13 @@ export default function MyProfile(props) {
                 >
                   <Text style={styles.showContentButtonText}>Auction</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    ...styles.showContentButton,
-                    borderBottomWidth: showContent === "Idle" ? 2 : 0,
-                  }}
-                  onPress={() => setShowContent("Idle")}
-                >
-                  <Text style={styles.showContentButtonText}>Idle</Text>
-                </TouchableOpacity>
-
               </View>
-              {user.books && (
-                <View>
-                  {showContent === "ForSale" ? (
-                    <ForSale
-                      photos={user.books.filter((book, index) => {
-                        if (book.status === "For Sale") return book;
-                      })}
-                    />
-                  ) : showContent === "ForTrade" ? (
-                    <ForTrade
-                      photos={user.books.filter((book, index) => {
-                        if (book.status === "For Trade") return book;
-                      })}
-                    />
-                  ) : showContent === "ForAuction" ? (
-                    <ForAuction
-                      photos={user.books.filter((book, index) => {
-                        if (book.status === "For Auction") return book;
-                      })}
-                    />
-                  ) : (
-                    <Idle
-                      photos={user.books.filter((book, index) => {
-                        if (book.status === "Idle") return book;
-                      })}
-                    />
-                  )}
-                </View>
+              {showContent === "ForSale" ? (
+                <ForSale photos={new Array(3).fill(1)} />
+              ) : showContent === "ForTrade" ? (
+                <ForTrade photos={new Array(10).fill(1)} />
+              ) : (
+                <ForAuction photos={new Array(2).fill()} />
               )}
             </View>
           </View>
@@ -374,6 +245,7 @@ export default function MyProfile(props) {
 const styles = StyleSheet.create({
   coverImage: { height: 250, width: "100%" },
   profileContainer: {
+    // height: 1000,
     backgroundColor: "#fff",
     marginTop: -100,
     borderTopLeftRadius: 20,
@@ -389,7 +261,6 @@ const styles = StyleSheet.create({
   },
   nameAndBioView: { alignItems: "center", marginTop: 10 },
   userFullName: { fontFamily: "SSBold", fontSize: 26 },
-  userLocation: { fontFamily: "SSItalic", fontSize: 20, color: '#8c8382' },
 
   countsView: { flexDirection: "row", marginTop: 20 },
   countView: { flex: 1, alignItems: "center" },
@@ -412,11 +283,8 @@ const styles = StyleSheet.create({
   interactButtonText: {
     fontFamily: "SSBold",
     color: "#fff",
-    fontSize: 15,
-    paddingHorizontal: 2,
+    fontSize: 18,
     paddingVertical: 6,
-    justifyContent: "center",
-    alignSelf: "center",
   },
   profileContentButtonsView: {
     flexDirection: "row",
@@ -434,19 +302,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-  logoutButton: {
-    backgroundColor: "#710D0D",
-    margin: 13,
-    paddingVertical: 10,
-    borderRadius: 4,
-    width: "50%",
-    justifyContent: 'center',
-    alignSelf: 'center'
-  },
-  logoutText: {
-    color: "#fff",
-    textAlign: "center",
-    fontSize: 17,
-    fontWeight: "bold",
-  }
 });
