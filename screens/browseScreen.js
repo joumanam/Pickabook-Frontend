@@ -19,10 +19,6 @@ import AddButton from "../components/addButton";
 import SearchBar from "../components/searchBar";
 import { userContext } from "../userContext";
 import { AuthStack } from "../App";
-
-// You can import from local files
-
-// or any pure javascript modules available in npm
 import { Card } from "react-native-paper";
 
 export default function BrowseScreen({ navigation }) {

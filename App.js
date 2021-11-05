@@ -1,47 +1,31 @@
 // @refresh reset
 import React, { useState, useEffect } from "react";
 import { LogBox } from "react-native";
+import { userContext } from "./userContext";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import Login from "./screens/login";
 import Register from "./screens/register";
 import MyWishlist from "./screens/myWishlist";
 import MyProfile from "./screens/myProfile";
 import Notifications from "./screens/notifications";
 import ChatWindow from "./screens/chatWindow";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import SalePost from "./screens/salePost";
-import { userContext } from "./userContext";
 import TradePost from "./screens/tradePost";
 import BrowseScreen from "./screens/browseScreen";
 import Chats from "./screens/chatScreen";
 import EventMap from "./screens/eventMap";
 import AddNewBook from "./screens/addNewBook";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SearchResults from "./screens/searchResults";
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import AuctionPost from "./screens/auctionPost";
 import EventPost from "./screens/eventPost";
 import AddNewEvent from "./screens/addNewEvent";
 import ViewOffers from "./screens/viewOffers";
 import UserProfile from "./screens/userProfile";
 import UserWishlist from "./screens/userWishlist";
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBDNLC7FOaZWsAnSyPHkohgj7cEh5s7wEw",
-//   authDomain: "pickabook-a52cd.firebaseapp.com",
-//   databaseURL:
-//     "https://pickabook-a52cd-default-rtdb.europe-west1.firebasedatabase.app",
-//   projectId: "pickabook-a52cd",
-//   storageBucket: "pickabook-a52cd.appspot.com",
-//   messagingSenderId: "889853719680",
-//   appId: "1:889853719680:web:278c53098b84e969166265",
-//   measurementId: "G-PNM5Q4GLRT",
-// };
-
-// Initialize Firebase
-// if (firebase.apps.length === 0) {
-//   firebase.initializeApp(firebaseConfig);
-// }
 
 export const AuthStack = createStackNavigator();
 
@@ -63,6 +47,11 @@ const BrowseStackScreen = () => (
       name="Search Results"
       component={SearchResults}
       options={{ title: "Go Back to Browse Page" }}
+    />
+     <BrowseStack.Screen
+      name="User Profile"
+      component={UserProfile}
+      options={{ title: "Go Back To Profile" }}
     />
   </BrowseStack.Navigator>
 );
@@ -111,11 +100,11 @@ const ProfileStackScreen = () => (
       component={MyProfile}
       options={{ headerShown: false }}
     />
-    <ProfileStack.Screen
+    {/* <ProfileStack.Screen
       name="User Profile"
       component={UserProfile}
       options={{ title: "Go Back To Profile" }}
-    />
+    /> */}
      <ProfileStack.Screen
       name="User Wishlist"
       component={UserWishlist}

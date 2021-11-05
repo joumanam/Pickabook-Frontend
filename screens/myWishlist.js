@@ -1,19 +1,36 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { LogBox, ImageBackground } from "react-native";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import AddWishlist from "../components/addWishlist";
 import WishlistItems from "../components/wishlistItems";
 import { StyleSheet, View, ScrollView, FlatList } from "react-native";
-// import { Icon } from 'react-native-elements';
+import { userContext } from "../userContext";
+import axios from "axios";
+import API from '../assets/API';
+
+
+
 
 export default function MyWishlist() {
-  const [books, setBooks] = useState([
-    { title: "Book1", author: "Author1", key: "1" },
-    { title: "Book2", author: "Author2", key: "2" },
-    { title: "Book3", author: "Author3", key: "3" },
-    { title: "Book4", author: "Author4", key: "4" },
-  ]);
+  const [books, setBooks] = useState([]);
+  const { currentUser, setCurrentUser } = useContext(userContext);
+
+console.log(currentUser);
+  useEffect(() => {
+    axios.get(`${API}/api/show/${currentUser.user.id}`  , {
+      headers: {
+        Authorization: `Bearer ${currentUser.access_token}`,
+      },
+    })
+    .then((response) => {
+      setBooks(response.data.wishlist);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, [])
+  console.log('wishlist',books)
 
   const pressHandler = (key) => {
     setBooks((prevBooks) => {

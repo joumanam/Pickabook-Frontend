@@ -154,14 +154,13 @@ const onPress = () => {
     // getSearchResultsTEST();
   }, []);
   
-  
   return (
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.posts}>
           {books.map((book, user, index) => (
             <View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=>{props.navigation.navigate('User Profile', {userId: book.user_id})}}>
               <Text style={styles.postedBy}>Posted By <Text style={{color: 'blue'}}>{book.user_id}</Text></Text>
               </TouchableOpacity>
               <BookCard

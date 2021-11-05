@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,7 +10,21 @@ import {
   Image,
 } from "react-native";
 import { Feather as Icon, MaterialIcons as MIcon } from "@expo/vector-icons";
+import axios from "axios";
+import API from "../assets/API";
+import { db } from "../assets/firebase";
 import LoadingScreen from "./loadingScreen";
+import { userContext } from "../userContext";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  FieldValue,
+  query, where, orderBy, getDoc
+} from "@firebase/firestore";
 
 // npm i @react-navigation/bottom-tabs
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -21,6 +35,7 @@ import NSLight from "../assets/fonts/NunitoSans/NunitoSansLight.ttf";
 import NSRegular from "../assets/fonts/NunitoSans/NunitoSansRegular.ttf";
 import NSBold from "../assets/fonts/NunitoSans/NunitoSansBold.ttf";
 import NSExtraBold from "../assets/fonts/NunitoSans/NunitoSansExtraBold.ttf";
+
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 
 export default function Chats(props) {
@@ -31,115 +46,66 @@ export default function Chats(props) {
     NSExtraBold,
   });
 
-  const [stories, setStories] = useState([]);
+  const dummyUser = {
+    userImage: "https://randomuser.me/api/portraits/men/54.jpg",
+    userName: "Everett Green",
+    message: {
+      sender: "Everett Green",
+      text: "I am not sure about that.",
+      seenByYou: true,
+      seenByUser: true,
+    },
+    time: "one month ago",
+  }
 
-  const [messages, setMessages] = useState([
-    {
-      userImage: "https://randomuser.me/api/portraits/men/72.jpg",
-      userName: "Robert Henry",
-      message: {
-        sender: "Robert Henry",
-        text: "Hello",
-        seenByYou: true,
-        seenByUser: true,
-      },
-      isTyping: true,
-      time: "now",
-    },
-    {
-      userImage: "https://randomuser.me/api/portraits/women/81.jpg",
-      userName: "Sophie Price",
-      message: {
-        sender: "You",
-        text: "Is it still available?",
-        seenByYou: true,
-        seenByUser: false,
-      },
-      time: "03:32 PM",
-    },
-    {
-      userImage: "https://randomuser.me/api/portraits/men/33.jpg",
-      userName: "Jessie Collins",
-      message: {
-        sender: "You",
-        text: "It's used but in good condition. You still want it?",
-        seenByYou: true,
-        seenByUser: true,
-      },
-      time: "01:40 PM",
-    },
-    {
-      userImage: "https://randomuser.me/api/portraits/men/85.jpg",
-      userName: "Clinton Meyer",
-      message: {
-        sender: "Clinton Meyer",
-        text: "Let me know, what you think?",
-        seenByYou: false,
-        seenByUser: false,
-      },
-      time: "10:37 AM",
-    },
-    {
-      userImage: "https://randomuser.me/api/portraits/men/60.jpg",
-      userName: "Brayden Willis",
-      message: {
-        sender: "Brayden Willis",
-        text: "Okay, will share it with you by Friday.",
-        seenByYou: true,
-        seenByUser: true,
-      },
-      time: "Yesterday",
-    },
-    {
-      userImage: "https://randomuser.me/api/portraits/men/47.jpg",
-      userName: "Dennis Brown",
-      message: {
-        sender: "Dennis Brown",
-        text: "Yes I received the book! Thank you so much!",
-        seenByYou: true,
-        seenByUser: true,
-      },
-      time: "3 days ago",
-    },
-    {
-      userImage: "https://randomuser.me/api/portraits/women/21.jpg",
-      userName: "Dolores Bell",
-      message: {
-        sender: "You",
-        text: "Thanks!",
-        seenByYou: true,
-        seenByUser: true,
-      },
-      time: "4 days ago",
-    },
-    {
-      userImage: "https://randomuser.me/api/portraits/men/54.jpg",
-      userName: "Everett Green",
-      message: {
-        sender: "Everett Green",
-        text: "I am not sure about that.",
-        seenByYou: true,
-        seenByUser: true,
-      },
-      time: "one month ago",
-    },
-  ]);
+  const {currentUser, setCurrentUser} = useContext(userContext);
+  const [users, setUsers] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const convsFolderPath = collection(db, currentUser.user.id.toString())
+  const convsQuery = query(convsFolderPath, orderBy('creation', 'desc'));
 
-  const [currentStoryView, setCurrentStoryView] = useState(stories);
-  const [storyModalVisible, setStoryModalVisible] = useState(false);
+  useEffect(() => {
+    axios.get(`${API}/api/showallusers`, {
+      headers: {
+        Authorization: `Bearer ${currentUser.access_token}`,
+      },
+    })
+    .then((response) => {
+      // console.warn('CURRENT USER', currentUser);
+      let usersDict = {}
+      response.data.map(user => {
+        usersDict[user.id.toString()] = user;
+      })
+      // console.warn('USERS', usersDict);
+      setUsers(usersDict);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
+
+
+    const unsubscribe = onSnapshot(convsQuery, (querySnapshot) => {
+      const parsedConvs = querySnapshot.docs.map((doc) => {
+        return {...doc.data(), recipientId: doc.id};
+      });
+      console.log('Convs:', parsedConvs);
+      setConversations(parsedConvs);
+    });
+    return () => unsubscribe();
+  }, []);
+  
   if (!loaded) {
     return (
       <View>
-        <LoadingScreen />
+        <Text>Loading..</Text>
       </View>
     );
   }
 
   return (
-    <View >
-          <HeaderWithoutLogo title="Messages" />
-
+    <View>
+      <HeaderWithoutLogo title="Messages" />
       <View
         style={{
           // marginTop: Number(StatusBar.currentHeight),
@@ -150,15 +116,13 @@ export default function Chats(props) {
           flexDirection: "row",
           alignItems: "center",
         }}
-      >
-        
-      </View>
+      ></View>
       <ScrollView showsVerticalScrollIndicator={false}>
-       
         {/* Chats View */}
         <View style={{ flex: 1 }}>
-          {messages.map((chat) => (
+          {conversations.map((chat, index) => (
             <TouchableOpacity
+              key={chat.recipientId}
               style={{
                 marginTop: 10,
                 paddingHorizontal: 10,
@@ -169,67 +133,23 @@ export default function Chats(props) {
                 borderBottomWidth: 1,
                 borderBottomColor: "#dfe4ea",
               }}
-              onPress={()=>{
-                props.navigation.navigate("Chat Window")
-              }}
-              onLongPress={() => {
-                Alert.alert(
-                  "Delete Chat?",
-                  `Do you want to delete ${chat.userName}'s chats?`,
-                  [
-                    {
-                      text: "Cancel",
-                      onPress: () => {},
-                      style: "cancel",
-                    },
-                    {
-                      text: "Yes",
-                      onPress: () => {
-                        let newChats = messages.filter(
-                          (m) => m.userName !== chat.userName
-                        );
-                        setMessages(newChats);
-                      },
-                    },
-                  ],
-                  { cancelable: false }
-                );
+              onPress={() => {
+                console.log("Conv with:", users[chat.recipientId]);
+                props.navigation.navigate("Chat Window", {user: users[chat.recipientId]});
               }}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  let chatStory = stories.filter(
-                    (story) => story.userName === chat.userName
-                  );
-                  if (chatStory.length > 0) {
-                    setCurrentStoryView(chatStory);
-                    setStoryModalVisible(true);
-                  }
+
+              <Image
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 40,
                 }}
-              >
-                <Image
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 100,
-                    borderWidth:
-                      stories.filter(
-                        (story) => story.userName === chat.userName
-                      ).length > 0
-                        ? 4
-                        : null,
-                    borderColor:
-                      stories.filter(
-                        (story) => story.userName === chat.userName
-                      ).length > 0
-                        ? "#3c40c6"
-                        : null,
-                  }}
-                  source={{
-                    uri: chat.userImage,
-                  }}
-                />
-              </TouchableOpacity>
+                source={{
+                  uri: users[chat.recipientId].image_url,
+                }}
+              />
+
               <View style={{ flex: 1, paddingHorizontal: 10 }}>
                 <View
                   style={{
@@ -243,10 +163,10 @@ export default function Chats(props) {
                       fontSize: 18,
                     }}
                   >
-                    {chat.userName}
+                    {users[chat.recipientId].full_name}
                   </Text>
                   <Text style={{ fontFamily: "NSRegular", fontSize: 14 }}>
-                    {chat.time}
+                    {`${chat.date.split('-')[0].slice(4,10)} - ${chat.date.split('-')[1]}`}
                   </Text>
                 </View>
                 <View
@@ -256,38 +176,21 @@ export default function Chats(props) {
                     justifyContent: "space-between",
                   }}
                 >
-                  {chat.isTyping ? (
-                    <Text
-                      style={{
-                        fontFamily: "NSRegular",
-                        color: "green",
-                        fontSize: 16,
-                      }}
-                    >
-                      typing...
-                    </Text>
-                  ) : (
-                    <Text
-                      style={{
-                        fontFamily:
-                          chat.message.sender !== "You"
-                            ? chat.message.seenByYou
-                              ? "NSRegular"
-                              : "NSBold"
-                            : "NSRegular",
-                        fontSize: 16,
-                      }}
-                    >
-                      {chat.message.text}
-                    </Text>
-                  )}
-                  {chat.message.sender === "You" ? (
-                    chat.message.seenByUser ? (
+                  <Text
+                    style={{
+                      fontFamily:
+                          chat.seen
+                            ? "NSRegular"
+                            : "NSBold",
+                      fontSize: 16,
+                    }}
+                  >
+                    {chat.message}
+                  </Text>
+                  
+                    {chat.seen ? (
                       <MIcon name="done-all" size={16} color="#3c40c6" />
-                    ) : (
-                      <MIcon name="done" size={16} color={"#555"} />
-                    )
-                  ) : null}
+                    ) : null}
                 </View>
               </View>
             </TouchableOpacity>
@@ -296,32 +199,9 @@ export default function Chats(props) {
       </ScrollView>
     </View>
   );
-};
-
+}
 
 const styles = StyleSheet.create({
-  storiesView: {
-    paddingVertical: 10,
-    paddingRight: 10,
-    backgroundColor: "#fafafa",
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    overflow: "hidden",
-  },
-  storyContentView: {
-    width: 90,
-    height: 130,
-    borderRadius: 10,
-    borderColor: "#dfe4ea",
-    borderWidth: 1.5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  storyUserImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 100,
-  },
   centeredView: {
     flex: 1,
     justifyContent: "center",

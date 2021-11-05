@@ -5,11 +5,10 @@ import {
   View,
   ImageBackground
 } from "react-native";
-import { Icon } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import AddEventComponent from "../components/addEventComponent";
-import * as ImagePicker from 'expo-image-picker'
+import { userContext } from "../userContext";
 
 export default function AddNewEvent(props) {
 

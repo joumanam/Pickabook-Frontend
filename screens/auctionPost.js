@@ -65,7 +65,7 @@ console.log(currentUser);
       let strToNumb = parseInt(bidInput, 10)
       if (strToNumb > currentBid) {
         setCurrentBid(strToNumb)
-        setCurrentBidder(currentUser.user.full_name)
+        // setCurrentBidder(currentUser.user.full_name)
         setBidInput('');
       } else {
         ToastAndroid.showWithGravityAndOffset(

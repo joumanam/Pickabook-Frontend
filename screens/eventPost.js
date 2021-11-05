@@ -56,7 +56,7 @@ export default function EventPost(props) {
               alignSelf: "center",
               marginBottom: 5,
             }}
-            source={require("../assets/myimages/background.png")}
+            source={{uri: currentEvent.image_url}}
           />
          
           <Text style={styles.titles}>Location: </Text>

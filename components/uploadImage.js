@@ -11,8 +11,7 @@ import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker'
 
 
-export default function UploadImage() {
-  const [image, setImage] = useState(null);
+export default function UploadImage(props) {
 
   const addImage = async () => {
     let _image = await ImagePicker.launchImageLibraryAsync({
@@ -25,22 +24,22 @@ export default function UploadImage() {
     console.log(JSON.stringify(_image));
 
     if (!_image.cancelled) {
-      setImage(_image.uri);
+      console.warn(_image.uri);
+      props.setImage_url(_image.uri);
     }
   };
 
   return (
     <View style={imageUploaderStyles.container}>
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-      )}
+      {props.image_url ? (
+        <Image source={{ uri: props.image_url }} style={{ width: 200, height: 200 }} />
+      ) : null}
 
       <View style={imageUploaderStyles.uploadBtnContainer}>
         <TouchableOpacity
           onPress={addImage}
-          style={imageUploaderStyles.uploadBtn}
-        >
-          <Text style={{fontWeight: 'bold'}}>{image ? "Edit" : "Upload"} Image</Text>
+          style={imageUploaderStyles.uploadBtn}>
+          <Text style={{fontWeight: 'bold'}}>{props.image_url ? "Edit Image" : "Upload Image"}</Text>
           <AntDesign name="camera" size={20} color="black" />
         </TouchableOpacity>
       </View>

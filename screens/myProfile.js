@@ -243,7 +243,7 @@ export default function MyProfile(props) {
               {/* Posts/Followers/Following View */}
               <View style={styles.countsView}>
                 <View style={styles.countView}>
-                  <Text style={styles.countNum}>{[user.books].length}</Text>
+                  <Text style={styles.countNum}>6</Text>
                   <Text style={styles.countText}>Books</Text>
                 </View>
                 <TouchableOpacity onPress={() => props.navigation.navigate("Notifications")}>
@@ -254,7 +254,7 @@ export default function MyProfile(props) {
                   />
                   </TouchableOpacity>
                 <View style={styles.countView}>
-                  <Text style={styles.countNum}>5</Text>
+                  <Text style={styles.countNum}>4</Text>
                   <Text style={styles.countText}>Wishlist</Text>
                 </View>
               </View>
@@ -272,7 +272,7 @@ export default function MyProfile(props) {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() =>
-                    props.navigation.navigate("User Profile", { userId: "2" })
+                    props.navigation.navigate("User Profile", { userId: "3" })
                   }
                   style={{
                     ...styles.interactButton,

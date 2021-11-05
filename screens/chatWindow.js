@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,111 +14,99 @@ import {
   Alert,
   LogBox,
 } from "react-native";
-import { Icon } from "react-native-elements";
 
-export default function ChatWindow({ navigation }) {
+import { Icon } from "react-native-elements";
+import { db } from '../assets/firebase';
+import { userContext } from "../userContext";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  FieldValue,
+  query, where, orderBy,
+} from "@firebase/firestore";
+
+export default function ChatWindow(props) {
+    
+  const { currentUser, setCurrentUser } = useContext(userContext);
+  const [inputMessage, setInputMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const recipient = props.route.params.user;
+  const senderId = currentUser.user.id.toString();
+  const recipientId = recipient.id.toString();
+
+  let convFolderName = [senderId, recipientId].sort();
+  convFolderName = `${convFolderName[0]}-${convFolderName[1]}`
+  const convFolderPath = collection(db, "Chats", convFolderName, "Messages");
+  const senderConvsPath = doc(db, senderId, recipientId);
+  const recipientConvsPath = doc(db, recipientId, senderId);
+
+
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedList: missing keys"]);
+    LogBox.ignoreLogs(["Unhandled promise"]);
     LogBox.ignoreLogs(["Each child in a list"]);
+    LogBox.ignoreLogs(["Setting a timer"]);
   }, []);
 
-  const [chatUser] = useState({
-    name: "Robert Henry",
-    profile_image: "https://randomuser.me/api/portraits/men/72.jpg",
-    last_seen: "online",
-  });
-
-  const [currentUser] = useState({
-    name: "John Doe",
-  });
-
-  const [messages, setMessages] = useState([
-    { sender: "John Doe", message: "Hey there!", time: "6:01 PM" },
-    {
-      sender: "Robert Henry",
-      message: "Hello, how are you doing?",
-      time: "6:02 PM",
-    },
-    {
-      sender: "John Doe",
-      message: "I am good, how about you?",
-      time: "6:02 PM",
-    },
-    {
-      sender: "John Doe",
-      message: `😊😇`,
-      time: "6:02 PM",
-    },
-    {
-      sender: "Robert Henry",
-      message: `Can't wait to meet you.`,
-      time: "6:03 PM",
-    },
-    {
-      sender: "John Doe",
-      message: `That's great, when are you coming?`,
-      time: "6:03 PM",
-    },
-    {
-      sender: "Robert Henry",
-      message: `This weekend.`,
-      time: "6:03 PM",
-    },
-    {
-      sender: "Robert Henry",
-      message: `Around 5 to 6 PM.`,
-      time: "6:04 PM",
-    },
-    {
-      sender: "John Doe",
-      message: `Great, don't forget to bring me some mangoes.`,
-      time: "6:05 PM",
-    },
-    {
-      sender: "Robert Henry",
-      message: `Sure!`,
-      time: "6:05 PM",
-    },
-  ]);
-
-  const [inputMessage, setInputMessage] = useState("");
-
-  function getTime(date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    var strTime = hours + ":" + minutes + " " + ampm;
+  function getTime() {
+    let date = new Date(); 
+    const dateStr = date.toDateString();
+    const timeStr = date.toTimeString().slice(0,5);
+    const strTime = `${dateStr}-${timeStr}`;
     return strTime;
   }
 
-  function sendMessage() {
-    if (inputMessage === "") {
-      return setInputMessage("");
+  const chatsQuery = query(convFolderPath, orderBy('creation', 'desc'));
+  
+  async function onSend() {
+    setInputMessage('');
+
+    const data = {
+      message: inputMessage,
+      from: senderId,
+      creation: new Date(),
+      date: getTime()
     }
-    let t = getTime(new Date());
-    setMessages([
-      ...messages,
-      {
-        sender: currentUser.name,
-        message: inputMessage,
-        time: t,
-      },
-    ]);
-    setInputMessage("");
+
+    const dataForConv = data;
+    const dataForSender = {...data, seen: true};
+    const dataForRecipient = {...data, seen: false};
+
+    // console.warn('Message Data:', dataForConv);
+
+    const updateMessages = await addDoc(convFolderPath, dataForConv);
+    const updateSenderConvs = await setDoc(senderConvsPath, dataForSender);
+    const updateRecipientConvs = await setDoc(recipientConvsPath, dataForRecipient);
   }
 
   useEffect(() => {
-    navigation.setOptions({
+    const unsubscribe = onSnapshot(chatsQuery, (querySnapshot) => {
+      const parsedChats = querySnapshot.docs.map((doc) => {
+        return doc.data();
+      });
+      // console.warn('Messages:', parsedChats);
+      setMessages(parsedChats);
+    });
+    return () => unsubscribe();
+  }, []);
+
+
+ 
+
+  useEffect(() => {
+    props.navigation.setOptions({
       title: "",
       headerLeft: () => (
         <View style={styles.headerLeft}>
           <TouchableOpacity
             style={{ paddingRight: 10 }}
             onPress={() => {
-              navigation.goBack();
+              props.navigation.goBack();
             }}
           >
             <Icon
@@ -130,7 +118,7 @@ export default function ChatWindow({ navigation }) {
           </TouchableOpacity>
           <Image
             style={styles.userProfileImage}
-            source={{ uri: chatUser.profile_image }}
+            source={{ uri: recipient.image_url }}
           />
           <View
             style={{
@@ -139,15 +127,14 @@ export default function ChatWindow({ navigation }) {
             }}
           >
             <Text style={{ color: "black", fontWeight: "700", fontSize: 18 }}>
-              {chatUser.name}
+              {recipient.full_name}
             </Text>
-            <Text style={{ color: "green", fontWeight: "bold" }}>
-              {chatUser.last_seen}
-            </Text>
+
           </View>
         </View>
       ),
     });
+    
   }, []);
 
   return (
@@ -156,7 +143,7 @@ export default function ChatWindow({ navigation }) {
         <FlatList
           style={{ backgroundColor: "white" }}
           inverted={true}
-          data={JSON.parse(JSON.stringify(messages)).reverse()}
+          data={messages}
           renderItem={({ item }) => (
             <TouchableWithoutFeedback>
               <View style={{ marginTop: 6 }}>
@@ -165,22 +152,26 @@ export default function ChatWindow({ navigation }) {
                     maxWidth: Dimensions.get("screen").width * 0.8,
                     backgroundColor: "#710D0D",
                     alignSelf:
-                      item.sender === currentUser.name
+                      item.from === senderId
                         ? "flex-end"
                         : "flex-start",
                     marginHorizontal: 10,
                     padding: 10,
                     borderRadius: 8,
                     borderBottomLeftRadius:
-                      item.sender === currentUser.name ? 8 : 0,
+                      item.from === senderId ? 8 : 0,
                     borderBottomRightRadius:
-                      item.sender === currentUser.name ? 0 : 8,
+                      item.from === senderId ? 0 : 8,
                   }}
                 >
                   <Text
                     style={{
                       color: "white",
                       fontSize: 16,
+                      alignSelf:
+                      item.from === senderId
+                        ? "flex-end"
+                        : "flex-start",
                     }}
                   >
                     {item.message}
@@ -193,7 +184,7 @@ export default function ChatWindow({ navigation }) {
                       alignSelf: "flex-end",
                     }}
                   >
-                    {item.time}
+                    {item.date}
                   </Text>
                 </View>
               </View>
@@ -204,19 +195,16 @@ export default function ChatWindow({ navigation }) {
         <View style={{ paddingVertical: 10 }}>
           <View style={styles.messageInputView}>
             <TextInput
-              defaultValue={inputMessage}
+              defaultValue=''
               style={styles.messageInput}
+              value={inputMessage}
               placeholder="Message"
               onChangeText={(text) => setInputMessage(text)}
-              onSubmitEditing={() => {
-                sendMessage();
-              }}
+              // onSubmitEditing={() => onSend()}
             />
             <TouchableOpacity
               style={styles.messageSendView}
-              onPress={() => {
-                sendMessage();
-              }}
+              onPress={() => onSend()}
             >
               <Icon name="send" type="material" />
             </TouchableOpacity>

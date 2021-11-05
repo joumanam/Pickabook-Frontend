@@ -3,7 +3,6 @@ import Header from "../components/header";
 import { useState, useContext } from "react";
 import {
   StyleSheet,
-  
   Text,
   View,
   TextInput,
@@ -13,20 +12,21 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-} from "react-native";
+  } from "react-native";
 import { Icon, Input } from "react-native-elements";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { userContext } from "../userContext";
-import API from '../assets/API';
-
+import API from "../assets/API";
+import base64 from 'react-native-base64';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Login(props) {
-
-  const {currentUser, setCurrentUser} = useContext(userContext);
+  const { currentUser, setCurrentUser } = useContext(userContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
 
   const setPasswordProps = (value) => {
     setPassword(value);
@@ -35,11 +35,12 @@ export default function Login(props) {
     setEmail(value);
   };
 
-  const loginHandler = () => {
+  async function loginHandler() {
     const params = {
       email,
       password,
     };
+
 
     axios
       .post(`${API}/api/auth/login`, params)
@@ -54,9 +55,9 @@ export default function Login(props) {
             throw new Error("Incorrect email address or password!");
           }
         }
-       
-        setCurrentUser(response.data)
-        props.navigation.navigate("All Books");
+
+        setCurrentUser(response.data);
+        // props.navigation.navigate("All Books");
       })
       .catch((err) => {
         console.log(err);
@@ -83,9 +84,9 @@ export default function Login(props) {
             throw new Error("Incorrect email address or password!");
           }
         }
-       
-        setCurrentUser(response.data)
-        props.navigation.navigate("All Books");
+
+        setCurrentUser(response.data);
+        // props.navigation.navigate("All Books");
       })
       .catch((err) => {
         console.log(err);
@@ -94,63 +95,78 @@ export default function Login(props) {
 
   React.useEffect(() => {
     autoLogin();
-  }, [])  
+  }, []);
+
+  // Each user is a seller and a buyer.
 
   //// END TEMP ////
 
-
-
   return (
-
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <ImageBackground source={require("../assets/myimages/background.png")}   
-      style={styles.container}>
+      <ImageBackground
+        source={require("../assets/myimages/background.png")}
+        style={styles.container}
+      >
         <View style={styles.centerizedView}>
           <View style={styles.authBox}>
-            <Header /> 
+            <Header />
             <View style={styles.inputBlock}>
-            <View style={styles.hr}></View>
-            <View style={styles.inputBox}>
-              <Text style={styles.inputLabel}>Email Address</Text>
-              <Input
-                style={styles.input}
-                // autoCapitalize={false}
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                placeholder="Email Address"
-                onChangeText={(value)=>setEmail(value)}
-                defaultValue={email}
-                handler={setEmailProps}
-                leftIcon={<Icon name='envelope' type='font-awesome' size={22} color="#710D0D" />}
-                // leftIcon={{type:'font-awesome', name:'envelope'}}
-              />
-            </View>
-            <View style={styles.inputBox}>
-              <Text style={styles.inputLabel}>Password</Text>
-              <Input
-                style={styles.input}
-                // autoCapitalize={false}
-                secureTextEntry={true}
-                textContentType="password"
-                placeholder="Password"
-                onChangeText={(value)=>setPassword(value)}
-                defaultValue={password}
-                handler={setPasswordProps}
-                leftIcon={<Icon name='lock' type='font-awesome' size={22} color="#710D0D" />}
-
-              />
-            </View>
+              <View style={styles.hr}></View>
+              <View style={styles.inputBox}>
+                <Text style={styles.inputLabel}>Email Address</Text>
+                <Input
+                  style={styles.input}
+                  // autoCapitalize={false}
+                  keyboardType="email-address"
+                  textContentType="emailAddress"
+                  placeholder="Email Address"
+                  onChangeText={(value) => setEmail(value)}
+                  defaultValue={email}
+                  handler={setEmailProps}
+                  leftIcon={
+                    <Icon
+                      name="envelope"
+                      type="font-awesome"
+                      size={22}
+                      color="#710D0D"
+                    />
+                  }
+                  // leftIcon={{type:'font-awesome', name:'envelope'}}
+                />
+              </View>
+              <View style={styles.inputBox}>
+                <Text style={styles.inputLabel}>Password</Text>
+                <Input
+                  style={styles.input}
+                  // autoCapitalize={false}
+                  secureTextEntry={true}
+                  textContentType="password"
+                  placeholder="Password"
+                  onChangeText={(value) => setPassword(value)}
+                  defaultValue={password}
+                  handler={setPasswordProps}
+                  leftIcon={
+                    <Icon
+                      name="lock"
+                      type="font-awesome"
+                      size={22}
+                      color="#710D0D"
+                    />
+                  }
+                />
+              </View>
             </View>
             <TouchableOpacity style={styles.loginButton} onPress={loginHandler}>
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => props.navigation.navigate("Register")}>
-              <Text style={styles.registerText}>
-                New to Pick-A-Book? 
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("Register")}
+            >
+              <Text style={styles.registerText}>New to Pick-A-Book?</Text>
+              <Text style={{ fontWeight: "bold", alignSelf: "center" }}>
+                Register Now
               </Text>
-              <Text style={{fontWeight: "bold", alignSelf: 'center'}}>Register Now</Text>
             </TouchableOpacity>
-           
           </View>
         </View>
       </ImageBackground>
@@ -166,7 +182,6 @@ const styles = StyleSheet.create({
   centerizedView: {
     width: "100%",
     top: "15%",
-  
   },
   authBox: {
     width: "80%",
@@ -220,14 +235,11 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     marginTop: 10,
-
-
   },
   inputLabel: {
     fontSize: 18,
     marginBottom: 6,
     // textDecorationLine: 'underline'
-
   },
   inputBlock: {
     marginTop: 100,
@@ -238,8 +250,6 @@ const styles = StyleSheet.create({
     // backgroundColor: "#dfe4ea",
     borderRadius: 4,
     paddingHorizontal: 10,
-
-
   },
   loginButton: {
     backgroundColor: "#710D0D",

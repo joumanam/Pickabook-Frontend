@@ -5,24 +5,19 @@ import {
   View,
   ImageBackground
 } from "react-native";
-import { Icon } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import AddBookComponent from "../components/addBookComponent";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
-import * as ImagePicker from 'expo-image-picker'
 import axios from "axios";
+import { userContext } from "../userContext";
+
 
 export default function AddNewBook() {
 
-  const submitHandler = data => {
-    const { bookTitle, author, status, category, condition, price, language, rating, image } = data;
-
+  const { currentUser, setCurrentUser } = useContext(userContext);
+  const nav = () => {
     
-    // firebase upload 'image', will return a url
-    // image = 'firebase url'
-    // take this url with the rest of the data and axios.post
   }
-
 
     return (
       <View style={styles.container}>
@@ -31,7 +26,7 @@ export default function AddNewBook() {
         <ScrollView>
         <View style={styles.authBox}>
         <View style={{padding: 10}}>
-        <AddBookComponent title='add new book' submitHandler={submitHandler}/>
+        <AddBookComponent title='add new book'/>
         </View>
         </View>
         </ScrollView>
