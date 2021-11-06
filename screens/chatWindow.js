@@ -26,12 +26,13 @@ import {
   setDoc,
   updateDoc,
   FieldValue,
-  query, where, orderBy,
+  query, where, orderBy, getDoc
 } from "@firebase/firestore";
 
 export default function ChatWindow(props) {
     
   const { currentUser, setCurrentUser } = useContext(userContext);
+
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
@@ -84,17 +85,31 @@ export default function ChatWindow(props) {
     const updateRecipientConvs = await setDoc(recipientConvsPath, dataForRecipient);
   }
 
+  async function makeConvSeen() {
+    if (messages) {
+      const data = {...messages[0], seen: true};
+      // console.warn('This message was turned to seen:', data);
+      const updateSenderConvs = await setDoc(senderConvsPath, data);
+    }
+  }
+
+
   useEffect(() => {
     const unsubscribe = onSnapshot(chatsQuery, (querySnapshot) => {
-      const parsedChats = querySnapshot.docs.map((doc) => {
+      const parsedMessages = querySnapshot.docs.map((doc) => {
         return doc.data();
       });
-      // console.warn('Messages:', parsedChats);
-      setMessages(parsedChats);
+      // console.warn('Messages:', parsedMessages);
+      setMessages(parsedMessages);
+
     });
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    // console.warn('chatWindow is in focus?', isFocused);
+    makeConvSeen();
+  })
 
  
 

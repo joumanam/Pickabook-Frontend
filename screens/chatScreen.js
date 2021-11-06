@@ -63,6 +63,16 @@ export default function Chats(props) {
   const [conversations, setConversations] = useState([]);
   const convsFolderPath = collection(db, currentUser.user.id.toString())
   const convsQuery = query(convsFolderPath, orderBy('creation', 'desc'));
+  const fakeUser = {
+    "created_at": "2021-10-23T10:23:11.000000Z",
+    "deleted_at": null,
+    "email": "roxy@se.io",
+    "full_name": "Roxy Cat",
+    "id": 4,
+    "image_url": "https://cdn.pixabay.com/photo/2017/07/20/04/28/black-2521197_960_720.jpg",
+    "role": "User",
+    "updated_at": "2021-10-23T10:23:11.000000Z",
+  };
 
   useEffect(() => {
     axios.get(`${API}/api/showallusers`, {
@@ -76,14 +86,12 @@ export default function Chats(props) {
       response.data.map(user => {
         usersDict[user.id.toString()] = user;
       })
-      // console.warn('USERS', usersDict);
+      console.warn('USERS', usersDict);
       setUsers(usersDict);
     })
     .catch((err) => {
       console.log(err);
     });
-
-
 
     const unsubscribe = onSnapshot(convsQuery, (querySnapshot) => {
       const parsedConvs = querySnapshot.docs.map((doc) => {
@@ -188,8 +196,8 @@ export default function Chats(props) {
                     {chat.message}
                   </Text>
                   
-                    {chat.seen ? (
-                      <MIcon name="done-all" size={16} color="#3c40c6" />
+                    {!chat.seen ? (
+                      <MIcon name="circle" size={16} color="#710D0D" />
                     ) : null}
                 </View>
               </View>

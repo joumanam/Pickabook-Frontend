@@ -25,7 +25,7 @@ export default function SearchResults(props) {
   const [loading, setLoading] = useState(false);
   const { currentUser, setCurrentUser } = useContext(userContext);
   const [books, setBooks] = useState([]);
-  const [user, setUser] = useState({});
+  const [users, setUsers] = useState({});
 
 
   useEffect(() => {
@@ -35,35 +35,38 @@ export default function SearchResults(props) {
       },
     })
     .then((response) => {
-      setBooks(response.data);
+      console.warn(response.data);
+      const stringifyId = response.data.map(book => {
+        return {...book, user_id: book.user_id.toString()}
+      })
+      setBooks(stringifyId);
     })
     .catch((err) => {
       console.log(err);
     });
+
+    axios.get(`${API}/api/showallusers`, {
+      headers: {
+        Authorization: `Bearer ${currentUser.access_token}`,
+      },
+    })
+    .then((response) => {
+      // console.warn('CURRENT USER', currentUser);
+      let usersDict = {}
+      response.data.map(user => {
+        let stringId = user.id;
+        stringId = stringId.toString();
+        usersDict[stringId] = user;
+      })
+      console.warn('USERS', usersDict);
+      setUsers(usersDict);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
   }, [])
 
-
-  useEffect(() => {
-    // console.log('BOOKS:', books.length);
-    // setLoading(true);
-
-    // let users = {};
-    // for (let i=0; i<books.length; i++) {
-      axios
-      .get(`${API}/api/getUser/${books.user_id}` , {
-        headers: {
-          Authorization: `Bearer ${currentUser.access_token}`,
-        },
-      })
-      .then((response) => {
-        setUser(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    // }
-  }, []);
-  console.log('USERS:', user);
 
 /*
   function getSearchResults() {
@@ -142,10 +145,10 @@ export default function SearchResults(props) {
   }
 */
 
-const onPress = () => {
- if (books.status === "For Trade") props.navigation.navigate('Trade Post', {post: books})
- if (books.status === "For Sale") props.navigation.navigate('Sale Post', {post: books})
- if (books.status === "For Auction") props.navigation.navigate('Auction Post', {post: books})
+const onPress = (post, user) => {
+ if (post.status === "For Trade") props.navigation.navigate('Trade Post', {post: books, user})
+ if (post.status === "For Sale") props.navigation.navigate('Sale Post', {post: books, user})
+ if (post.status === "For Auction") props.navigation.navigate('Auction Post', {post: books, user})
 };
 
   useEffect(() => {
@@ -158,10 +161,14 @@ const onPress = () => {
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.posts}>
-          {books.map((book, user, index) => (
+          {(books && users) && books.map((book, user, index) => (
             <View>
-              <TouchableOpacity onPress={()=>{props.navigation.navigate('User Profile', {userId: book.user_id})}}>
-              <Text style={styles.postedBy}>Posted By <Text style={{color: 'blue'}}>{book.user_id}</Text></Text>
+              <TouchableOpacity style={{marginLeft: 25, marginTop: 15}} onPress={()=>{currentUser.user.id === book.user_id ? props.navigation.navigate('My Profile') : props.navigation.navigate('User Profile', {userId: book.user_id})}}>
+              <Text style={styles.postedBy}>Posted By
+                <Text style={{color: 'blue'}}>
+                  {` ${users[book.user_id].full_name}`}
+                </Text>
+              </Text>
               </TouchableOpacity>
               <BookCard
                 style={{
@@ -173,7 +180,7 @@ const onPress = () => {
                 author={book.author}
                 status={book.status}
                 image_url={book.image_url}          
-                onPress = {onPress}    
+                onPress = {() => onPress(book, users[book.user_id])}    
               />
             </View>
           ))}

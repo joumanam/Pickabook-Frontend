@@ -27,8 +27,10 @@ export default function SalePost(props) {
   const nav = props.navigation;
 
   const { currentUser, setCurrentUser } = useContext(userContext);
-  const currentPost = props.route.params.post;
-  console.log(currentPost);
+  const post = props.route.params.post;
+  const user = props.route.params.user;
+
+  console.log(post);
 
   function BookCard(props) {
     return (
@@ -46,32 +48,32 @@ export default function SalePost(props) {
               }}
               resizeMode="contain"
               source={{
-                uri: currentPost.image_url,
+                uri: post.image_url,
               }}
             />
           <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
           <Text>
-            {currentPost.title}
+            {post.title}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Book Author: </Text>
           <Text>
-            {currentPost.author}
+            {post.author}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Language: </Text>
           <Text>
-            {currentPost.language}
+            {post.language}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Category: </Text>
           <Text>
-            {currentPost.category}
+            {post.category}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Condition: </Text>
           <Text>
-            {currentPost.condition}
+            {post.condition}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Rating: </Text>
@@ -79,21 +81,21 @@ export default function SalePost(props) {
             <Rating
               imageSize={20}
               readonly
-              startingValue={currentPost.rating}
+              startingValue={post.rating}
               style={styles.rating}
             />
             {"\n"}
           </Text>
           <Text style={{ ...styles.pricetag, color: "#710D0D" }}>
-            {currentPost.price}
+            {post.price}
           </Text>
-          {currentPost.user_id !== currentUser.user.id && (
+          {post.user_id !== currentUser.user.id && (
             <AddButton
               title="Contact Seller"
-              onPress={() => nav.navigate("Make Offer")}
-            />
+              onPress={() => props.navigation.navigate("Chat Window", {user: user})}
+              />
           )}
-          {currentPost.user_id == currentUser.user.id && (
+          {post.user_id == currentUser.user.id && (
             <TouchableOpacity style={{ color: "#710D0D", marginTop: 5 }}>
               <MaterialCommunityIcons
                 name="square-edit-outline"
@@ -118,7 +120,7 @@ export default function SalePost(props) {
         <HeaderWithoutLogo title="For Sale" />
         <View style={styles.content}>
           <View style={styles.list}>
-            <BookCard />
+            <BookCard navigation={props.navigation}/>
           </View>
         </View>
       </View>

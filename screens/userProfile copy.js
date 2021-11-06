@@ -60,7 +60,7 @@ useEffect(() => {
     );
   }
 
-  function ForSale({ photos }) {
+  function ForSale({ photos, user }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;
     return (
       <View style={{}}>
@@ -72,12 +72,12 @@ useEffect(() => {
           }}
         >
           {photos.map((photo, index) => (
-            <View>
+            <View key={photo.id.toString()}>
               <BookCard
                 title="Book for sale"
                 author="Author123"
                 onPress={() =>
-                  props.navigation.navigate("Sale Post", { post: photo })
+                  props.navigation.navigate("Sale Post", {post: photo, user})
                 }
                 style={{ width: imgWidth, height: imgWidth }}
               />
@@ -88,7 +88,7 @@ useEffect(() => {
     );
   }
 
-  function ForTrade({ photos }) {
+  function ForTrade({ photos, user }) {
     const imgWidth = Dimensions.get("screen").width * 0.5;
     return (
       <View style={{}}>
@@ -100,11 +100,11 @@ useEffect(() => {
           }}
         >
           {photos.map((photo, index) => (
-            <View>
+            <View key={photo.id.toString()}>
               <BookCard
                 title="Book for trade"
                 author="Author456"
-                onPress={() => props.navigation.navigate("User Trades")}
+                onPress={() => props.navigation.navigate("User Trades", {post: photo, user} )}
                 style={{ width: imgWidth, height: imgWidth }}
               />
             </View>
@@ -126,7 +126,7 @@ useEffect(() => {
           }}
         >
           {photos.map((photo, index) => (
-            <View>
+            <View key={photo.id.toString()}>
               <BookCard style={{ width: imgWidth, height: imgWidth }} />
             </View>
           ))}
@@ -228,11 +228,11 @@ useEffect(() => {
                 </TouchableOpacity>
               </View>
               {showContent === "ForSale" ? (
-                <ForSale photos={new Array(3).fill(1)} />
+                <ForSale user={user} photos={new Array(3).fill(1)} />
               ) : showContent === "ForTrade" ? (
-                <ForTrade photos={new Array(10).fill(1)} />
+                <ForTrade user={user} photos={new Array(10).fill(1)} />
               ) : (
-                <ForAuction photos={new Array(2).fill()} />
+                <ForAuction user={user} photos={new Array(2).fill()} />
               )}
             </View>
           </View>

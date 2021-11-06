@@ -95,7 +95,7 @@ export default function MyProfile(props) {
                 status={photo.status}
                 image_url={photo.image_url}
                 onPress={() =>
-                  props.navigation.navigate("Sale Post", { post: photo })
+                  props.navigation.navigate("Sale Post", { post: photo, user: currentUser.user })
                 }
                 style={{ width: imgWidth, height: imgWidth }}
               />
@@ -130,7 +130,7 @@ export default function MyProfile(props) {
                 status={photo.status}
                 image_url={photo.image_url}
                 onPress={() =>
-                  props.navigation.navigate("Trade Post", { post: photo })
+                  props.navigation.navigate("Trade Post", { post: photo, user: currentUser.user })
                 }
                 style={{ width: imgWidth, height: imgWidth }}
               />
@@ -166,7 +166,7 @@ export default function MyProfile(props) {
                 status={photo.status}
                 image_url={photo.image_url}
                 onPress={() =>
-                  props.navigation.navigate("Auction Post", { post: photo })
+                  props.navigation.navigate("Auction Post", { post: photo, user: currentUser.user })
                 }
                 style={{ width: imgWidth, height: imgWidth }}
               />

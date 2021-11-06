@@ -36,14 +36,14 @@ export default function UserProfile(props) {
   }, []);
 
   const [user, setUser] = useState({});
-  const currentUserId = props.route.params.userId;
+  const userId = props.route.params.userId;
   const { currentUser, setCurrentUser } = useContext(userContext);
 
-  console.log("current user is:", currentUserId);
+  console.log("current user is:", userId);
 
   useEffect(() => {
     axios
-      .get(`${API}/api/show/${currentUserId}`, {
+      .get(`${API}/api/show/${userId}`, {
         headers: {
           Authorization: `Bearer ${currentUser.access_token}`,
         },
@@ -90,7 +90,7 @@ export default function UserProfile(props) {
                 status={photo.status}
                 image_url={photo.image_url}
                 onPress={() =>
-                  props.navigation.navigate("Sale Post", { post: photo })
+                  props.navigation.navigate("Sale Post", { post: photo, user })
                 }
                 style={{ width: imgWidth, height: imgWidth }}
               />
@@ -120,7 +120,7 @@ export default function UserProfile(props) {
                 status={photo.status}
                 image_url={photo.image_url}
                 onPress={() =>
-                  props.navigation.navigate("Trade Post", { post: photo })
+                  props.navigation.navigate("Trade Post", { post: photo, user })
                 }
                 style={{ width: imgWidth, height: imgWidth }}
               />
@@ -213,6 +213,7 @@ export default function UserProfile(props) {
                     borderWidth: 2,
                     borderColor: "#710D0D",
                   }}
+                  onPress={() => props.navigation.navigate("Chat Window", {user: user})}
                 >
                   <Text
                     style={{ ...styles.interactButtonText, color: "#710D0D" }}

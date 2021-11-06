@@ -67,7 +67,7 @@ export default function Login(props) {
   //// TEMP ////
   const autoLogin = () => {
     const params = {
-      email: "joum@se.io",
+      email: "char@se.io",
       password: "password",
     };
 
