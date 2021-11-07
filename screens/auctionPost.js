@@ -1,8 +1,7 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { LogBox } from "react-native";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
-
 import {
   StyleSheet,
   View,
@@ -14,8 +13,6 @@ import {
   Dimensions,
   Text,
 } from "react-native";
-import { useContext } from "react";
-import { userContext } from "../userContext";
 import { Icon } from "react-native-elements/dist/icons/Icon";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -26,6 +23,21 @@ import {
   Col,
 } from "react-native-table-component";
 import { Rating } from "react-native-ratings";
+import { userContext } from "../userContext";
+import { db } from "../assets/firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  FieldValue,
+  query,
+  where,
+  orderBy,
+  getDoc,
+} from "@firebase/firestore";
 
 export default function AuctionPost(props) {
   function numberWithCommas(x) {
@@ -34,12 +46,10 @@ export default function AuctionPost(props) {
 
   const imgWidth = Dimensions.get("screen").width * 0.45;
   const nav = props.navigation;
-
-  const { currentUser, setCurrentUser } = useContext(userContext);
-  const [currentBidder, setCurrentBidder] = useState('Charbel Daoud')
   const currentPost = props.route.params.post;
 
-console.log(currentUser);
+  const { currentUser, setCurrentUser } = useContext(userContext);
+
   const CONTENT = {
     tableHead: ["Bidder", "Bid Amount", "Bid Made"],
     tableData: [
@@ -49,34 +59,72 @@ console.log(currentUser);
     ],
   };
 
-  // const changeHandlerData = (val) => {
-  //   setTableDatas.bid(val);
-  // };
-
   function BookCard(props) {
-    const [currentBid, setCurrentBid] = useState(28000);
-    const [bidInput, setBidInput] = useState('');
+    const [currentBidder, setCurrentBidder] = useState("");
+
+    const [currentBid, setCurrentBid] = useState(0);
+    const [bids, setBids] = useState([]);
+    const [bidInput, setBidInput] = useState("");
 
     const onInputChange = (value) => {
       setBidInput(value);
     };
-  
-    const onSubmitBid = () => {
-      let strToNumb = parseInt(bidInput, 10)
+
+    const auctionFolderPath = collection(
+      db,
+      "Auctions",
+      currentPost.id.toString(),
+      "Bids"
+    );
+    const bidsQuery = query(auctionFolderPath, orderBy("bid", "desc"));
+    console.log(currentPost);
+
+    function getTime() {
+      let date = new Date();
+      const dateStr = date.toDateString();
+      const timeStr = date.toTimeString().slice(0, 5);
+      const strTime = `${dateStr}-${timeStr}`;
+      return strTime;
+    }
+
+    async function onBid() {
+      let strToNumb = parseInt(bidInput, 10);
       if (strToNumb > currentBid) {
-        setCurrentBid(strToNumb)
-        // setCurrentBidder(currentUser.user.full_name)
-        setBidInput('');
+        setCurrentBid(strToNumb);
+        setBidInput("");
+        const data = {
+          bid: bidInput,
+          from: currentUser.user.id.toString(),
+          name: currentUser.user.full_name,
+          creation: new Date(),
+          date: getTime(),
+        };
+
+        const dataForAuction = data;
+        const updateBids = await addDoc(auctionFolderPath, dataForAuction);
       } else {
         ToastAndroid.showWithGravityAndOffset(
           "Placed bid is too low",
           ToastAndroid.SHORT,
           ToastAndroid.BOTTOM,
-          -50,
+          -10,
           270
         );
       }
-    };
+    }
+
+    useEffect(() => {
+      const unsubscribe = onSnapshot(bidsQuery, (querySnapshot) => {
+        const parsedBids = querySnapshot.docs.map((doc) => {
+          return doc.data();
+        });
+        console.warn("Bids:", parsedBids);
+        setBids(parsedBids);
+        setCurrentBid(parseInt(parsedBids[0].bid, 10));
+        setCurrentBidder(parsedBids[0].name);
+      });
+      return () => unsubscribe();
+    }, []);
 
     return (
       <View>
@@ -147,18 +195,20 @@ console.log(currentUser);
               {numberWithCommas(currentBid)} LL{"\n"}
             </Text>
           </Text>
-          <Text style={{ fontWeight: "bold" }}>Place Bid:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Place Bid"
-            keyboardType={"numeric"}
-            defaultValue={bidInput}
-            handler={onInputChange}
-            onChangeText={(newValue) => onInputChange(newValue)}
-          />
-          <TouchableOpacity onPress={()=>onSubmitBid()}>
-            <Text style={styles.submit}> Submit </Text>
-          </TouchableOpacity>
+          <View>
+            <Text style={{ fontWeight: "bold" }}>Place Bid:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Place Bid"
+              keyboardType={"numeric"}
+              defaultValue={bidInput}
+              handler={onInputChange}
+              onChangeText={(newValue) => onInputChange(newValue)}
+            />
+            <TouchableOpacity onPress={() => onBid()}>
+              <Text style={styles.submit}> Submit </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -168,7 +218,6 @@ console.log(currentUser);
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
     LogBox.ignoreLogs(["Failed prop type"]);
   }, []);
-
 
   return (
     <ScrollView>
@@ -291,7 +340,7 @@ const styles = StyleSheet.create({
   head: {
     height: 40,
     backgroundColor: "#710D0D",
-    color: "white",
+    // color: "white",
     borderTopRightRadius: 15,
     borderTopLeftRadius: 15,
   },

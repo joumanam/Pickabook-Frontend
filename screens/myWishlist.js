@@ -7,30 +7,28 @@ import WishlistItems from "../components/wishlistItems";
 import { StyleSheet, View, ScrollView, FlatList } from "react-native";
 import { userContext } from "../userContext";
 import axios from "axios";
-import API from '../assets/API';
-
-
-
+import API from "../assets/API";
 
 export default function MyWishlist() {
   const [books, setBooks] = useState([]);
   const { currentUser, setCurrentUser } = useContext(userContext);
 
-console.log(currentUser);
+  console.log(currentUser);
   useEffect(() => {
-    axios.get(`${API}/api/show/${currentUser.user.id}`  , {
-      headers: {
-        Authorization: `Bearer ${currentUser.access_token}`,
-      },
-    })
-    .then((response) => {
-      setBooks(response.data.wishlist);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }, [])
-  console.log('wishlist',books)
+    axios
+      .get(`${API}/api/show/${currentUser.user.id}`, {
+        headers: {
+          Authorization: `Bearer ${currentUser.access_token}`,
+        },
+      })
+      .then((response) => {
+        setBooks(response.data.wishlist);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  console.log("wishlist", books);
 
   const pressHandler = (key) => {
     setBooks((prevBooks) => {
@@ -48,9 +46,8 @@ console.log(currentUser);
   };
 
   useEffect(() => {
-    LogBox.ignoreLogs([
-      "VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.",
-    ]);
+    LogBox.ignoreLogs(["VirtualizedLists should"]);
+    LogBox.ignoreLogs(["Failed child."]);
   }, []);
 
   return (

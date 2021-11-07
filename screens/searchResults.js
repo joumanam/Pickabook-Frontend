@@ -13,11 +13,13 @@ import Constants from "expo-constants";
 import DropDownPicker from "react-native-dropdown-picker";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
 import axios from "axios";
+import API from '../assets/API';
+
 import { useContext } from "react";
 import { userContext } from "../userContext";
 import BookCard from "../components/bookCard";
-import API from '../assets/API';
 import { TouchableOpacity } from "react-native-gesture-handler";
+
 
 
 export default function SearchResults(props) {
@@ -25,7 +27,7 @@ export default function SearchResults(props) {
   const [loading, setLoading] = useState(false);
   const { currentUser, setCurrentUser } = useContext(userContext);
   const [books, setBooks] = useState([]);
-  const [users, setUsers] = useState({});
+  const users = props.route.params.data.users;
 
 
   useEffect(() => {
@@ -35,8 +37,9 @@ export default function SearchResults(props) {
       },
     })
     .then((response) => {
-      console.warn(response.data);
-      const stringifyId = response.data.map(book => {
+      // console.warn(response.data);
+      const searchResults = filterSearchResults(response.data);
+      const stringifyId = searchResults.map(book => {
         return {...book, user_id: book.user_id.toString()}
       })
       setBooks(stringifyId);
@@ -44,106 +47,84 @@ export default function SearchResults(props) {
     .catch((err) => {
       console.log(err);
     });
-
-    axios.get(`${API}/api/showallusers`, {
-      headers: {
-        Authorization: `Bearer ${currentUser.access_token}`,
-      },
-    })
-    .then((response) => {
-      // console.warn('CURRENT USER', currentUser);
-      let usersDict = {}
-      response.data.map(user => {
-        let stringId = user.id;
-        stringId = stringId.toString();
-        usersDict[stringId] = user;
-      })
-      console.warn('USERS', usersDict);
-      setUsers(usersDict);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
   }, [])
 
 
-/*
-  function getSearchResults() {
-    let byFilters = [];
-    
-    props.route.params.data.filters.map(filter => {
-      switch(filter.id){
-        case '1':
-        case '2':
-          if(filter.isChecked) {
-            axios.get(`${API}/api/${filter.path}/${props.route.params.data.search}`, {
-            headers: {
-              Authorization: `Bearer ${currentUser.access_token}`,
-            },
-          })
-          .then((response) => {
-            byFilters = [...byFilters, response.data];
-            console.log(`RESPONSE for ${props.route.params.data.search} from ${filter.path}`, byFilters)
+  function filterSearchResults(res) {
+    let filteredBySearch = [];
+    let filteredByLang = [];
+    let filteredByStatus = [];
+    // console.warn(props.route.params.data)
 
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-          }
-          break;
-
-        // case '3':
-        //   if(filter.isChecked) {
-        //     axios.get(`${API}/api/${filter.path}/${props.route.params.data.searchLang}`, {
-        //     headers: {
-        //       Authorization: `Bearer ${currentUser.access_token}`,
-        //     },
-        //   })
-        //   .then((response) => {
-        //     let byLang = [];
-        //     response.data.map(book => {
-        //       byLang.push(book.id);
-        //     })
-
-        //     byFilters = byFilters.filter(book => {
-        //       if (byLang.indexOf(book.id) !== -1) return book;
-        //     })
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //   });
-        //   }
-        //   break;
-
-        // case '4':
-        //   if(filter.isChecked) {
-        //     axios.get(`${API}/api/${filter.path}/${props.route.params.data.status}`, {
-        //     headers: {
-        //       Authorization: `Bearer ${currentUser.access_token}`,
-        //     },
-        //   })
-        //   .then((response) => {
-        //     let byStatus = [];
-        //     response.data.map(book => {
-        //       byStatus.push(book.id);
-        //     })
-
-        //     byFilters = byFilters.filter(book => {
-        //       if (byStatus.indexOf(book.id) !== -1) return book;
-        //     })
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //   });
-        // }
-        // break;
+    if (props.route.params.data.search !== '') {
+      filteredBySearch = res.filter(book => {
+        if (book.title.toLowerCase().includes(props.route.params.data.search.toLowerCase()) 
+          || book.author.toLowerCase().includes(props.route.params.data.search.toLowerCase())) {
+            return book;
         }
-    })
-    console.log('RESULTS', byFilters);
-    setBooks(byFilters);
+      })
+    } else {
+      filteredBySearch = res;
+    }
+ 
+    if (props.route.params.data.searchLang) {
+      filteredByLang = res.filter(book => {
+        if (book.language.toLowerCase().includes(props.route.params.data.searchLang.toLowerCase())) {
+          return book;
+        }
+      })
+    } else {
+      filteredByLang = res;
+    }
+
+    if (props.route.params.data.status !== 'No Filter') {
+      filteredByStatus = res.filter(book => {
+        if (book.status.toLowerCase().includes(props.route.params.data.status.toLowerCase())) return book;
+      })
+    } else {
+      filteredByStatus = res;
+    }
+
+    let filtered = [];
+
+    for (let i=0; i<res.length; i++) {
+      let inFilteredBySearch = false;
+      let inFilteredByLang = false;
+      let inFilteredByStatus = false;
+
+      for (let j=0; j<filteredBySearch.length; j++) {
+        if (filteredBySearch[j].id === res[i].id) {
+          // console.warn('loop 1', filteredBySearch[j].id, res[i].id)
+          inFilteredBySearch = true;
+        }
+      }
+
+      for (let k=0; k<filteredByLang.length; k++) {
+        if (filteredByLang[k].id === res[i].id) {
+          // console.warn('loop 2', filteredByLang[k].id, res[i].id)
+          inFilteredByLang = true;
+        }
+      }
+
+      for (let l=0; l<filteredByStatus.length; l++) {
+        if (filteredByStatus[l].id === res[i].id) {
+          // console.warn('loop 3', filteredByStatus[l].id, res[i].id)
+          inFilteredByStatus = true;
+        }
+      }
+
+      if (inFilteredBySearch && inFilteredByLang && inFilteredByStatus) {
+        filtered.push(res[i]);
+        // console.warn(res[i].title)
+      }
+      inFilteredByLang = false;
+      inFilteredBySearch = false;
+      inFilteredByStatus = false;
+    }
+
+    return filtered;
   }
-*/
+
 
 const onPress = (post, user) => {
  if (post.status === "For Trade") props.navigation.navigate('Trade Post', {post: books, user})

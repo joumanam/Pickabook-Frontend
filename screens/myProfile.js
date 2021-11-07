@@ -271,9 +271,7 @@ export default function MyProfile(props) {
                   <Text style={{...styles.interactButtonText, color: "#710D0D"}}>View Wishlist</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() =>
-                    props.navigation.navigate("User Profile", { userId: "3" })
-                  }
+                  
                   style={{
                     ...styles.interactButton,
                     backgroundColor: "white",

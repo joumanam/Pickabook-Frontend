@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Alert,
+  LogBox
 } from "react-native";
 import DeleteButton from "./deleteButton";
 import { useFonts } from "expo-font";
@@ -15,6 +16,9 @@ import LoadingScreen from "../screens/loadingScreen";
 
 
 export default function WishlistItems({ item, pressHandler, isMine }) {
+
+  LogBox.ignoreLogs(["Failed child."]);
+
 
   const [loaded] = useFonts({
     NSLight,

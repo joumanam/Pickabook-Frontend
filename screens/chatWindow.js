@@ -8,13 +8,10 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView,
   FlatList,
   Dimensions,
-  Alert,
   LogBox,
 } from "react-native";
-
 import { Icon } from "react-native-elements";
 import { db } from '../assets/firebase';
 import { userContext } from "../userContext";
@@ -32,20 +29,18 @@ import {
 export default function ChatWindow(props) {
     
   const { currentUser, setCurrentUser } = useContext(userContext);
-
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
-  const recipient = props.route.params.user;
+  const recipient = props.route.params.user;        // to get all recipient data 
   const senderId = currentUser.user.id.toString();
-  const recipientId = recipient.id.toString();
+  const recipientId = recipient.id.toString();    // to get recipient id only
 
   let convFolderName = [senderId, recipientId].sort();
-  convFolderName = `${convFolderName[0]}-${convFolderName[1]}`
+  convFolderName = `${convFolderName[0]}-${convFolderName[1]}`  
   const convFolderPath = collection(db, "Chats", convFolderName, "Messages");
-  const senderConvsPath = doc(db, senderId, recipientId);
-  const recipientConvsPath = doc(db, recipientId, senderId);
-
+  const senderConvsPath = doc(db, senderId, recipientId);         //we need these 2 for the chat screen (list of chats)
+  const recipientConvsPath = doc(db, recipientId, senderId);    
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedList: missing keys"]);
@@ -86,7 +81,7 @@ export default function ChatWindow(props) {
   }
 
   async function makeConvSeen() {
-    if (messages) {
+    if (messages.length > 0) {
       const data = {...messages[0], seen: true};
       // console.warn('This message was turned to seen:', data);
       const updateSenderConvs = await setDoc(senderConvsPath, data);

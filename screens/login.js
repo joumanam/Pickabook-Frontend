@@ -11,22 +11,24 @@ import {
   ImageBackground,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
   Keyboard,
-  } from "react-native";
+} from "react-native";
 import { Icon, Input } from "react-native-elements";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { userContext } from "../userContext";
 import API from "../assets/API";
-import base64 from 'react-native-base64';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import base64 from "react-native-base64";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function Login(props) {
   const { currentUser, setCurrentUser } = useContext(userContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [IsOpen, setIsOpen] = useState(false);
 
   const setPasswordProps = (value) => {
     setPassword(value);
@@ -35,16 +37,18 @@ export default function Login(props) {
     setEmail(value);
   };
 
+  const addPadding = () => {
+
+  }
+
   async function loginHandler() {
     const params = {
       email,
       password,
     };
 
-
     axios
       .post(`${API}/api/auth/login`, params)
-      // .post("http://25f7-91-232-100-196.ngrok.io/api/auth/login", params)
       .then((response) => {
         let code = response.data.code;
         if (parseInt(code) !== 200) {
@@ -62,12 +66,12 @@ export default function Login(props) {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }
 
   //// TEMP ////
   const autoLogin = () => {
     const params = {
-      email: "char@se.io",
+      email: "joum@se.io",
       password: "password",
     };
 
@@ -93,9 +97,9 @@ export default function Login(props) {
       });
   };
 
-  React.useEffect(() => {
-    autoLogin();
-  }, []);
+  // React.useEffect(() => {
+  //   autoLogin();
+  // }, []);
 
   // Each user is a seller and a buyer.
 
@@ -108,66 +112,76 @@ export default function Login(props) {
         style={styles.container}
       >
         <View style={styles.centerizedView}>
-          <View style={styles.authBox}>
-            <Header />
-            <View style={styles.inputBlock}>
-              <View style={styles.hr}></View>
-              <View style={styles.inputBox}>
-                <Text style={styles.inputLabel}>Email Address</Text>
-                <Input
-                  style={styles.input}
-                  // autoCapitalize={false}
-                  keyboardType="email-address"
-                  textContentType="emailAddress"
-                  placeholder="Email Address"
-                  onChangeText={(value) => setEmail(value)}
-                  defaultValue={email}
-                  handler={setEmailProps}
-                  leftIcon={
-                    <Icon
-                      name="envelope"
-                      type="font-awesome"
-                      size={22}
-                      color="#710D0D"
+        <KeyboardAvoidingView behavior="padding: 60"> 
+
+          <ScrollView>
+              <View style={styles.authBox}>
+                <Header />
+                <View style={styles.inputBlock}>
+                  <View style={styles.hr}></View>
+                  <View style={styles.inputBox}>
+                    <Text style={styles.inputLabel}>Email Address</Text>
+                    <Input
+                      style={styles.input}
+                      // autoCapitalize={false}
+                      keyboardType="email-address"
+                      textContentType="emailAddress"
+                      placeholder="Email Address"
+                      onChangeText={(value) => setEmail(value)}
+                      defaultValue={email}
+                      handler={setEmailProps}
+                      leftIcon={
+                        <Icon
+                          name="envelope"
+                          type="font-awesome"
+                          size={22}
+                          color="#710D0D"
+                        />
+                      }
+                      // leftIcon={{type:'font-awesome', name:'envelope'}}
                     />
-                  }
-                  // leftIcon={{type:'font-awesome', name:'envelope'}}
-                />
-              </View>
-              <View style={styles.inputBox}>
-                <Text style={styles.inputLabel}>Password</Text>
-                <Input
-                  style={styles.input}
-                  // autoCapitalize={false}
-                  secureTextEntry={true}
-                  textContentType="password"
-                  placeholder="Password"
-                  onChangeText={(value) => setPassword(value)}
-                  defaultValue={password}
-                  handler={setPasswordProps}
-                  leftIcon={
-                    <Icon
-                      name="lock"
-                      type="font-awesome"
-                      size={22}
-                      color="#710D0D"
+                  </View>
+                  <View style={styles.inputBox}>
+                    <Text style={styles.inputLabel}>Password</Text>
+                    <Input
+                      style={styles.input}
+                      // autoCapitalize={false}
+                      onPress={addPadding}
+                      secureTextEntry={true}
+                      textContentType="password"
+                      placeholder="Password"
+                      onChangeText={(value) => setPassword(value)}
+                      defaultValue={password}
+                      handler={setPasswordProps}
+                      leftIcon={
+                        <Icon
+                          name="lock"
+                          type="font-awesome"
+                          size={22}
+                          color="#710D0D"
+                        />
+                      }
                     />
-                  }
-                />
+                  </View>
+                </View>
+                <TouchableOpacity
+                  style={styles.loginButton}
+                  onPress={loginHandler}
+                >
+                  <Text style={styles.loginButtonText}>Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => props.navigation.navigate("Register")}
+                >
+                  <Text style={styles.registerText}>New to Pick-A-Book?</Text>
+                  <Text style={{ fontWeight: "bold", alignSelf: "center" }}>
+                    Register Now
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </View>
-            <TouchableOpacity style={styles.loginButton} onPress={loginHandler}>
-              <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate("Register")}
-            >
-              <Text style={styles.registerText}>New to Pick-A-Book?</Text>
-              <Text style={{ fontWeight: "bold", alignSelf: "center" }}>
-                Register Now
-              </Text>
-            </TouchableOpacity>
-          </View>
+              </ScrollView>
+
+            </KeyboardAvoidingView>
         </View>
       </ImageBackground>
     </TouchableWithoutFeedback>

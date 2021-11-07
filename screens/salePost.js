@@ -51,28 +51,29 @@ export default function SalePost(props) {
                 uri: post.image_url,
               }}
             />
-          <Text style={{ fontWeight: "bold" }}>Book Title: </Text>
-          <Text>
+          <Text style={{ fontWeight: "bold", textTransform: 'capitalize' }}>Book Title: </Text>
+          <Text style={{ textTransform: 'capitalize' }}>
             {post.title}
             {"\n"}
           </Text>
-          <Text style={{ fontWeight: "bold" }}>Book Author: </Text>
-          <Text>
+          <Text style={{ fontWeight: "bold", textTransform: 'capitalize' }}>Book Author: </Text>
+          <Text style={{ textTransform: 'capitalize' }}>
             {post.author}
             {"\n"}
+
           </Text>
-          <Text style={{ fontWeight: "bold" }}>Language: </Text>
-          <Text>
+          <Text style={{ fontWeight: "bold", textTransform: 'capitalize' }}>Language: </Text>
+          <Text style={{ textTransform: 'capitalize' }}>
             {post.language}
             {"\n"}
           </Text>
           <Text style={{ fontWeight: "bold" }}>Category: </Text>
-          <Text>
+          <Text style={{textTransform: 'capitalize'}}>
             {post.category}
             {"\n"}
           </Text>
-          <Text style={{ fontWeight: "bold" }}>Condition: </Text>
-          <Text>
+          <Text style={{ fontWeight: "bold", textTransform: 'capitalize' }}>Condition: </Text>
+          <Text style={{ textTransform: 'capitalize' }}>
             {post.condition}
             {"\n"}
           </Text>

@@ -99,6 +99,11 @@ export default function AddEventComponent(props) {
     if (data) props.nav();
   };
 
+  function addZero(i) {
+    if (i < 10) {i = "0" + i}
+    return i;
+  }
+
   return (
     <View style={styles.container}>
       <View style={{ marginTop: 10 }}>
@@ -145,7 +150,7 @@ export default function AddEventComponent(props) {
               <Text style={styles.titles}> {"\n"} Time: </Text>
 
         {hasTimeBeenSet && (
-          <Text style={styles.dateTime}>Event starts at {time.getHours()}:{time.getMinutes()}</Text>
+          <Text style={styles.dateTime}>Event starts at {addZero(time.getHours())}:{addZero(time.getMinutes())}</Text>
         )}
         {!hasTimeBeenSet ? (
           <AddButton title="Pick A Time" onPress={showTimePicker} />

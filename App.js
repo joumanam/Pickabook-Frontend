@@ -68,6 +68,16 @@ const BrowseStackScreen = () => (
       component={SalePost}
       options={{ title: "Go Back To Profile" }}
     />
+      <ProfileStack.Screen
+      name="Auction Post"
+      component={AuctionPost}
+      options={{ title: "Go Back To Profile" }}
+    />
+     <BrowseStack.Screen
+      name="Trade Post"
+      component={TradePost}
+      options={{ title: "Go Back To Profile" }}
+    />
   </BrowseStack.Navigator>
 );
 // Chat nav and every navigation related to it
@@ -115,11 +125,11 @@ const ProfileStackScreen = () => (
       component={MyProfile}
       options={{ headerShown: false }}
     />
-    <ProfileStack.Screen
+    {/* <ProfileStack.Screen
       name="User Profile"
       component={UserProfile}
       options={{ title: "Go Back To Profile" }}
-    />
+    /> */}
      <ProfileStack.Screen
       name="User Wishlist"
       component={UserWishlist}

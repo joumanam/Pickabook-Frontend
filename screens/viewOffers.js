@@ -8,18 +8,12 @@ import OfferPost from "../components/OfferPost";
 import {
   StyleSheet,
   View,
-  Button,
-  Image,
   ScrollView,
   FlatList,
   Dimensions,
-  Text,
 } from "react-native";
-import BookCard from "../components/bookCard";
-import AddButton from "../components/addButton";
 import { userContext } from "../userContext";
-import { Rating } from "react-native-ratings";
-import { TouchableOpacity } from "react-native-gesture-handler";
+
 import axios from "axios";
 import API from "../assets/API";
 
@@ -33,24 +27,14 @@ export default function ViewOffers(props) {
 
   const [offer, setOffer] = useState([
     {
-      user: "Charbel Daoud",
-      title: "You Don’t Know JS Yet: Get Started",
-      author: "Kyle Simpson",
-      language: "English",
-      category: "Tech, Educational",
-      condition: "used",
-      image: 'https://m.media-amazon.com/images/I/410f-bUBR3L.jpg',
-      rating: "3",
-      key: "1",
-    },
-    {
       user: "Roxy Cat",
       title: "Caligula",
       author: "Albert Camus",
       language: "French",
       category: "Theatre, Literature",
       condition: "New",
-      image: 'https://world.openfoodfacts.org/images/products/978/207/036/0642/front_fr.3.full.jpg',
+      image:
+        "https://world.openfoodfacts.org/images/products/978/207/036/0642/front_fr.3.full.jpg",
       rating: "4",
       key: "2",
     },
@@ -60,8 +44,8 @@ export default function ViewOffers(props) {
       author: "Agatha Christie",
       language: "English",
       category: "Thriller, mystery",
-      condition: "very good",
-      image: 'https://i.ebayimg.com/images/g/xp8AAOSwVPFfi25V/s-l300.jpg',
+      condition: "Very good",
+      image: "https://i.ebayimg.com/images/g/xp8AAOSwVPFfi25V/s-l300.jpg",
       rating: "4",
       key: "3",
     },
@@ -117,5 +101,4 @@ const styles = StyleSheet.create({
   list: {
     flexDirection: "column",
   },
- 
 });

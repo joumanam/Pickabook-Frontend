@@ -5,12 +5,8 @@ import {
   TextInput,
   StyleSheet,
   LogBox,
-  FlatList,
-  CheckBox,
-  Button,
   ImageBackground,
-  Modal,
-  ScrollView,
+
 } from "react-native";
 import Constants from "expo-constants";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
@@ -18,15 +14,17 @@ import DropDownPicker from "react-native-dropdown-picker";
 import AddButton from "../components/addButton";
 import SearchBar from "../components/searchBar";
 import { userContext } from "../userContext";
-import { AuthStack } from "../App";
-import { Card } from "react-native-paper";
+
+import axios from "axios";
+import API from '../assets/API';
 
 export default function BrowseScreen({ navigation }) {
   const [dropDownDisabled, setDropDownDisabled] = useState(true);
   const { currentUser, setCurrentUser } = useContext(userContext);
+  const [users, setUsers] = useState({});
 
   const statusOptions = [
-    { id: "1", label: "No Filtering", value: null },
+    { id: "1", label: "No Filtering", value: "No Filter" },
     { id: "2", label: "For Sale", value: "For Sale" },
     { id: "3", label: "For Trade", value: "For Trade" },
     { id: "4", label: "For Auction", value: "For Auction" },
@@ -43,9 +41,9 @@ export default function BrowseScreen({ navigation }) {
 
   const handleChange = () => {
     // if (id === "4") {
-      setOpen(false);
-      setDropDownDisabled(!dropDownDisabled);
-    
+    setOpen(false);
+    setDropDownDisabled(!dropDownDisabled);
+
     let temp = filters.map((filter) => {
       if (id === filter.id) {
         return { ...filter, isChecked: !filter.isChecked };
@@ -54,11 +52,12 @@ export default function BrowseScreen({ navigation }) {
     });
     setFilters(temp);
   };
+  
 
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState("");
   const [searchLang, setSearchLang] = useState("");
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState('No Filter');
 
   // const renderFlatList = (renderData) => {
   //   return (
@@ -108,11 +107,30 @@ export default function BrowseScreen({ navigation }) {
   }
 
   useEffect(() => {
-    LogBox.ignoreLogs(["VirtualizedLists should never"]);
-  }, []);
-  useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never"]);    
     LogBox.ignoreLogs(["Bottom Tab Navigator: 'tabBarOptions’ is deprecated"]);
+
+    axios.get(`${API}/api/showallusers`, {
+      headers: {
+        Authorization: `Bearer ${currentUser.access_token}`,
+      },
+    })
+    .then((response) => {
+      // console.warn('CURRENT USER', currentUser);
+      let usersDict = {}
+      response.data.map(user => {
+        let stringId = user.id;
+        stringId = stringId.toString();
+        usersDict[stringId] = user;
+      })
+      // console.warn('USERS', usersDict);
+      setUsers(usersDict);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   }, []);
+
 
   return (
     <View style={styles.container}>
@@ -121,70 +139,86 @@ export default function BrowseScreen({ navigation }) {
         style={{ width: "100%", height: "100%", position: "absolute" }}
         resizeMode="cover"
       >
-          <HeaderWithoutLogo title="Browse" />
-          <Text style={{marginLeft: 10, marginTop: 15, marginBottom: -15, fontWeight: 'bold'}}>Search for your favorite books:</Text>
+        <HeaderWithoutLogo title="Browse" />
+        <Text
+          style={{
+            marginLeft: 10,
+            marginTop: 15,
+            marginBottom: -15,
+            fontWeight: "bold",
+          }}
+        >
+          Search for your favorite books:
+        </Text>
 
-          <View
+        <View
+          style={{
+            // backgroundColor: "#710D0D",
+            marginTop: 10,
+            borderRadius: 5,
+            width: "99%",
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+        >
+          <SearchBar value={search} updateSearch={updateSearch} style={{}} />
+        </View>
+        {/* <View style={{ padding: 8 }}>{renderFlatList(filters)}</View> */}
+        <Text style={{ marginLeft: 10, marginTop: 15 }}>
+          Filter by Language:
+        </Text>
+
+        <TextInput
+          style={styles.languageInput}
+          value={searchLang}
+          placeholder="Type Language"
+          onChangeText={(text) => {
+            setSearchLang(text);
+          }}
+        />
+
+        <Text style={{ marginLeft: 10, marginTop: 10 }}>Filter by Status:</Text>
+        <View style={styles.dropDown}>
+          <DropDownPicker
             style={{
-              // backgroundColor: "#710D0D",
-              marginTop: 10,
-              borderRadius: 5,
-              width: "99%",
+              backgroundColor: "white",
+              marginTop: -15,
+              marginLeft: 2,
+              marginRight: 2,
+              // width: '101.5%',
+              borderWidth: 1,
+              width: "102%",
               justifyContent: "center",
+              // padding: 17,
               alignSelf: "center",
+              height: 35,
             }}
-          >
-            <SearchBar value={search} updateSearch={updateSearch} style={{}} />
-          </View>
-          {/* <View style={{ padding: 8 }}>{renderFlatList(filters)}</View> */}
-          <Text style={{marginLeft: 10, marginTop: 15, }}>Filter by Language:</Text>
-
-          <TextInput
-                style={styles.languageInput}
-                value={searchLang}
-                placeholder="Type Language"
-                onChangeText={(text) => {
-                  setSearchLang(text);
-                }}
-              />
-
-            <Text style={{marginLeft: 10, marginTop: 10, }}>Filter by Status:</Text>
-          <View style={styles.dropDown}>
-            <DropDownPicker
-              style={{
-                backgroundColor: "white",
-                marginTop: -15,
-                marginLeft: -2,
-                marginRight: -8,
-                width: '101.5%'
-              }}
-              open={open}
-              value={status}
-              items={statusOptions}
-              setOpen={setOpen}
-              setValue={setStatus}
-              showTickIcon={false}
-              setItems={setStatus}
-              dropDownDirection="AUTO"
-              placeholder="Select Status"
-              placeholderStyle={{
-                color: dropDownDisabled ? "grey" : "black",
-                fontWeight: "bold",
-              }}
+            open={open}
+            value={status}
+            items={statusOptions}
+            setOpen={setOpen}
+            setValue={setStatus}
+            showTickIcon={false}
+            setItems={setStatus}
+            dropDownDirection="AUTO"
+            placeholder="Select Status"
+            placeholderStyle={{
+              color: dropDownDisabled ? "grey" : "black",
+            }}
+          />
+        </View>
+        <View style={{ padding: 9 }}>
+          <View style={{ marginBottom: 5 }}>
+            <AddButton
+              title="Search"
+              onPress={() =>
+                navigation.navigate("Search Results", {
+                  data: { filters, status, search, searchLang, users },
+                })
+              }
             />
           </View>
-          <View style={{ padding: 9 }}>
-            <View style={{ marginBottom: 5 }}>
-              <AddButton
-                title="Search"
-                onPress={() =>
-                  navigation.navigate("Search Results", {
-                    data: { filters, status, search, searchLang },
-                  })
-                }
-              />
-            </View>
-          </View>
+        </View>
       </ImageBackground>
     </View>
   );
@@ -193,8 +227,7 @@ export default function BrowseScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
-    // paddingTop: Constants.statusBarHeight,
+
     backgroundColor: "#ecf0f1",
     // padding: 8,
     // marginBottom: 20,
@@ -227,9 +260,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     width: "97%",
-    justifyContent: 'center',
-    padding: 5,
-    alignSelf: 'center',
+    justifyContent: "center",
+    padding: 8,
+    alignSelf: "center",
     height: 35,
+    marginBottom: 10,
   },
 });
