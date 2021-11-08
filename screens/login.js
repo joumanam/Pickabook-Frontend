@@ -37,10 +37,6 @@ export default function Login(props) {
     setEmail(value);
   };
 
-  const addPadding = () => {
-
-  }
-
   async function loginHandler() {
     const params = {
       email,
@@ -97,9 +93,9 @@ export default function Login(props) {
       });
   };
 
-  React.useEffect(() => {
-    autoLogin();
-  }, []);
+  // React.useEffect(() => {
+  //   autoLogin();
+  // }, []);
 
   // Each user is a seller and a buyer.
 
@@ -145,7 +141,7 @@ export default function Login(props) {
                     <Input
                       style={styles.input}
                       // autoCapitalize={false}
-                      onPress={addPadding}
+                      // onPress={addPadding}
                       secureTextEntry={true}
                       textContentType="password"
                       placeholder="Password"

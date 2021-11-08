@@ -2,13 +2,12 @@ import React from "react";
 import { useState, useEffect, useContext } from "react";
 import { LogBox } from "react-native";
 import HeaderWithoutLogo from "../components/headerWithoutLogo";
+// import Timer from "../components/timer";
 import {
   StyleSheet,
   View,
   Image,
-  Button,
   ScrollView,
-  FlatList,
   ToastAndroid,
   Dimensions,
   Text,
@@ -20,7 +19,6 @@ import {
   TableWrapper,
   Row,
   Rows,
-  Col,
 } from "react-native-table-component";
 import { Rating } from "react-native-ratings";
 import { userContext } from "../userContext";
@@ -31,7 +29,6 @@ import {
   onSnapshot,
   query,
   orderBy, 
-  getDoc,
 } from "@firebase/firestore";
 
 export default function AuctionPost(props) {
@@ -42,17 +39,17 @@ export default function AuctionPost(props) {
   const imgWidth = Dimensions.get("screen").width * 0.45;
   const nav = props.navigation;
   const currentPost = props.route.params.post;
-
+console.warn('current post is:', currentPost);
   const { currentUser, setCurrentUser } = useContext(userContext);
 
-  const auctionFolderPath = collection(
-    db,
-    "Auctions",
-    currentPost.id.toString(),
-    "Bids"
-  );
-  const bidsQuery = query(auctionFolderPath, orderBy("bid", "desc"));
-  // console.log(currentPost);
+  const initialMinute = props.minutes;
+  const initialSeconds = props.seconds;
+  const [minutes, setMinutes] = useState(initialMinute);
+  const [seconds, setSeconds] = useState(initialSeconds);
+  // const [notificationMessage, setNotificationMessage] = useState('');
+
+  const auctionFolderPath = collection(db, "Auctions", currentPost.id.toString(), "Bids");
+  const bidsQuery = query(auctionFolderPath, orderBy("bid", "desc"));  
 
   const tableHead = ["Bidder", "Bid Amount", "Bid Made"];
   const [tableData, setTableData] = useState([]);
@@ -72,6 +69,26 @@ export default function AuctionPost(props) {
       message = Math.floor(difference).toString() + ' sec' + `${difference >= 2 ? 's' : ''}` + ' ago'; 
     }
     return message;
+  }
+
+  const timer = (minutes,seconds) => {
+    let myInterval = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+      }
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(myInterval);
+        } else {
+          setMinutes(minutes - 1);
+          setSeconds(59);
+        }
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(myInterval);
+    };
   }
 
   const getTableContent = (bids) => {
@@ -94,9 +111,19 @@ export default function AuctionPost(props) {
     return () => unsubscribe();
   }, []);
 
+  // useEffect(() => {
+  //   const unsubscribe = onSnapshot(notificationsQuery, (querySnapshot) => {
+  //     const parsedNotification = querySnapshot.docs.map((doc) => {
+  //       return doc.data();
+  //     });
+  //     setNotificationMessage(parsedNotification);
+  //   });
+  //   return () => unsubscribe();
+  // }, []);
+
   function BookCard(props) {
     const [currentBidder, setCurrentBidder] = useState("");
-
+    const [currentBidderId, setCurrentBidderId] = useState("0");
     const [currentBid, setCurrentBid] = useState(0);
     const [bids, setBids] = useState([]);
     const [bidInput, setBidInput] = useState("");
@@ -118,14 +145,22 @@ export default function AuctionPost(props) {
       if (strToNumb > currentBid) {
         setCurrentBid(strToNumb);
         setBidInput("");
-        const data = {
+        const dataForAuction = {
           bid: parseInt(bidInput, 10),
           from: currentUser.user.id.toString(),
           name: currentUser.user.full_name,
           creation: Date.now(),
           date: getDate(),
+          
         };
-        const dataForAuction = data;
+        const dataForNotification = {
+          ...dataForAuction, post: currentPost
+        }
+        const notificationsFolderPath = collection(db, "Notifications", currentBidderId, "Notifications")
+        const notificationsQuery = query(notificationsFolderPath, orderBy("creation", "desc"));
+        console.warn(bidInput);
+        const sendNotification = await addDoc(notificationsFolderPath, dataForNotification);
+
         const updateBids = await addDoc(auctionFolderPath, dataForAuction);
       } else {
         ToastAndroid.showWithGravityAndOffset(
@@ -147,6 +182,7 @@ export default function AuctionPost(props) {
          setBids(parsedBids);
          setCurrentBid(parsedBids[0].bid);
          setCurrentBidder(parsedBids[0].name);
+         setCurrentBidderId(parsedBids[0].from);
         }
       });
       return () => unsubscribe();
@@ -272,7 +308,7 @@ export default function AuctionPost(props) {
             }}
           >
             Auction ends in{" "}
-            <Text style={{ color: "red" }}>5 hours 4 minutes</Text>
+            <Text style={{ color: "red" }}>3 hours 26 minutes</Text>
           </Text>
         </View>
         <View style={{ marginTop: 20 }}>

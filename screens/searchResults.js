@@ -127,9 +127,9 @@ export default function SearchResults(props) {
 
 
 const onPress = (post, user) => {
- if (post.status === "For Trade") props.navigation.navigate('Trade Post', {post: books, user})
- if (post.status === "For Sale") props.navigation.navigate('Sale Post', {post: books, user})
- if (post.status === "For Auction") props.navigation.navigate('Auction Post', {post: books, user})
+ if (post.status === "For Trade") props.navigation.navigate('Trade Post', {post, user})
+ if (post.status === "For Sale") props.navigation.navigate('Sale Post', {post, user})
+ if (post.status === "For Auction") props.navigation.navigate('Auction Post', {post, user})
 };
 
   useEffect(() => {
