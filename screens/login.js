@@ -97,9 +97,9 @@ export default function Login(props) {
       });
   };
 
-  // React.useEffect(() => {
-  //   autoLogin();
-  // }, []);
+  React.useEffect(() => {
+    autoLogin();
+  }, []);
 
   // Each user is a seller and a buyer.
 
@@ -138,7 +138,6 @@ export default function Login(props) {
                           color="#710D0D"
                         />
                       }
-                      // leftIcon={{type:'font-awesome', name:'envelope'}}
                     />
                   </View>
                   <View style={styles.inputBox}>
@@ -248,11 +247,11 @@ const styles = StyleSheet.create({
     borderBottomColor: "#710D0D",
   },
   inputBox: {
-    marginTop: 10,
+    marginTop: 5,
   },
   inputLabel: {
     fontSize: 18,
-    marginBottom: 6,
+    marginBottom: 1,
     // textDecorationLine: 'underline'
   },
   inputBlock: {

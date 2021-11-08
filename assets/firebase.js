@@ -10,6 +10,8 @@ const firebaseConfig = {
     appId: "1:889853719680:web:278c53098b84e969166265",
     // measurementId: "G-PNM5Q4GLRT",
   };
+
+  
   
 export const app = initializeApp(firebaseConfig);
 export const db = initializeFirestore(app, {experimentalForceLongPolling: true});

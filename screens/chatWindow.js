@@ -88,7 +88,6 @@ export default function ChatWindow(props) {
     }
   }
 
-
   useEffect(() => {
     const unsubscribe = onSnapshot(chatsQuery, (querySnapshot) => {
       const parsedMessages = querySnapshot.docs.map((doc) => {

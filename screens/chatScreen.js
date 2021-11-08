@@ -76,7 +76,7 @@ export default function Chats(props) {
       response.data.map(user => {
         usersDict[user.id.toString()] = user;
       })
-      console.warn('USERS', usersDict);
+      // console.warn('USERS', usersDict);
       setUsers(usersDict);
     })
     .catch((err) => {
@@ -87,7 +87,7 @@ export default function Chats(props) {
       const parsedConvs = querySnapshot.docs.map((doc) => {
         return {...doc.data(), recipientId: doc.id};
       });
-      console.log('Convs:', parsedConvs);
+      // console.log('Convs:', parsedConvs);
       setConversations(parsedConvs);
     });
     return () => unsubscribe();
@@ -132,7 +132,7 @@ export default function Chats(props) {
                 borderBottomColor: "#dfe4ea",
               }}
               onPress={() => {
-                console.log("Conv with:", users[chat.recipientId]);
+                // console.log("Conv with:", users[chat.recipientId]);
                 props.navigation.navigate("Chat Window", {user: users[chat.recipientId]});
               }}
             >

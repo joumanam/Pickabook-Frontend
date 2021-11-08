@@ -28,14 +28,9 @@ import { db } from "../assets/firebase";
 import {
   addDoc,
   collection,
-  doc,
   onSnapshot,
-  setDoc,
-  updateDoc,
-  FieldValue,
   query,
-  where,
-  orderBy,
+  orderBy, 
   getDoc,
 } from "@firebase/firestore";
 
@@ -50,14 +45,54 @@ export default function AuctionPost(props) {
 
   const { currentUser, setCurrentUser } = useContext(userContext);
 
-  const CONTENT = {
-    tableHead: ["Bidder", "Bid Amount", "Bid Made"],
-    tableData: [
-      ["Charbel Daoud", "28,000 LL", "3 hours ago"],
-      ["Yvona Nehme", "20,000 LL", "3 hours ago"],
-      ["Roxy Cat", "15,000 LL", "1 hours ago"],
-    ],
-  };
+  const auctionFolderPath = collection(
+    db,
+    "Auctions",
+    currentPost.id.toString(),
+    "Bids"
+  );
+  const bidsQuery = query(auctionFolderPath, orderBy("bid", "desc"));
+  // console.log(currentPost);
+
+  const tableHead = ["Bidder", "Bid Amount", "Bid Made"];
+  const [tableData, setTableData] = useState([]);
+
+
+  const formatTime = (time) => {
+    const now = Date.now();
+    const difference = Math.floor((now - time) / 1000);
+    let message = '';
+    if ((difference / 3600) >= 1) {
+      message = (Math.floor(difference/3600)).toString() + ' hr' + `${difference/3600 >= 2 ? 's' : ''}` + ' ago'; 
+    } else if ((difference / 60) >= 1) {
+      message = (Math.floor(difference/60)).toString() + ' min' + `${difference/60 >= 2 ? 's' : ''}` + ' ago'; 
+    } else if (difference === 0) {
+      message = 'now';
+    } else {
+      message = Math.floor(difference).toString() + ' sec' + `${difference >= 2 ? 's' : ''}` + ' ago'; 
+    }
+    return message;
+  }
+
+  const getTableContent = (bids) => {
+    let tableData = [];
+    if (bids) bids.map(bid => {
+      const row = [bid.name, bid.bid, formatTime(bid.creation)];
+      tableData.push(row);
+    })
+    console.warn('tabledata', tableData);
+    return tableData;
+  }
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(bidsQuery, (querySnapshot) => {
+      const parsedBids = querySnapshot.docs.map((doc) => {
+        return doc.data();
+      });
+      setTableData(getTableContent(parsedBids));
+    });
+    return () => unsubscribe();
+  }, []);
 
   function BookCard(props) {
     const [currentBidder, setCurrentBidder] = useState("");
@@ -70,16 +105,7 @@ export default function AuctionPost(props) {
       setBidInput(value);
     };
 
-    const auctionFolderPath = collection(
-      db,
-      "Auctions",
-      currentPost.id.toString(),
-      "Bids"
-    );
-    const bidsQuery = query(auctionFolderPath, orderBy("bid", "desc"));
-    console.log(currentPost);
-
-    function getTime() {
+    function getDate() {
       let date = new Date();
       const dateStr = date.toDateString();
       const timeStr = date.toTimeString().slice(0, 5);
@@ -93,13 +119,12 @@ export default function AuctionPost(props) {
         setCurrentBid(strToNumb);
         setBidInput("");
         const data = {
-          bid: bidInput,
+          bid: parseInt(bidInput, 10),
           from: currentUser.user.id.toString(),
           name: currentUser.user.full_name,
-          creation: new Date(),
-          date: getTime(),
+          creation: Date.now(),
+          date: getDate(),
         };
-
         const dataForAuction = data;
         const updateBids = await addDoc(auctionFolderPath, dataForAuction);
       } else {
@@ -118,10 +143,11 @@ export default function AuctionPost(props) {
         const parsedBids = querySnapshot.docs.map((doc) => {
           return doc.data();
         });
-        console.warn("Bids:", parsedBids);
-        setBids(parsedBids);
-        setCurrentBid(parseInt(parsedBids[0].bid, 10));
-        setCurrentBidder(parsedBids[0].name);
+        if (parsedBids.length > 0) {
+         setBids(parsedBids);
+         setCurrentBid(parsedBids[0].bid);
+         setCurrentBidder(parsedBids[0].name);
+        }
       });
       return () => unsubscribe();
     }, []);
@@ -196,7 +222,7 @@ export default function AuctionPost(props) {
             </Text>
           </Text>
           <View>
-            <Text style={{ fontWeight: "bold" }}>Place Bid:</Text>
+            <Text style={{ fontWeight: "bold", alignSelf: 'center' }}>Place Bid:</Text>
             <TextInput
               style={styles.input}
               placeholder="Place Bid"
@@ -217,7 +243,11 @@ export default function AuctionPost(props) {
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
     LogBox.ignoreLogs(["Failed prop type"]);
+    LogBox.ignoreLogs(["Setting a timer"]);
   }, []);
+  
+  const currentBid = props.route.params.currentBid;
+  const currentBidder = props.route.params.currentBidder;
 
   return (
     <ScrollView>
@@ -248,27 +278,27 @@ export default function AuctionPost(props) {
         <View style={{ marginTop: 20 }}>
           <Table style={{ width: "95%", alignSelf: "center" }}>
             <Row
-              data={CONTENT.tableHead}
+              data={tableHead}
               flexArr={[1, 1, 1]}
               style={styles.head}
               textStyle={styles.rowText}
             />
             <TableWrapper style={styles.wrapper}>
-              <Col
-                data={CONTENT.tableTitle}
+              {/* <Col
+                data={['a','b','c']}
                 style={styles.title}
                 heightArr={[28, 28]}
                 textStyle={styles.columnText}
-              />
+              /> */}
 
               <Rows
-                data={CONTENT.tableData}
+                data={tableData}
                 flexArr={[1, 1, 1]}
                 style={styles.row}
                 textStyle={styles.inTableText}
               />
             </TableWrapper>
-          </Table>
+          </Table> 
         </View>
       </View>
     </ScrollView>
